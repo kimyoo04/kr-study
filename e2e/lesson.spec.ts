@@ -118,8 +118,8 @@ test('category selection scopes the deck to one row', async ({ page }) => {
   await page.goto('./')
   // Whole basic deck first: 100 syllables.
   await expect(page.locator('.progress-label')).toContainText('/ 100')
-  // Pick the ㄱ row (가の行, 10 syllables).
-  await page.locator('.cat-select select').selectOption('가の行')
+  // Pick the ㄱ row (平音 ㄱ行, 10 syllables).
+  await page.locator('.cat-select select').selectOption('平音 ㄱ行')
   await expect(page.locator('.progress-label')).toContainText('/ 10')
   // Lessons are now drawn from that category only (starts at 가).
   await page.getByRole('button', { name: 'はじめる' }).click()

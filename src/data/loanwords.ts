@@ -14,6 +14,7 @@ export const LOANWORD_ROWS: Hangul[][] = [
     { hangul: '수프', romaji: 'supeu', meaning: 'スープ' },
     { hangul: '소스', romaji: 'soseu', meaning: 'ソース' },
     { hangul: '치즈', romaji: 'chijeu', meaning: 'チーズ' },
+    { hangul: '요구르트', romaji: 'yogureuteu', meaning: 'ヨーグルト' },
     { hangul: '버터', romaji: 'beoteo', meaning: 'バター' },
     { hangul: '잼', romaji: 'jaem', meaning: 'ジャム' },
   ],
@@ -29,7 +30,7 @@ export const LOANWORD_ROWS: Hangul[][] = [
     { hangul: '토스트', romaji: 'toseuteu', meaning: 'トースト' },
     { hangul: '소시지', romaji: 'sosiji', meaning: 'ソーセージ' },
     { hangul: '햄', romaji: 'haem', meaning: 'ハム' },
-    { hangul: '치킨', romaji: 'chikin', meaning: 'チキン' },
+    { hangul: '치킨', romaji: 'chikin', meaning: 'チキン (フライドチキン)' },
     { hangul: '케첩', romaji: 'kecheop', meaning: 'ケチャップ' },
   ],
   // フルーツ
@@ -71,7 +72,6 @@ export const LOANWORD_ROWS: Hangul[][] = [
     { hangul: '브런치', romaji: 'beureonchi', meaning: 'ブランチ' },
     { hangul: '바비큐', romaji: 'babikyu', meaning: 'バーベキュー' },
     { hangul: '레시피', romaji: 'resipi', meaning: 'レシピ' },
-    { hangul: '요구르트', romaji: 'yogureuteu', meaning: 'ヨーグルト' },
   ],
   // 場所
   [
@@ -403,7 +403,6 @@ export const LOANWORD_ROWS: Hangul[][] = [
     { hangul: '퍼센트', romaji: 'peosenteu', meaning: 'パーセント' },
     { hangul: '칼로리', romaji: 'kallori', meaning: 'カロリー' },
     { hangul: '사이즈', romaji: 'saijeu', meaning: 'サイズ' },
-    { hangul: '미니', romaji: 'mini', meaning: 'ミニ' },
   ],
 ]
 

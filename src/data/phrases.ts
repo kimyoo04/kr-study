@@ -31,7 +31,7 @@ export const PHRASE_ROWS: Hangul[][] = [
     { hangul: '또 만나요', romaji: 'tto mannayo', meaning: 'また会いましょう', note: '別れ' },
     { hangul: '내일 봐요', romaji: 'naeil bwayo', meaning: 'また明日', note: '別れ' },
     { hangul: '조심히 가세요', romaji: 'josimhi gaseyo', meaning: '気をつけて帰ってください', note: '別れ' },
-    { hangul: '연락할게요', romaji: 'yeollakhalgeyo', meaning: '連絡しますね', note: '別れ' },
+    { hangul: '연락할게요', romaji: 'yeollakalgeyo', meaning: '連絡しますね', note: '別れ' },
     { hangul: '먼저 갈게요', romaji: 'meonjeo galgeyo', meaning: 'お先に失礼します', note: '別れ' },
     { hangul: '잘 가요', romaji: 'jal gayo', meaning: 'じゃあね(見送る側)', note: '別れ' },
     { hangul: '다음에 또 봐요', romaji: 'daeume tto bwayo', meaning: '今度また会いましょう', note: '別れ' },
@@ -72,14 +72,14 @@ export const PHRASE_ROWS: Hangul[][] = [
   [
     { hangul: '두 명이에요', romaji: 'du myeongieyo', meaning: '2人です', note: '食堂 1' },
     { hangul: '자리 있어요?', romaji: 'jari isseoyo?', meaning: '席はありますか', note: '食堂 1' },
-    { hangul: '예약할 수 있어요?', romaji: 'yeyakhal su isseoyo?', meaning: '予約できますか', note: '食堂 1' },
+    { hangul: '예약할 수 있어요?', romaji: 'yeyakal su isseoyo?', meaning: '予約できますか', note: '食堂 1' },
     { hangul: '메뉴 좀 주세요', romaji: 'menyu jom juseyo', meaning: 'メニューをください', note: '食堂 1' },
     { hangul: '뭐가 맛있어요?', romaji: 'mwoga masisseoyo?', meaning: '何がおいしいですか', note: '食堂 1' },
     { hangul: '추천해 주세요', romaji: 'chucheonhae juseyo', meaning: 'おすすめを教えてください', note: '食堂 1' },
     { hangul: '이거 주세요', romaji: 'igeo juseyo', meaning: 'これをください', note: '食堂 1' },
     { hangul: '덜 맵게 해 주세요', romaji: 'deol maepge hae juseyo', meaning: '辛さ控えめにしてください', note: '食堂 1' },
     { hangul: '물 좀 주세요', romaji: 'mul jom juseyo', meaning: 'お水をください', note: '食堂 1' },
-    { hangul: '잘 먹었습니다', romaji: 'jal meogeossseumnida', meaning: 'ごちそうさまでした', note: '食堂 1' },
+    { hangul: '잘 먹었습니다', romaji: 'jal meogeotseumnida', meaning: 'ごちそうさまでした', note: '食堂 1' },
   ],
   // 食堂 2
   [
@@ -144,7 +144,7 @@ export const PHRASE_ROWS: Hangul[][] = [
     { hangul: '유통기한이 언제까지예요?', romaji: 'yutonggihani eonjekkajiyeyo?', meaning: '賞味期限はいつまでですか', note: '買い物 2' },
     { hangul: '하나 더 주세요', romaji: 'hana deo juseyo', meaning: 'もう一つください', note: '買い物 2' },
     { hangul: '다 해서 얼마예요?', romaji: 'da haeseo eolmayeyo?', meaning: '全部でいくらですか', note: '買い物 2' },
-    { hangul: '좀 생각해 볼게요', romaji: 'jom saenggakhae bolgeyo', meaning: 'ちょっと考えてみます', note: '買い物 2' },
+    { hangul: '좀 생각해 볼게요', romaji: 'jom saenggakae bolgeyo', meaning: 'ちょっと考えてみます', note: '買い物 2' },
     { hangul: '다음에 다시 올게요', romaji: 'daeume dasi olgeyo', meaning: 'また今度来ます', note: '買い物 2' },
   ],
   // 値段/交渉
@@ -200,7 +200,7 @@ export const PHRASE_ROWS: Hangul[][] = [
   // ホテル
   [
     { hangul: '체크인하고 싶어요', romaji: 'chekeuinhago sipeoyo', meaning: 'チェックインしたいです', note: 'ホテル' },
-    { hangul: '예약했어요', romaji: 'yeyakhaesseoyo', meaning: '予約しています', note: 'ホテル' },
+    { hangul: '예약했어요', romaji: 'yeyakaesseoyo', meaning: '予約しています', note: 'ホテル' },
     { hangul: '늦게 체크인해도 돼요?', romaji: 'neutge chekeuinhaedo dwaeyo?', meaning: '遅い時間にチェックインしてもいいですか', note: 'ホテル' },
     { hangul: '조식은 몇 시부터예요?', romaji: 'josigeun myeot sibuteoyeyo?', meaning: '朝食は何時からですか', note: 'ホテル' },
     { hangul: '짐을 맡길 수 있어요?', romaji: 'jimeul matgil su isseoyo?', meaning: '荷物を預けられますか', note: 'ホテル' },
@@ -208,7 +208,7 @@ export const PHRASE_ROWS: Hangul[][] = [
     { hangul: '수건 좀 더 주세요', romaji: 'sugeon jom deo juseyo', meaning: 'タオルをもう少しください', note: 'ホテル' },
     { hangul: '에어컨이 안 돼요', romaji: 'eeokeoni an dwaeyo', meaning: 'エアコンが効きません', note: 'ホテル' },
     { hangul: '하루 더 묵을 수 있어요?', romaji: 'haru deo mugeul su isseoyo?', meaning: 'もう一泊できますか', note: 'ホテル' },
-    { hangul: '체크아웃 부탁해요', romaji: 'chekeuaut butakhaeyo', meaning: 'チェックアウトお願いします', note: 'ホテル' },
+    { hangul: '체크아웃 부탁해요', romaji: 'chekeuaut butakaeyo', meaning: 'チェックアウトお願いします', note: 'ホテル' },
     { hangul: '택시 좀 불러 주시겠어요?', romaji: 'taeksi jom bulleo jusigesseoyo?', meaning: 'タクシーを呼んでいただけますか', note: 'ホテル' },
   ],
   // 空港
@@ -261,7 +261,7 @@ export const PHRASE_ROWS: Hangul[][] = [
     { hangul: '조심하세요', romaji: 'josimhaseyo', meaning: '気をつけてください', note: '緊急' },
     { hangul: '위험해요', romaji: 'wiheomhaeyo', meaning: '危ないです', note: '緊急' },
     { hangul: '다쳤어요', romaji: 'dachyeosseoyo', meaning: 'けがをしました', note: '緊急' },
-    { hangul: '일본 대사관에 연락하고 싶어요', romaji: 'ilbon daesagwane yeollakhago sipeoyo', meaning: '日本大使館に連絡したいです', note: '緊急' },
+    { hangul: '일본 대사관에 연락하고 싶어요', romaji: 'ilbon daesagwane yeollakago sipeoyo', meaning: '日本大使館に連絡したいです', note: '緊急' },
     { hangul: '여기 사람이 쓰러졌어요', romaji: 'yeogi sarami sseureojyeosseoyo', meaning: 'ここで人が倒れました', note: '緊急' },
   ],
   // 電話
@@ -305,7 +305,7 @@ export const PHRASE_ROWS: Hangul[][] = [
   // 感情を伝える
   [
     { hangul: '너무 기뻐요', romaji: 'neomu gippeoyo', meaning: 'とても嬉しいです', note: '感情を伝える' },
-    { hangul: '행복해요', romaji: 'haengbokhaeyo', meaning: '幸せです', note: '感情を伝える' },
+    { hangul: '행복해요', romaji: 'haengbokaeyo', meaning: '幸せです', note: '感情を伝える' },
     { hangul: '슬퍼요', romaji: 'seulpeoyo', meaning: '悲しいです', note: '感情を伝える' },
     { hangul: '화가 나요', romaji: 'hwaga nayo', meaning: '腹が立ちます', note: '感情を伝える' },
     { hangul: '깜짝 놀랐어요', romaji: 'kkamjjak nollasseoyo', meaning: 'びっくりしました', note: '感情を伝える' },
@@ -347,7 +347,7 @@ export const PHRASE_ROWS: Hangul[][] = [
     { hangul: '보고 싶어요', romaji: 'bogo sipeoyo', meaning: '会いたいです', note: '恋愛/推し活' },
     { hangul: '좋아해요', romaji: 'joahaeyo', meaning: '好きです', note: '恋愛/推し活' },
     { hangul: '제 최애예요', romaji: 'je choeaeyeyo', meaning: '私の最推しです', note: '恋愛/推し活' },
-    { hangul: '입덕했어요', romaji: 'ipdeokhaesseoyo', meaning: '沼に落ちました(ファンになりました)', note: '恋愛/推し活' },
+    { hangul: '입덕했어요', romaji: 'ipdeokaesseoyo', meaning: '沼に落ちました(ファンになりました)', note: '恋愛/推し活' },
     { hangul: '심쿵했어요', romaji: 'simkunghaesseoyo', meaning: '胸キュンしました', note: '恋愛/推し活' },
     { hangul: '너무 잘생겼어요', romaji: 'neomu jalsaenggyeosseoyo', meaning: 'すごくイケメンです', note: '恋愛/推し活' },
     { hangul: '덕질이 제 삶의 낙이에요', romaji: 'deokjiri je salmui nagieyo', meaning: '推し活が私の生きがいです', note: '恋愛/推し活' },
@@ -357,7 +357,7 @@ export const PHRASE_ROWS: Hangul[][] = [
   // K-POP/コンサート
   [
     { hangul: '콘서트 티켓을 구했어요', romaji: 'konseoteu tikeseul guhaesseoyo', meaning: 'コンサートのチケットを手に入れました', note: 'K-POP/コンサート' },
-    { hangul: '티켓팅에 성공했어요', romaji: 'tiketinge seonggonghaesseoyo', meaning: 'チケッティングに成功しました', note: 'K-POP/コンサート' },
+    { hangul: '티켓팅에 성공했어요', romaji: 'tikettinge seonggonghaesseoyo', meaning: 'チケッティングに成功しました', note: 'K-POP/コンサート' },
     { hangul: '응원봉 가져왔어요?', romaji: 'eungwonbong gajyeowasseoyo?', meaning: 'ペンライト持ってきましたか', note: 'K-POP/コンサート' },
     { hangul: '무대가 진짜 멋있었어요', romaji: 'mudaega jinjja meosisseosseoyo', meaning: 'ステージが本当にかっこよかったです', note: 'K-POP/コンサート' },
     { hangul: '오늘 무대 최고였어요', romaji: 'oneul mudae choegoyeosseoyo', meaning: '今日のステージ最高でした', note: 'K-POP/コンサート' },
@@ -385,7 +385,7 @@ export const PHRASE_ROWS: Hangul[][] = [
   [
     { hangul: '커트해 주세요', romaji: 'keoteuhae juseyo', meaning: 'カットしてください', note: '美容室/コスメ' },
     { hangul: '조금만 다듬어 주세요', romaji: 'jogeumman dadeumeo juseyo', meaning: '少しだけ整えてください', note: '美容室/コスメ' },
-    { hangul: '염색하고 싶어요', romaji: 'yeomsaekhago sipeoyo', meaning: '染めたいです', note: '美容室/コスメ' },
+    { hangul: '염색하고 싶어요', romaji: 'yeomsaekago sipeoyo', meaning: '染めたいです', note: '美容室/コスメ' },
     { hangul: '파마해 주세요', romaji: 'pamahae juseyo', meaning: 'パーマをかけてください', note: '美容室/コスメ' },
     { hangul: '이 사진처럼 해 주세요', romaji: 'i sajincheoreom hae juseyo', meaning: 'この写真のようにしてください', note: '美容室/コスメ' },
     { hangul: '피부가 건조해요', romaji: 'pibuga geonjohaeyo', meaning: '肌が乾燥しています', note: '美容室/コスメ' },
@@ -424,26 +424,26 @@ export const PHRASE_ROWS: Hangul[][] = [
     { hangul: '질문 있어요', romaji: 'jilmun isseoyo', meaning: '質問があります', note: '学校/授業' },
     { hangul: '숙제가 많아요', romaji: 'sukjega manayo', meaning: '宿題が多いです', note: '学校/授業' },
     { hangul: '시험이 다음 주예요', romaji: 'siheomi daeum juyeyo', meaning: '試験は来週です', note: '学校/授業' },
-    { hangul: '수업이 몇 시에 시작해요?', romaji: 'sueobi myeot sie sijakhaeyo?', meaning: '授業は何時に始まりますか', note: '学校/授業' },
-    { hangul: '결석했어요', romaji: 'gyeolseokhaesseoyo', meaning: '欠席しました', note: '学校/授業' },
+    { hangul: '수업이 몇 시에 시작해요?', romaji: 'sueobi myeot sie sijakaeyo?', meaning: '授業は何時に始まりますか', note: '学校/授業' },
+    { hangul: '결석했어요', romaji: 'gyeolseokaesseoyo', meaning: '欠席しました', note: '学校/授業' },
     { hangul: '노트 좀 빌려 주세요', romaji: 'noteu jom billyeo juseyo', meaning: 'ノートを貸してください', note: '学校/授業' },
     { hangul: '선생님, 다시 설명해 주세요', romaji: 'seonsaengnim, dasi seolmyeonghae juseyo', meaning: '先生、もう一度説明してください', note: '学校/授業' },
     { hangul: '발표 준비했어요', romaji: 'balpyo junbihaesseoyo', meaning: '発表の準備をしました', note: '学校/授業' },
     { hangul: '같이 공부할래요?', romaji: 'gachi gongbuhallaeyo?', meaning: '一緒に勉強しませんか', note: '学校/授業' },
-    { hangul: '합격했어요', romaji: 'hapgyeokhaesseoyo', meaning: '合格しました', note: '学校/授業' },
+    { hangul: '합격했어요', romaji: 'hapgyeokaesseoyo', meaning: '合格しました', note: '学校/授業' },
   ],
   // 職場
   [
     { hangul: '회의가 몇 시예요?', romaji: 'hoeuiga myeot siyeyo?', meaning: '会議は何時ですか', note: '職場' },
-    { hangul: '메일 보냈습니다', romaji: 'meil bonaessseumnida', meaning: 'メールを送りました', note: '職場' },
+    { hangul: '메일 보냈습니다', romaji: 'meil bonaetseumnida', meaning: 'メールを送りました', note: '職場' },
     { hangul: '자료 확인해 주세요', romaji: 'jaryo hwaginhae juseyo', meaning: '資料を確認してください', note: '職場' },
     { hangul: '마감이 언제예요?', romaji: 'magami eonjeyeyo?', meaning: '締め切りはいつですか', note: '職場' },
     { hangul: '오늘 야근해요', romaji: 'oneul yageunhaeyo', meaning: '今日残業します', note: '職場' },
     { hangul: '점심 같이 먹을래요?', romaji: 'jeomsim gachi meogeullaeyo?', meaning: 'お昼一緒に食べませんか', note: '職場' },
-    { hangul: '먼저 퇴근하겠습니다', romaji: 'meonjeo toegeunhagessseumnida', meaning: 'お先に退勤します', note: '職場' },
+    { hangul: '먼저 퇴근하겠습니다', romaji: 'meonjeo toegeunhagetseumnida', meaning: 'お先に退勤します', note: '職場' },
     { hangul: '출장 가요', romaji: 'chuljang gayo', meaning: '出張に行きます', note: '職場' },
     { hangul: '휴가를 내고 싶어요', romaji: 'hyugareul naego sipeoyo', meaning: '休暇を取りたいです', note: '職場' },
-    { hangul: '잘 부탁드리겠습니다', romaji: 'jal butakdeurigessseumnida', meaning: 'よろしくお願いいたします', note: '職場' },
+    { hangul: '잘 부탁드리겠습니다', romaji: 'jal butakdeurigetseumnida', meaning: 'よろしくお願いいたします', note: '職場' },
   ],
   // 訪問/招待
   [
@@ -506,7 +506,7 @@ export const PHRASE_ROWS: Hangul[][] = [
     { hangul: '새해 복 많이 받으세요', romaji: 'saehae bok mani badeuseyo', meaning: 'あけましておめでとうございます', note: '季節/行事' },
     { hangul: '설날에 뭐 해요?', romaji: 'seollare mwo haeyo?', meaning: '旧正月に何をしますか', note: '季節/行事' },
     { hangul: '추석은 한국의 명절이에요', romaji: 'chuseogeun hangugui myeongjeorieyo', meaning: '秋夕は韓国の祝日です', note: '季節/行事' },
-    { hangul: '생일 축하해요', romaji: 'saengil chukhahaeyo', meaning: 'お誕生日おめでとうございます', note: '季節/行事' },
+    { hangul: '생일 축하해요', romaji: 'saengil chukahaeyo', meaning: 'お誕生日おめでとうございます', note: '季節/行事' },
     { hangul: '메리 크리스마스!', romaji: 'meri keuriseumaseu!', meaning: 'メリークリスマス!', note: '季節/行事' },
   ],
   // 市場/屋台
@@ -541,7 +541,7 @@ export const PHRASE_ROWS: Hangul[][] = [
     { hangul: '지갑을 두고 왔어요', romaji: 'jigabeul dugo wasseoyo', meaning: '財布を置いてきてしまいました', note: '忘れ物/トラブル' },
     { hangul: '가방을 지하철에 놓고 내렸어요', romaji: 'gabangeul jihacheore noko naeryeosseoyo', meaning: 'カバンを地下鉄に置き忘れました', note: '忘れ物/トラブル' },
     { hangul: '분실물 센터가 어디예요?', romaji: 'bunsilmul senteoga eodiyeyo?', meaning: '忘れ物センターはどこですか', note: '忘れ物/トラブル' },
-    { hangul: '찾으면 연락해 주세요', romaji: 'chajeumyeon yeollakhae juseyo', meaning: '見つかったら連絡してください', note: '忘れ物/トラブル' },
+    { hangul: '찾으면 연락해 주세요', romaji: 'chajeumyeon yeollakae juseyo', meaning: '見つかったら連絡してください', note: '忘れ物/トラブル' },
     { hangul: '예약이 안 돼 있어요', romaji: 'yeyagi an dwae isseoyo', meaning: '予約が入っていません', note: '忘れ物/トラブル' },
     { hangul: '주문한 거랑 달라요', romaji: 'jumunhan georang dallayo', meaning: '注文したものと違います', note: '忘れ物/トラブル' },
     { hangul: '고장 났어요', romaji: 'gojang nasseoyo', meaning: '故障しました', note: '忘れ物/トラブル' },

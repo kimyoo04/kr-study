@@ -26,7 +26,7 @@ export const KEIGO_ROWS: Hangul[][] = [
     { hangul: '할아버지는 신문을 읽으십니다.', romaji: 'harabeojineun sinmuneul ilgeusimnida.', meaning: 'おじいさんは新聞をお読みになります。', note: '〜(으)십니다 (尊敬の합니다体)' },
     { hangul: '어떻게 생각하십니까?', romaji: 'eotteoke saenggakasimnikka?', meaning: 'どのようにお考えですか?', note: '〜(으)십니다 (尊敬の합니다体)' },
     { hangul: '부장님은 매일 운동을 하십니다.', romaji: 'bujangnimeun maeil undongeul hasimnida.', meaning: '部長は毎日運動をなさいます。', note: '〜(으)십니다 (尊敬の합니다体)' },
-    { hangul: '손님, 잠시만 기다리십시오.', romaji: 'sonnim, jamsiman gidarisipsio.', meaning: 'お客様、少々お待ちください。', note: '〜(으)십니다 (尊敬の합니다体)' },
+    { hangul: '부장님은 매일 아침 운동을 하십니다.', romaji: 'bujangnimeun maeil achim undongeul hasimnida.', meaning: '部長は毎朝運動をなさいます。', note: '〜(으)십니다 (尊敬の합니다体)' },
     { hangul: '교수님은 내일 출장을 가십니다.', romaji: 'gyosunimeun naeil chuljangeul gasimnida.', meaning: '教授は明日出張に行かれます。', note: '〜(으)십니다 (尊敬の합니다体)' },
   ],
   // 계시다/드시다/주무시다 (特殊な尊敬動詞)
@@ -44,7 +44,7 @@ export const KEIGO_ROWS: Hangul[][] = [
     { hangul: '선생님께서 말씀하셨어요.', romaji: 'seonsaengnimkkeseo malsseumhasyeosseoyo.', meaning: '先生がおっしゃいました。', note: '〜께서 / 〜께 (尊敬の助詞)' },
     { hangul: '부모님께 선물을 보냈어요.', romaji: 'bumonimkke seonmureul bonaesseoyo.', meaning: 'ご両親に贈り物をお送りしました。', note: '〜께서 / 〜께 (尊敬の助詞)' },
     { hangul: '사장님께서는 오늘 안 나오세요.', romaji: 'sajangnimkkeseoneun oneul an naoseyo.', meaning: '社長は今日はお見えになりません。', note: '〜께서 / 〜께 (尊敬の助詞)' },
-    { hangul: '선생님께 질문이 있어요.', romaji: 'seonsaengnimkke jilmuni isseoyo.', meaning: '先生にご質問があります。', note: '〜께서 / 〜께 (尊敬の助詞)' },
+    { hangul: '선생님께 질문이 있어요.', romaji: 'seonsaengnimkke jilmuni isseoyo.', meaning: '先生に質問があります。', note: '〜께서 / 〜께 (尊敬の助詞)' },
     { hangul: '할아버지께서 주신 시계예요.', romaji: 'harabeojikkeseo jusin sigyeyeyo.', meaning: 'おじいさんがくださった時計です。', note: '〜께서 / 〜께 (尊敬の助詞)' },
   ],
   // 드리다/말씀 (謙譲)

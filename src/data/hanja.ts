@@ -427,7 +427,7 @@ export const HANJA_ROWS: Hangul[][] = [
     { hangul: '조심', romaji: 'josim', meaning: '用心 ※漢字は「操心」' },
     { hangul: '존경', romaji: 'jongyeong', meaning: '尊敬' },
     { hangul: '칭찬', romaji: 'chingchan', meaning: '称賛(ほめること)' },
-    { hangul: '용서', romaji: 'yongseo', meaning: '許し ※漢字は「容赦」' },
+    { hangul: '용서', romaji: 'yongseo', meaning: '許し ※漢字は「容恕」' },
     { hangul: '약혼', romaji: 'yakhon', meaning: '婚約 ※漢字は「約婚」' },
     { hangul: '결혼', romaji: 'gyeolhon', meaning: '結婚' },
     { hangul: '이혼', romaji: 'ihon', meaning: '離婚' },
@@ -501,7 +501,7 @@ export const HANJA_ROWS: Hangul[][] = [
     { hangul: '증상', romaji: 'jeungsang', meaning: '症状' },
     { hangul: '회복', romaji: 'hoebok', meaning: '回復' },
     { hangul: '수면', romaji: 'sumyeon', meaning: '睡眠' },
-    { hangul: '체온', romaji: 'cheon', meaning: '体温' },
+    { hangul: '체온', romaji: 'che-on', meaning: '体温' },
   ],
   // 経営 / 産業
   [
@@ -586,7 +586,7 @@ export const HANJA_ROWS: Hangul[][] = [
     { hangul: '자원', romaji: 'jawon', meaning: '資源' },
     { hangul: '재활용', romaji: 'jaehwaryong', meaning: 'リサイクル ※漢字は「再活用」' },
     { hangul: '습도', romaji: 'seupdo', meaning: '湿度' },
-    { hangul: '가뭄', romaji: 'gamum', meaning: '日照り(干ばつ)' },
+    { hangul: '한파', romaji: 'hanpa', meaning: '寒波' },
   ],
   // 運動 / 競技
   [

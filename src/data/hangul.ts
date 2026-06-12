@@ -308,23 +308,36 @@ export const ADVANCED_ROWS: Hangul[][] = [
     { hangul: '톱', romaji: 'top' },
     { hangul: '컵', romaji: 'keop' },
   ],
+  // 표준발음법 제8항: 받침소리는 ㄱㄴㄷㄹㅁㅂㅇ の 7 代表音。
+  // ㅅ/ㅈ/ㅊ/ㅌ パッチムはすべて [ㄷ] (実際の発音は ッ/t̚) で発音される。
   [
     { hangul: '앗', romaji: 'at' },
     { hangul: '옷', romaji: 'ot' },
     { hangul: '맛', romaji: 'mat' },
     { hangul: '곳', romaji: 'got' },
-    { hangul: '빗', romaji: 'bit' },
+    { hangul: '낮', romaji: 'nat' },
     { hangul: '꽃', romaji: 'kkot' },
+    { hangul: '끝', romaji: 'kkeut' },
+    { hangul: '밭', romaji: 'bat' },
   ],
 ]
 
-// 発展デッキの行ラベル (1:1 with ADVANCED_ROWS)
+// 基本デッキの行ラベル (1:1 with BASIC_ROWS)。
+// 日本の韓国語教材の標準的な用語 (基本母音 10 / 平音の子音) に合わせる。
+const BASIC_CATS = [
+  '基本母音 10',
+  '平音 ㄱ行', '平音 ㄴ行', '平音 ㄷ行', '平音 ㄹ行', '平音 ㅁ行',
+  '平音 ㅂ行', '平音 ㅅ行', '平音 ㅈ行', '平音 ㅎ行',
+]
+
+// 発展デッキの行ラベル (1:1 with ADVANCED_ROWS)。
+// 合成母音 11 字 (ㅐㅒㅔㅖㅘㅙㅚㅝㅞㅟㅢ)、パッチムは 7 代表音 (ㄱㄴㄷㄹㅁㅂㅇ) で分類。
 const ADVANCED_CATS = [
   '激音 ㅋ行', '激音 ㅌ行', '激音 ㅍ行', '激音 ㅊ行',
   '濃音 ㄲ行', '濃音 ㄸ行', '濃音 ㅃ行', '濃音 ㅆ行', '濃音 ㅉ行',
-  '合成母音 1', '合成母音 2', '合成母音 + 子音',
-  'パッチム ㄴ', 'パッチム ㅇ', 'パッチム ㅁ', 'パッチム ㄹ',
-  'パッチム ㄱ', 'パッチム ㅂ', 'パッチム ㅅ',
+  '合成母音 1 (ㅐㅔ系)', '合成母音 2 (ㅘㅝ系)', '合成母音 + 子音',
+  'パッチム ㄴ [n]', 'パッチム ㅇ [ng]', 'パッチム ㅁ [m]', 'パッチム ㄹ [l]',
+  'パッチム ㄱ [k]', 'パッチム ㅂ [p]', 'パッチム ㄷ (ㅅ/ㅈ/ㅊ/ㅌ) [t]',
 ]
 
 /** 基本デッキの全行 (教える順)。 */
@@ -384,12 +397,12 @@ export interface Category {
 }
 
 export const DECKS: Deck[] = [
-  { id: 'basic', label: 'ハングル基本', kind: 'hangul', rows: BASIC_ROWS, items: BASIC },
+  { id: 'basic', label: 'ハングル基本', kind: 'hangul', rows: BASIC_ROWS, items: BASIC, catLabels: BASIC_CATS },
   { id: 'advanced', label: 'ハングル発展', kind: 'hangul', rows: ADVANCED_ROWS, items: ADVANCED, catLabels: ADVANCED_CATS },
   { id: 'words', label: '単語', kind: 'words', rows: WORD_ROWS, items: WORDS, catLabels: WORD_CATS },
   { id: 'loanwords', label: '外来語', kind: 'words', rows: LOANWORD_ROWS, items: LOANWORDS, catLabels: LOANWORD_CATS },
   { id: 'counters', label: '助数詞', kind: 'words', rows: COUNTER_ROWS, items: COUNTERS, catLabels: COUNTER_CATS },
-  { id: 'mimetic', label: '擬態語', kind: 'words', rows: MIMETIC_ROWS, items: MIMETICS, catLabels: MIMETIC_CATS },
+  { id: 'mimetic', label: 'オノマトペ', kind: 'words', rows: MIMETIC_ROWS, items: MIMETICS, catLabels: MIMETIC_CATS },
   { id: 'grammar', label: '文法', kind: 'sentence', rows: GRAMMAR_ROWS, items: GRAMMAR },
   { id: 'phrases', label: '会話', kind: 'sentence', rows: PHRASE_ROWS, items: PHRASES, kataReading: true },
   { id: 'keigo', label: '敬語', kind: 'sentence', rows: KEIGO_ROWS, items: KEIGO, kataReading: true },
