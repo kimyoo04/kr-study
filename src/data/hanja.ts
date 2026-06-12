@@ -483,6 +483,139 @@ export const HANJA_ROWS: Hangul[][] = [
     { hangul: '목욕', romaji: 'mogyok', meaning: '入浴 ※漢字は「沐浴」' },
     { hangul: '일기', romaji: 'ilgi', meaning: '日記' },
   ],
+  // 大学 / 研究
+  [
+    { hangul: '대학원', romaji: 'daehagwon', meaning: '大学院' },
+    { hangul: '학기', romaji: 'hakgi', meaning: '学期' },
+    { hangul: '장학금', romaji: 'janghakgeum', meaning: '奨学金' },
+    { hangul: '강의', romaji: 'gangui', meaning: '講義' },
+    { hangul: '논문', romaji: 'nonmun', meaning: '論文' },
+    { hangul: '박사', romaji: 'baksa', meaning: '博士' },
+    { hangul: '석사', romaji: 'seoksa', meaning: '修士 ※漢字は「碩士」' },
+    { hangul: '학위', romaji: 'hagwi', meaning: '学位' },
+  ],
+  // 医療 2
+  [
+    { hangul: '진단', romaji: 'jindan', meaning: '診断' },
+    { hangul: '예방', romaji: 'yebang', meaning: '予防' },
+    { hangul: '증상', romaji: 'jeungsang', meaning: '症状' },
+    { hangul: '회복', romaji: 'hoebok', meaning: '回復' },
+    { hangul: '수면', romaji: 'sumyeon', meaning: '睡眠' },
+    { hangul: '체온', romaji: 'cheon', meaning: '体温' },
+  ],
+  // 経営 / 産業
+  [
+    { hangul: '경영', romaji: 'gyeongyeong', meaning: '経営' },
+    { hangul: '산업', romaji: 'saneop', meaning: '産業' },
+    { hangul: '기업', romaji: 'gieop', meaning: '企業' },
+    { hangul: '수출', romaji: 'suchul', meaning: '輸出' },
+    { hangul: '생산', romaji: 'saengsan', meaning: '生産' },
+    { hangul: '소비', romaji: 'sobi', meaning: '消費' },
+    { hangul: '투자', romaji: 'tuja', meaning: '投資' },
+    { hangul: '광고', romaji: 'gwanggo', meaning: '広告' },
+    { hangul: '영업', romaji: 'yeongeop', meaning: '営業' },
+  ],
+  // 都市 / 建設
+  [
+    { hangul: '건설', romaji: 'geonseol', meaning: '建設' },
+    { hangul: '공사', romaji: 'gongsa', meaning: '工事' },
+    { hangul: '횡단보도', romaji: 'hoengdanbodo', meaning: '横断歩道' },
+    { hangul: '신호등', romaji: 'sinhodeung', meaning: '信号機 ※漢字は「信号灯」' },
+    { hangul: '지하', romaji: 'jiha', meaning: '地下' },
+    { hangul: '중심', romaji: 'jungsim', meaning: '中心' },
+    { hangul: '주변', romaji: 'jubyeon', meaning: '周辺' },
+  ],
+  // 感覚 / 表現
+  [
+    { hangul: '표현', romaji: 'pyohyeon', meaning: '表現' },
+    { hangul: '감각', romaji: 'gamgak', meaning: '感覚' },
+    { hangul: '인상', romaji: 'insang', meaning: '印象' },
+    { hangul: '분위기', romaji: 'bunwigi', meaning: '雰囲気' },
+    { hangul: '상상', romaji: 'sangsang', meaning: '想像' },
+    { hangul: '추억', romaji: 'chueok', meaning: '思い出 ※漢字は「追憶」' },
+    { hangul: '매력', romaji: 'maeryeok', meaning: '魅力' },
+    { hangul: '개성', romaji: 'gaeseong', meaning: '個性' },
+    { hangul: '표정', romaji: 'pyojeong', meaning: '表情' },
+    { hangul: '감상', romaji: 'gamsang', meaning: '鑑賞' },
+  ],
+  // 報道 / 出版
+  [
+    { hangul: '보도', romaji: 'bodo', meaning: '報道' },
+    { hangul: '잡지', romaji: 'japji', meaning: '雑誌' },
+    { hangul: '출판', romaji: 'chulpan', meaning: '出版' },
+    { hangul: '언론', romaji: 'eollon', meaning: '言論(メディア)' },
+    { hangul: '번역', romaji: 'beonyeok', meaning: '翻訳' },
+    { hangul: '통역', romaji: 'tongyeok', meaning: '通訳' },
+    { hangul: '독자', romaji: 'dokja', meaning: '読者' },
+    { hangul: '제목', romaji: 'jemok', meaning: '題目(タイトル)' },
+  ],
+  // 心理 / 精神
+  [
+    { hangul: '심리', romaji: 'simni', meaning: '心理' },
+    { hangul: '자신감', romaji: 'jasingam', meaning: '自信 ※漢字は「自信感」' },
+    { hangul: '인내', romaji: 'innae', meaning: '忍耐' },
+    { hangul: '집중', romaji: 'jipjung', meaning: '集中' },
+    { hangul: '의지', romaji: 'uiji', meaning: '意志' },
+    { hangul: '고민', romaji: 'gomin', meaning: '悩み ※漢字は「苦悶」' },
+  ],
+  // 関係 / 交流
+  [
+    { hangul: '예의', romaji: 'yeui', meaning: '礼儀' },
+    { hangul: '대화', romaji: 'daehwa', meaning: '対話' },
+    { hangul: '상담', romaji: 'sangdam', meaning: '相談' },
+    { hangul: '연애', romaji: 'yeonae', meaning: '恋愛' },
+    { hangul: '결혼식', romaji: 'gyeolhonsik', meaning: '結婚式' },
+    { hangul: '이별', romaji: 'ibyeol', meaning: '別れ ※漢字は「離別」' },
+    { hangul: '신뢰', romaji: 'silloe', meaning: '信頼' },
+    { hangul: '오해', romaji: 'ohae', meaning: '誤解' },
+    { hangul: '배려', romaji: 'baeryeo', meaning: '配慮' },
+  ],
+  // 料理 / 飲食
+  [
+    { hangul: '포장', romaji: 'pojang', meaning: '包装(持ち帰り)' },
+    { hangul: '식품', romaji: 'sikpum', meaning: '食品' },
+    { hangul: '음료', romaji: 'eumnyo', meaning: '飲料' },
+    { hangul: '간식', romaji: 'gansik', meaning: 'おやつ ※漢字は「間食」' },
+    { hangul: '외식', romaji: 'oesik', meaning: '外食' },
+    { hangul: '반찬', romaji: 'banchan', meaning: 'おかず ※漢字は「飯饌」' },
+  ],
+  // 環境 / 気候
+  [
+    { hangul: '환경', romaji: 'hwangyeong', meaning: '環境' },
+    { hangul: '오염', romaji: 'oyeom', meaning: '汚染' },
+    { hangul: '자원', romaji: 'jawon', meaning: '資源' },
+    { hangul: '재활용', romaji: 'jaehwaryong', meaning: 'リサイクル ※漢字は「再活用」' },
+    { hangul: '습도', romaji: 'seupdo', meaning: '湿度' },
+    { hangul: '가뭄', romaji: 'gamum', meaning: '日照り(干ばつ)' },
+  ],
+  // 運動 / 競技
+  [
+    { hangul: '응원', romaji: 'eungwon', meaning: '応援' },
+    { hangul: '대회', romaji: 'daehoe', meaning: '大会' },
+    { hangul: '승리', romaji: 'seungni', meaning: '勝利' },
+    { hangul: '패배', romaji: 'paebae', meaning: '敗北' },
+  ],
+  // 程度 / 順序
+  [
+    { hangul: '순서', romaji: 'sunseo', meaning: '順序' },
+    { hangul: '단계', romaji: 'dangye', meaning: '段階' },
+    { hangul: '수준', romaji: 'sujun', meaning: '水準' },
+    { hangul: '비율', romaji: 'biyul', meaning: '比率' },
+    { hangul: '부분', romaji: 'bubun', meaning: '部分' },
+  ],
+  // 言語 / 文字
+  [
+    { hangul: '문법', romaji: 'munbeop', meaning: '文法' },
+    { hangul: '문장', romaji: 'munjang', meaning: '文章' },
+    { hangul: '회화', romaji: 'hoehwa', meaning: '会話' },
+    { hangul: '어휘', romaji: 'eohwi', meaning: '語彙' },
+    { hangul: '한자', romaji: 'hanja', meaning: '漢字' },
+    { hangul: '외국어', romaji: 'oegugeo', meaning: '外国語' },
+    { hangul: '자막', romaji: 'jamak', meaning: '字幕' },
+    { hangul: '사전', romaji: 'sajeon', meaning: '辞書 ※漢字は「辞典」' },
+    { hangul: '통화', romaji: 'tonghwa', meaning: '通話' },
+    { hangul: '문자', romaji: 'munja', meaning: '文字(SMS)' },
+  ],
 ]
 
 // 行ごとのカテゴリ名 (HANJA_ROWS と 1:1)
@@ -528,6 +661,19 @@ export const HANJA_CATS: string[] = [
   '抽象概念 4',
   '性質 / 状態',
   '日常の漢字語',
+  '大学 / 研究',
+  '医療 2',
+  '経営 / 産業',
+  '都市 / 建設',
+  '感覚 / 表現',
+  '報道 / 出版',
+  '心理 / 精神',
+  '関係 / 交流',
+  '料理 / 飲食',
+  '環境 / 気候',
+  '運動 / 競技',
+  '程度 / 順序',
+  '言語 / 文字',
 ]
 
 export const HANJA: Hangul[] = HANJA_ROWS.flat()
