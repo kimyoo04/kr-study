@@ -44,7 +44,9 @@ export function Search({ onExit }: Props) {
             {results.map((r, i) => (
               <li key={`${r.deckId}-${r.hangul.hangul}-${i}`} className="search-row">
                 <div className="search-row-main">
-                  <span className="search-kana">{r.hangul.hangul}</span>
+                  <span className="search-hangul" lang="ko">
+                    {r.hangul.hangul}
+                  </span>
                   <span className="search-romaji">{r.hangul.romaji}</span>
                   {r.hangul.meaning && <span className="search-meaning">{r.hangul.meaning}</span>}
                 </div>

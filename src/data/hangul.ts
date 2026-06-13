@@ -16,222 +16,57 @@ export interface Hangul {
   note?: string // grammar pattern / situation label (sentence decks)
 }
 
+// 完成形ハングルは字母 (자모) の合成で機械的に作れる:
+//   コード = 0xAC00 + 初声インデックス×(21×28) + 中声インデックス×28 (+ 終声)
+// 反切表 (基本/激音/濃音の行) はこの合成 + RR ローマ字の規則性から生成する —
+// 240 音節を手書きせず、子音と母音の対応表だけを単一ソースに保つ。
+const CHO = [...'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ']
+const JUNG = [...'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ']
+
+function syllable(cho: string, jung: string): string {
+  return String.fromCharCode(0xac00 + CHO.indexOf(cho) * 21 * 28 + JUNG.indexOf(jung) * 28)
+}
+
+// 基本母音 10 (반절표の列) と RR ローマ字。
+const BASIC_VOWELS: [string, string][] = [
+  ['ㅏ', 'a'], ['ㅑ', 'ya'], ['ㅓ', 'eo'], ['ㅕ', 'yeo'], ['ㅗ', 'o'],
+  ['ㅛ', 'yo'], ['ㅜ', 'u'], ['ㅠ', 'yu'], ['ㅡ', 'eu'], ['ㅣ', 'i'],
+]
+// 濃音は y 系を除いた 6 母音だけ教える (꺄/뗘 のような稀な音節を避ける)。
+const TENSE_VOWELS = BASIC_VOWELS.filter(([jung]) => 'ㅏㅓㅗㅜㅡㅣ'.includes(jung))
+
+/** 1 子音段 (初声 × 母音列)。romaja は RR の頭子音表記 (ㅇ は空文字)。 */
+function consonantRow(cho: string, romaja: string, vowels = BASIC_VOWELS): Hangul[] {
+  return vowels.map(([jung, vr]) => ({ hangul: syllable(cho, jung), romaji: romaja + vr }))
+}
+
 // 基本: 母音 10 + 平音 9 子音 × 母音 10 = 100 音節 (반절표)
 export const BASIC_ROWS: Hangul[][] = [
-  [
-    { hangul: '아', romaji: 'a' },
-    { hangul: '야', romaji: 'ya' },
-    { hangul: '어', romaji: 'eo' },
-    { hangul: '여', romaji: 'yeo' },
-    { hangul: '오', romaji: 'o' },
-    { hangul: '요', romaji: 'yo' },
-    { hangul: '우', romaji: 'u' },
-    { hangul: '유', romaji: 'yu' },
-    { hangul: '으', romaji: 'eu' },
-    { hangul: '이', romaji: 'i' },
-  ],
-  [
-    { hangul: '가', romaji: 'ga' },
-    { hangul: '갸', romaji: 'gya' },
-    { hangul: '거', romaji: 'geo' },
-    { hangul: '겨', romaji: 'gyeo' },
-    { hangul: '고', romaji: 'go' },
-    { hangul: '교', romaji: 'gyo' },
-    { hangul: '구', romaji: 'gu' },
-    { hangul: '규', romaji: 'gyu' },
-    { hangul: '그', romaji: 'geu' },
-    { hangul: '기', romaji: 'gi' },
-  ],
-  [
-    { hangul: '나', romaji: 'na' },
-    { hangul: '냐', romaji: 'nya' },
-    { hangul: '너', romaji: 'neo' },
-    { hangul: '녀', romaji: 'nyeo' },
-    { hangul: '노', romaji: 'no' },
-    { hangul: '뇨', romaji: 'nyo' },
-    { hangul: '누', romaji: 'nu' },
-    { hangul: '뉴', romaji: 'nyu' },
-    { hangul: '느', romaji: 'neu' },
-    { hangul: '니', romaji: 'ni' },
-  ],
-  [
-    { hangul: '다', romaji: 'da' },
-    { hangul: '댜', romaji: 'dya' },
-    { hangul: '더', romaji: 'deo' },
-    { hangul: '뎌', romaji: 'dyeo' },
-    { hangul: '도', romaji: 'do' },
-    { hangul: '됴', romaji: 'dyo' },
-    { hangul: '두', romaji: 'du' },
-    { hangul: '듀', romaji: 'dyu' },
-    { hangul: '드', romaji: 'deu' },
-    { hangul: '디', romaji: 'di' },
-  ],
-  [
-    { hangul: '라', romaji: 'ra' },
-    { hangul: '랴', romaji: 'rya' },
-    { hangul: '러', romaji: 'reo' },
-    { hangul: '려', romaji: 'ryeo' },
-    { hangul: '로', romaji: 'ro' },
-    { hangul: '료', romaji: 'ryo' },
-    { hangul: '루', romaji: 'ru' },
-    { hangul: '류', romaji: 'ryu' },
-    { hangul: '르', romaji: 'reu' },
-    { hangul: '리', romaji: 'ri' },
-  ],
-  [
-    { hangul: '마', romaji: 'ma' },
-    { hangul: '먀', romaji: 'mya' },
-    { hangul: '머', romaji: 'meo' },
-    { hangul: '며', romaji: 'myeo' },
-    { hangul: '모', romaji: 'mo' },
-    { hangul: '묘', romaji: 'myo' },
-    { hangul: '무', romaji: 'mu' },
-    { hangul: '뮤', romaji: 'myu' },
-    { hangul: '므', romaji: 'meu' },
-    { hangul: '미', romaji: 'mi' },
-  ],
-  [
-    { hangul: '바', romaji: 'ba' },
-    { hangul: '뱌', romaji: 'bya' },
-    { hangul: '버', romaji: 'beo' },
-    { hangul: '벼', romaji: 'byeo' },
-    { hangul: '보', romaji: 'bo' },
-    { hangul: '뵤', romaji: 'byo' },
-    { hangul: '부', romaji: 'bu' },
-    { hangul: '뷰', romaji: 'byu' },
-    { hangul: '브', romaji: 'beu' },
-    { hangul: '비', romaji: 'bi' },
-  ],
-  [
-    { hangul: '사', romaji: 'sa' },
-    { hangul: '샤', romaji: 'sya' },
-    { hangul: '서', romaji: 'seo' },
-    { hangul: '셔', romaji: 'syeo' },
-    { hangul: '소', romaji: 'so' },
-    { hangul: '쇼', romaji: 'syo' },
-    { hangul: '수', romaji: 'su' },
-    { hangul: '슈', romaji: 'syu' },
-    { hangul: '스', romaji: 'seu' },
-    { hangul: '시', romaji: 'si' },
-  ],
-  [
-    { hangul: '자', romaji: 'ja' },
-    { hangul: '쟈', romaji: 'jya' },
-    { hangul: '저', romaji: 'jeo' },
-    { hangul: '져', romaji: 'jyeo' },
-    { hangul: '조', romaji: 'jo' },
-    { hangul: '죠', romaji: 'jyo' },
-    { hangul: '주', romaji: 'ju' },
-    { hangul: '쥬', romaji: 'jyu' },
-    { hangul: '즈', romaji: 'jeu' },
-    { hangul: '지', romaji: 'ji' },
-  ],
-  [
-    { hangul: '하', romaji: 'ha' },
-    { hangul: '햐', romaji: 'hya' },
-    { hangul: '허', romaji: 'heo' },
-    { hangul: '혀', romaji: 'hyeo' },
-    { hangul: '호', romaji: 'ho' },
-    { hangul: '효', romaji: 'hyo' },
-    { hangul: '후', romaji: 'hu' },
-    { hangul: '휴', romaji: 'hyu' },
-    { hangul: '흐', romaji: 'heu' },
-    { hangul: '히', romaji: 'hi' },
-  ],
+  consonantRow('ㅇ', ''),
+  consonantRow('ㄱ', 'g'),
+  consonantRow('ㄴ', 'n'),
+  consonantRow('ㄷ', 'd'),
+  consonantRow('ㄹ', 'r'),
+  consonantRow('ㅁ', 'm'),
+  consonantRow('ㅂ', 'b'),
+  consonantRow('ㅅ', 's'),
+  consonantRow('ㅈ', 'j'),
+  consonantRow('ㅎ', 'h'),
 ]
 
 // 発展: 激音 / 濃音 / 合成母音 / パッチム。基本 100 音節の後に学ぶ。
 export const ADVANCED_ROWS: Hangul[][] = [
   // 激音 (息を強く出す音)
-  [
-    { hangul: '카', romaji: 'ka' },
-    { hangul: '캬', romaji: 'kya' },
-    { hangul: '커', romaji: 'keo' },
-    { hangul: '켜', romaji: 'kyeo' },
-    { hangul: '코', romaji: 'ko' },
-    { hangul: '쿄', romaji: 'kyo' },
-    { hangul: '쿠', romaji: 'ku' },
-    { hangul: '큐', romaji: 'kyu' },
-    { hangul: '크', romaji: 'keu' },
-    { hangul: '키', romaji: 'ki' },
-  ],
-  [
-    { hangul: '타', romaji: 'ta' },
-    { hangul: '탸', romaji: 'tya' },
-    { hangul: '터', romaji: 'teo' },
-    { hangul: '텨', romaji: 'tyeo' },
-    { hangul: '토', romaji: 'to' },
-    { hangul: '툐', romaji: 'tyo' },
-    { hangul: '투', romaji: 'tu' },
-    { hangul: '튜', romaji: 'tyu' },
-    { hangul: '트', romaji: 'teu' },
-    { hangul: '티', romaji: 'ti' },
-  ],
-  [
-    { hangul: '파', romaji: 'pa' },
-    { hangul: '퍄', romaji: 'pya' },
-    { hangul: '퍼', romaji: 'peo' },
-    { hangul: '펴', romaji: 'pyeo' },
-    { hangul: '포', romaji: 'po' },
-    { hangul: '표', romaji: 'pyo' },
-    { hangul: '푸', romaji: 'pu' },
-    { hangul: '퓨', romaji: 'pyu' },
-    { hangul: '프', romaji: 'peu' },
-    { hangul: '피', romaji: 'pi' },
-  ],
-  [
-    { hangul: '차', romaji: 'cha' },
-    { hangul: '챠', romaji: 'chya' },
-    { hangul: '처', romaji: 'cheo' },
-    { hangul: '쳐', romaji: 'chyeo' },
-    { hangul: '초', romaji: 'cho' },
-    { hangul: '쵸', romaji: 'chyo' },
-    { hangul: '추', romaji: 'chu' },
-    { hangul: '츄', romaji: 'chyu' },
-    { hangul: '츠', romaji: 'cheu' },
-    { hangul: '치', romaji: 'chi' },
-  ],
+  consonantRow('ㅋ', 'k'),
+  consonantRow('ㅌ', 't'),
+  consonantRow('ㅍ', 'p'),
+  consonantRow('ㅊ', 'ch'),
   // 濃音 (喉を締める音)
-  [
-    { hangul: '까', romaji: 'kka' },
-    { hangul: '꺼', romaji: 'kkeo' },
-    { hangul: '꼬', romaji: 'kko' },
-    { hangul: '꾸', romaji: 'kku' },
-    { hangul: '끄', romaji: 'kkeu' },
-    { hangul: '끼', romaji: 'kki' },
-  ],
-  [
-    { hangul: '따', romaji: 'tta' },
-    { hangul: '떠', romaji: 'tteo' },
-    { hangul: '또', romaji: 'tto' },
-    { hangul: '뚜', romaji: 'ttu' },
-    { hangul: '뜨', romaji: 'tteu' },
-    { hangul: '띠', romaji: 'tti' },
-  ],
-  [
-    { hangul: '빠', romaji: 'ppa' },
-    { hangul: '뻐', romaji: 'ppeo' },
-    { hangul: '뽀', romaji: 'ppo' },
-    { hangul: '뿌', romaji: 'ppu' },
-    { hangul: '쁘', romaji: 'ppeu' },
-    { hangul: '삐', romaji: 'ppi' },
-  ],
-  [
-    { hangul: '싸', romaji: 'ssa' },
-    { hangul: '써', romaji: 'sseo' },
-    { hangul: '쏘', romaji: 'sso' },
-    { hangul: '쑤', romaji: 'ssu' },
-    { hangul: '쓰', romaji: 'sseu' },
-    { hangul: '씨', romaji: 'ssi' },
-  ],
-  [
-    { hangul: '짜', romaji: 'jja' },
-    { hangul: '쩌', romaji: 'jjeo' },
-    { hangul: '쪼', romaji: 'jjo' },
-    { hangul: '쭈', romaji: 'jju' },
-    { hangul: '쯔', romaji: 'jjeu' },
-    { hangul: '찌', romaji: 'jji' },
-  ],
+  consonantRow('ㄲ', 'kk', TENSE_VOWELS),
+  consonantRow('ㄸ', 'tt', TENSE_VOWELS),
+  consonantRow('ㅃ', 'pp', TENSE_VOWELS),
+  consonantRow('ㅆ', 'ss', TENSE_VOWELS),
+  consonantRow('ㅉ', 'jj', TENSE_VOWELS),
   // 合成母音
   [
     { hangul: '애', romaji: 'ae' },

@@ -35,7 +35,9 @@ body,
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* 韓国語グリフ用に Gothic 系の韓国語フォントをフォールバックに含める */
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
   overscroll-behavior: none;
 }
 
@@ -590,7 +592,7 @@ body {
   gap: 4px 10px;
   min-width: 0;
 }
-.search-kana {
+.search-hangul {
   font-size: 22px;
   font-weight: 700;
 }

@@ -46,7 +46,7 @@ export function Complete({ results, wrong, onReview, onAgain, onHome }: Props) {
 
       <div className="chips" aria-label="今回学んだ項目">
         {studied.map((k) => (
-          <span key={k.hangul} className={wrongSet.has(k.hangul) ? 'chip miss' : 'chip'}>
+          <span key={k.hangul} className={wrongSet.has(k.hangul) ? 'chip miss' : 'chip'} lang="ko">
             {k.hangul}
           </span>
         ))}

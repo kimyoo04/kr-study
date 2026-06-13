@@ -161,7 +161,9 @@ function IntroCard({
     <section className="card intro">
       {deck.kind === 'sentence' && hangul.note && <div className="pattern">{hangul.note}</div>}
       <p className="prompt-label">{INTRO_LABEL[deck.kind]}</p>
-      <div className={glyphClassFor(deck.kind)}>{hangul.hangul}</div>
+      <div className={glyphClassFor(deck.kind)} lang="ko">
+        {hangul.hangul}
+      </div>
       {deck.kataReading && <div className="kata-reading">{hangulToKata(hangul.hangul)}</div>}
       <div className="romaji">{hangul.romaji}</div>
       {hangul.meaning && deck.kind !== 'hangul' && <div className="meaning">{hangul.meaning}</div>}
@@ -241,13 +243,17 @@ function Quiz({
           </button>
           {phase === 'feedback' && (
             // Reveal what was heard so the sound gets tied to its glyph.
-            <div className={glyphClassFor(deckKind)}>{question.answer.hangul}</div>
+            <div className={glyphClassFor(deckKind)} lang="ko">
+              {question.answer.hangul}
+            </div>
           )}
         </>
       ) : (
         <>
           <p className="prompt-label">{label}</p>
-          <div className={glyphClassFor(deckKind)}>{question.answer.hangul}</div>
+          <div className={glyphClassFor(deckKind)} lang="ko">
+            {question.answer.hangul}
+          </div>
           {kataReading && (
             <div className="kata-reading">{hangulToKata(question.answer.hangul)}</div>
           )}

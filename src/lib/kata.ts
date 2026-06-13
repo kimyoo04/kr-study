@@ -149,22 +149,17 @@ const CHO_ROWS: { plain: Row; voiced?: Row }[] = [
   { plain: ROW_H }, // ㅎ
 ]
 
-// ㅇ初声 + y/w系母音は「イャ」ではなく専用文字 (야 → ヤ、와 → ワ)
-const NG_SPECIAL: Record<number, string> = {
-  2: 'ヤ', // ㅑ
-  3: 'イェ', // ㅒ
-  6: 'ヨ', // ㅕ
-  7: 'イェ', // ㅖ
-  9: 'ワ', // ㅘ
-  10: 'ウェ', // ㅙ
-  11: 'ウェ', // ㅚ
-  12: 'ヨ', // ㅛ
-  14: 'ウォ', // ㅝ
-  15: 'ウェ', // ㅞ
-  16: 'ウィ', // ㅟ
-  17: 'ユ', // ㅠ
-  19: 'ウィ', // ㅢ
+// ㅇ初声 + y/w系母音は「イャ」ではなく専用文字 (야 → ヤ、와 → ワ)。
+// 表は字母で書き、デコードが返す中声インデックスへ変換して引く。
+const JUNG_CHARS = [...'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ']
+const NG_SPECIAL_CHARS: Record<string, string> = {
+  ㅑ: 'ヤ', ㅒ: 'イェ', ㅕ: 'ヨ', ㅖ: 'イェ',
+  ㅘ: 'ワ', ㅙ: 'ウェ', ㅚ: 'ウェ', ㅛ: 'ヨ',
+  ㅝ: 'ウォ', ㅞ: 'ウェ', ㅟ: 'ウィ', ㅠ: 'ユ', ㅢ: 'ウィ',
 }
+const NG_SPECIAL: Record<number, string> = Object.fromEntries(
+  Object.entries(NG_SPECIAL_CHARS).map(([ch, kana]) => [JUNG_CHARS.indexOf(ch), kana]),
+)
 
 // パッチムの分類
 const JONG_TO_N = new Set([JONG_N, JONG_NJ, JONG_NH, JONG_NG])
