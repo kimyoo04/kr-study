@@ -54,21 +54,21 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: calc(24px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
+  /* 全画面で上端のコンテンツ位置を揃える共通の上パディング (safe-area + 32px) */
+  padding: calc(32px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
   gap: 20px;
 }
 
 /* ---- Home ---- */
-.home {
-  justify-content: center;
-}
+/* 上端揃え (他画面と同じ) — コンテンツは上から並べる。 */
 .home-head {
   text-align: center;
 }
 .sfx-toggle,
 .search-btn {
   position: absolute;
-  top: calc(env(safe-area-inset-top) + 14px);
+  /* 他画面の上端バーと同じ高さに合わせる (.screen の上パディングと一致) */
+  top: calc(env(safe-area-inset-top) + 32px);
   background: var(--surface);
   border: none;
   border-radius: 50%;
@@ -299,8 +299,6 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  /* ✕ とプログレスバーが端末上端に貼り付かないよう余白を足す */
-  padding-top: 8px;
 }
 /* レッスンの ✕ は片手でも押しやすいよう大きめ・広めのタップ領域に */
 .lesson-top .link {
@@ -507,9 +505,9 @@ body {
 }
 
 /* ---- Complete ---- */
+/* 上端揃え。中身は横中央のまま、縦は上から並べて他画面と起点を合わせる。 */
 .complete {
   align-items: center;
-  justify-content: center;
   text-align: center;
 }
 .celebrate {
