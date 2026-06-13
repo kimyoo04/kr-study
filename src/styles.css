@@ -10,6 +10,7 @@
   --wrong: #ff5c7c;
   --track: #14152b; /* empty progress groove — darker than surface so 0% reads as empty */
   --radius: 16px;
+  --screen-top: 40px; /* 全画面共通の上端コンテンツ位置 (safe-area とは別に足す) */
 }
 
 * {
@@ -54,8 +55,9 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* 全画面で上端のコンテンツ位置を揃える共通の上パディング (safe-area + 32px) */
-  padding: calc(32px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
+  /* 全画面で上端のコンテンツ位置を揃える共通の上パディング (--screen-top + safe-area) */
+  padding: calc(var(--screen-top) + env(safe-area-inset-top)) 20px
+    calc(24px + env(safe-area-inset-bottom));
   gap: 20px;
 }
 
@@ -68,7 +70,7 @@ body {
 .search-btn {
   position: absolute;
   /* 他画面の上端バーと同じ高さに合わせる (.screen の上パディングと一致) */
-  top: calc(env(safe-area-inset-top) + 32px);
+  top: calc(env(safe-area-inset-top) + var(--screen-top));
   background: var(--surface);
   border: none;
   border-radius: 50%;
