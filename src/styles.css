@@ -54,7 +54,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  padding: calc(24px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
   gap: 20px;
 }
 
@@ -299,6 +299,15 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  /* ✕ とプログレスバーが端末上端に貼り付かないよう余白を足す */
+  padding-top: 8px;
+}
+/* レッスンの ✕ は片手でも押しやすいよう大きめ・広めのタップ領域に */
+.lesson-top .link {
+  font-size: 26px;
+  min-width: 48px;
+  min-height: 48px;
+  margin-left: -10px;
 }
 .counter {
   color: var(--muted);
