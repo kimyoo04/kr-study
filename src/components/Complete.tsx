@@ -33,7 +33,7 @@ export function Complete({ results, wrong, onReview, onAgain, onHome }: Props) {
   const wrongSet = new Set(wrong.map((k) => k.hangul))
 
   return (
-    <main className="screen complete">
+    <main className="screen complete" tabIndex={-1}>
       <div className="celebrate">{allRight ? '🎉' : '✨'}</div>
       <h2>レッスン完了!</h2>
       {total > 0 ? (

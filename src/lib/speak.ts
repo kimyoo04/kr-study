@@ -56,17 +56,29 @@ export function speakItem(item: { hangul: string }): void {
   speak(item.hangul)
 }
 
+// Held at module scope: Chrome historically GC'd in-flight utterances created
+// as locals, cutting longer sentences off mid-speech.
+let current: SpeechSynthesisUtterance | null = null
+
 export function speak(text: string): void {
   const s = synth()
   if (!s) return
   try {
+    const wasSpeaking = s.speaking
     s.cancel()
     const u = new SpeechSynthesisUtterance(text)
     u.lang = 'ko-KR'
     const v = koVoice()
     if (v) u.voice = v
     u.rate = 0.9
-    s.speak(u)
+    current = u
+    const go = () => {
+      // A newer speak() call may have superseded this one during the delay.
+      if (current === u) s.speak(u)
+    }
+    // iOS Safari drops an utterance queued in the same tick as cancel().
+    if (wasSpeaking) setTimeout(go, 60)
+    else go()
   } catch {
     /* ignore — pronunciation is best-effort */
   }

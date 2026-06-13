@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DECKS, BASIC, ROW_OF } from '../data/hangul'
+import { DECKS, BASIC, BASIC_ROWS, rowLookup } from '../data/hangul'
 import { buildQuestion, isCorrect, optionText, pickDistractors, pickQType } from './quiz'
 
 // Deterministic rng for stable assertions.
@@ -12,6 +12,7 @@ function seeded(seed: number): () => number {
 }
 
 const A = { hangul: '아', romaji: 'a' }
+const BASIC_ROW_OF = rowLookup(BASIC_ROWS)
 
 describe('pickDistractors', () => {
   it('never includes the answer and respects count', () => {
@@ -24,7 +25,7 @@ describe('pickDistractors', () => {
   it('prefers same-row distractors first', () => {
     // 아 row is [아야어여오요우유으이]; with count 2 both should come from that row.
     const d = pickDistractors(A, 2, BASIC, seeded(7))
-    const rowItems = ROW_OF['아'].map((k) => k.hangul)
+    const rowItems = BASIC_ROW_OF['아'].map((k) => k.hangul)
     expect(d.every((k) => rowItems.includes(k.hangul))).toBe(true)
   })
 
@@ -32,20 +33,32 @@ describe('pickDistractors', () => {
     // Row has 9 non-answer members; asking for 12 forces global fill.
     const d = pickDistractors(A, 12, BASIC, seeded(3))
     expect(d).toHaveLength(12)
-    const rowItems = ROW_OF['아'].map((k) => k.hangul)
+    const rowItems = BASIC_ROW_OF['아'].map((k) => k.hangul)
     expect(d.some((k) => !rowItems.includes(k.hangul))).toBe(true)
+  })
+
+  it('uses the active deck rowOf — rows from other decks must not leak in', () => {
+    // 이 exists in both the basic chart and the words deck. With the words
+    // deck's rowOf, distractors for 이 must come from that deck's row/pool,
+    // never from the basic vowel row.
+    const words = DECKS.find((d) => d.id === 'words')!
+    const yi = words.items.find((k) => k.hangul === '이')
+    if (!yi) return // content may change; the invariant is exercised when present
+    const picked = pickDistractors(yi, 3, words.items, seeded(5), (k) => k.hangul, words.rowOf)
+    const inWords = new Set(words.items.map((k) => k.hangul))
+    expect(picked.every((k) => inWords.has(k.hangul))).toBe(true)
   })
 })
 
 describe('buildQuestion', () => {
   it('produces 4 options including the answer', () => {
-    const q = buildQuestion(A, 'read', 'hangul', BASIC, seeded(2))
+    const q = buildQuestion(A, 'read', 'hangul', BASIC, BASIC_ROW_OF, seeded(2))
     expect(q.options).toHaveLength(4)
     expect(q.options.some((o) => o.hangul === '아')).toBe(true)
   })
 
   it('isCorrect matches only the answer', () => {
-    const q = buildQuestion(A, 'listen', 'hangul', BASIC, seeded(5))
+    const q = buildQuestion(A, 'listen', 'hangul', BASIC, BASIC_ROW_OF, seeded(5))
     expect(isCorrect(q, A)).toBe(true)
     const wrong = q.options.find((o) => o.hangul !== '아')!
     expect(isCorrect(q, wrong)).toBe(false)
@@ -57,11 +70,23 @@ describe('buildQuestion', () => {
     for (const d of DECKS) {
       const qtype = d.kind === 'hangul' ? 'read' : 'meaning'
       d.items.forEach((k, i) => {
-        const q = buildQuestion(k, qtype, d.kind, d.items, seeded(i + 1))
+        const q = buildQuestion(k, qtype, d.kind, d.items, d.rowOf, seeded(i + 1))
         const texts = q.options.map((o) => optionText(o, qtype, d.kind))
         expect(new Set(texts).size, `${d.id}:${k.hangul} -> ${texts.join('|')}`).toBe(
           texts.length,
         )
+      })
+    }
+  })
+
+  it('always offers a full 4 options when the pool is the whole deck', () => {
+    // Category-scoped lessons still quiz against the whole-deck pool — tiny
+    // categories (e.g. 着 〜벌, 2 items) must not degrade to coin flips.
+    for (const d of DECKS) {
+      const qtype = d.kind === 'hangul' ? 'read' : 'meaning'
+      d.items.forEach((k, i) => {
+        const q = buildQuestion(k, qtype, d.kind, d.items, d.rowOf, seeded(i + 7))
+        expect(q.options.length, `${d.id}:${k.hangul}`).toBe(4)
       })
     }
   })

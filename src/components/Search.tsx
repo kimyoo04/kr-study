@@ -12,7 +12,7 @@ export function Search({ onExit }: Props) {
   const trimmed = query.trim()
 
   return (
-    <main className="screen search">
+    <main className="screen search" tabIndex={-1}>
       <div className="search-top">
         <button className="link" onClick={onExit} aria-label="閉じる">
           ✕

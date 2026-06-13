@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DECKS, ROW_OF } from './hangul'
+import { DECKS } from './hangul'
 
 // Generic integrity checks over every content deck — agents and humans both
 // edit these files, so the invariants the app relies on are enforced here.
@@ -43,10 +43,10 @@ describe('deck content integrity', () => {
         }
       })
 
-      it('registers every row in ROW_OF for distractor grouping', () => {
+      it('registers every row in the deck rowOf for distractor grouping', () => {
         for (const row of d.rows) {
           for (const k of row) {
-            expect(ROW_OF[k.hangul], `${d.id}: ${k.hangul} not in ROW_OF`).toBeDefined()
+            expect(d.rowOf[k.hangul], `${d.id}: ${k.hangul} not in rowOf`).toBeDefined()
           }
         }
       })

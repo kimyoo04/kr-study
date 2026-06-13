@@ -109,6 +109,20 @@ body {
   font-size: 14px;
   text-align: center;
 }
+/* Programmatic focus target on screen change — no visible ring on the page root. */
+.screen:focus {
+  outline: none;
+}
+.banner.update {
+  display: block;
+  width: 100%;
+  background: #14323a;
+  color: #8be9fd;
+  border: 1px solid #1f4a55;
+  font-family: inherit;
+  cursor: pointer;
+  min-height: 44px;
+}
 .deck-switch {
   display: flex;
   gap: 6px;
@@ -237,6 +251,9 @@ body {
   font-size: 22px;
   cursor: pointer;
   padding: 4px 10px;
+  /* 44px touch target (WCAG 2.5.5) */
+  min-width: 44px;
+  min-height: 44px;
 }
 
 /* Listen-mode switch: a full-width pill that sits above the start button. */
@@ -624,4 +641,7 @@ body {
   font-size: 20px;
   cursor: pointer;
   padding: 4px;
+  /* 44px touch target (WCAG 2.5.5) */
+  min-width: 44px;
+  min-height: 44px;
 }

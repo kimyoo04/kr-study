@@ -76,9 +76,9 @@ test('search finds items across decks by romaji, meaning, and hangul', async ({ 
 
 test('advanced deck teaches aspirated consonants', async ({ page }) => {
   await page.goto('./')
-  await page.getByRole('tab', { name: 'ハングル発展' }).click()
-  await expect(page.getByRole('tab', { name: 'ハングル発展' })).toHaveAttribute(
-    'aria-selected',
+  await page.getByRole('button', { name: 'ハングル発展' }).click()
+  await expect(page.getByRole('button', { name: 'ハングル発展' })).toHaveAttribute(
+    'aria-pressed',
     'true',
   )
   await page.getByRole('button', { name: 'はじめる' }).click()
@@ -90,7 +90,7 @@ test('advanced deck teaches aspirated consonants', async ({ page }) => {
 
 test('words deck teaches words with meanings', async ({ page }) => {
   await page.goto('./')
-  await page.getByRole('tab', { name: '単語', exact: true }).click()
+  await page.getByRole('button', { name: '単語', exact: true }).click()
   await page.getByRole('button', { name: 'はじめる' }).click()
   await expect(page.getByText('新しい単語')).toBeVisible()
   await expect(page.locator('.glyph.word')).not.toBeEmpty()
@@ -99,7 +99,7 @@ test('words deck teaches words with meanings', async ({ page }) => {
 
 test('loanwords deck teaches Korean loanwords', async ({ page }) => {
   await page.goto('./')
-  await page.getByRole('tab', { name: '外来語' }).click()
+  await page.getByRole('button', { name: '外来語' }).click()
   await page.getByRole('button', { name: 'はじめる' }).click()
   await expect(page.getByText('新しい単語')).toBeVisible()
   await expect(page.locator('.glyph.word')).not.toBeEmpty()
@@ -107,7 +107,7 @@ test('loanwords deck teaches Korean loanwords', async ({ page }) => {
 
 test('grammar deck teaches example sentences with a pattern', async ({ page }) => {
   await page.goto('./')
-  await page.getByRole('tab', { name: '文法' }).click()
+  await page.getByRole('button', { name: '文法' }).click()
   await page.getByRole('button', { name: 'はじめる' }).click()
   await expect(page.getByText('例文')).toBeVisible()
   await expect(page.locator('.pattern')).not.toBeEmpty()
@@ -126,9 +126,29 @@ test('category selection scopes the deck to one row', async ({ page }) => {
   await expect(page.locator('.glyph.big')).toHaveText('가')
 })
 
+test('a tiny category still offers 4 quiz options (whole-deck distractor pool)', async ({
+  page,
+}) => {
+  await page.addInitScript(() => localStorage.clear())
+  await page.goto('./')
+  await page.getByRole('button', { name: '助数詞' }).click()
+  // 着 〜벌 is a 2-item category; intro both, then quiz must still show 4 options.
+  await page.locator('.cat-select select').selectOption('着 〜벌')
+  await page.getByRole('button', { name: 'はじめる' }).click()
+  // Intro cards first (count varies), advance until a quiz appears.
+  for (let i = 0; i < 6; i++) {
+    const next = page.getByRole('button', { name: '次へ' })
+    if (await next.isVisible().catch(() => false)) {
+      await next.click()
+    } else break
+  }
+  await page.getByRole('button', { name: 'もう一回' }).click()
+  await expect(page.locator('.opt')).toHaveCount(4)
+})
+
 test('phrases deck teaches everyday sentences with katakana reading', async ({ page }) => {
   await page.goto('./')
-  await page.getByRole('tab', { name: '会話' }).click()
+  await page.getByRole('button', { name: '会話' }).click()
   await page.getByRole('button', { name: 'はじめる' }).click()
   await expect(page.getByText('例文')).toBeVisible()
   await expect(page.locator('.pattern')).not.toBeEmpty()
@@ -138,7 +158,7 @@ test('phrases deck teaches everyday sentences with katakana reading', async ({ p
 
 test('hanja deck teaches Sino-Korean vocabulary', async ({ page }) => {
   await page.goto('./')
-  await page.getByRole('tab', { name: '漢字語' }).click()
+  await page.getByRole('button', { name: '漢字語' }).click()
   await page.getByRole('button', { name: 'はじめる' }).click()
   await expect(page.getByText('新しい単語')).toBeVisible()
   await expect(page.locator('.glyph.word')).not.toBeEmpty()

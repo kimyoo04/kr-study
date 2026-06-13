@@ -3,8 +3,10 @@ import { DECKS, deckCategories, type Deck, type Hangul } from '../data/hangul'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
 import { hasKoVoice, loadVoices } from '../lib/speak'
+import { swApplyUpdate, swOnUpdate } from '../lib/sw'
 import {
   applyAnswer,
+  cardKey,
   introducedCard,
   newCard,
   selectLessonItems,
@@ -26,14 +28,39 @@ export function App() {
   const [screen, setScreen] = useState<Screen>('home')
   const [items, setItems] = useState<LessonItem[]>([])
   const [results, setResults] = useState<LessonResult[]>([])
+  // Review lessons (間違いだけ/苦手だけ) must not advance the SRS lesson clock.
+  const [isReview, setIsReview] = useState(false)
 
-  // Listen mode needs a Korean TTS voice. Voices load asynchronously (Chrome),
-  // so detect once on mount and gate the toggle on the result.
+  // Listen mode needs a Korean TTS voice. Voices load asynchronously and some
+  // devices fire voiceschanged late, so keep listening instead of probing once.
   const [voiceReady, setVoiceReady] = useState(false)
   useEffect(() => {
-    void loadVoices().then(() => setVoiceReady(hasKoVoice()))
+    let active = true
+    const refresh = () => {
+      void loadVoices().then(() => {
+        if (active) setVoiceReady(hasKoVoice())
+      })
+    }
+    refresh()
+    const synth =
+      typeof window !== 'undefined' && 'speechSynthesis' in window ? window.speechSynthesis : null
+    synth?.addEventListener('voiceschanged', refresh)
+    return () => {
+      active = false
+      synth?.removeEventListener('voiceschanged', refresh)
+    }
   }, [])
   const listenMode = settings.listen && voiceReady
+
+  // A new deploy waits until the user is back on Home (no mid-lesson reloads).
+  const [updateReady, setUpdateReady] = useState(false)
+  useEffect(() => swOnUpdate(setUpdateReady), [])
+
+  // Screen switches unmount the focused button; move focus to the new screen
+  // root so keyboard users aren't dropped to <body> and SRs announce the change.
+  useEffect(() => {
+    document.querySelector<HTMLElement>('main.screen')?.focus()
+  }, [screen])
 
   const categories = useMemo(() => deckCategories(deck), [deck])
   // The items the lesson/progress is scoped to: the chosen category, or the whole deck.
@@ -42,18 +69,16 @@ export function App() {
     return cat ? cat.items : deck.items
   }, [categories, categoryName, deck])
 
-  // The lesson count this lesson will produce when finished.
-  const base = progress.lessonsDone + 1
-
   function selectDeck(d: Deck) {
     setDeck(d)
     setCategoryName(null) // reset category when switching decks
   }
 
   function startLesson() {
-    const next = selectLessonItems(progress, scopeItems)
+    const next = selectLessonItems(progress, scopeItems, deck.id)
     if (next.length === 0) return
     setItems(next)
+    setIsReview(false)
     setScreen('lesson')
   }
 
@@ -61,13 +86,17 @@ export function App() {
   function startReview(hangul: Hangul[]) {
     if (hangul.length === 0) return
     setItems(hangul.map((k) => ({ hangul: k, mode: 'quiz' })))
+    setIsReview(true)
     setScreen('lesson')
   }
 
   function finishLesson(lessonResults: LessonResult[]) {
     const cards = { ...progress.items }
+    // Reviews keep the lesson clock unchanged — otherwise every quick review
+    // tick would bring ALL cards closer to due and shrink the SRS intervals.
+    const base = isReview ? progress.lessonsDone : progress.lessonsDone + 1
     for (const r of lessonResults) {
-      const key = r.hangul.hangul
+      const key = cardKey(deck.id, r.hangul.hangul)
       if (r.mode === 'intro') {
         cards[key] = introducedCard(base)
       } else {
@@ -86,7 +115,7 @@ export function App() {
   }
 
   const wrong = results.filter((r) => r.mode === 'quiz' && !r.correct).map((r) => r.hangul)
-  const weak = weakItems(progress, scopeItems)
+  const weak = weakItems(progress, scopeItems, deck.id)
 
   return (
     <div className="app">
@@ -107,6 +136,8 @@ export function App() {
           listen={settings.listen}
           onToggleListen={toggleListen}
           listenAvailable={voiceReady}
+          updateReady={updateReady}
+          onApplyUpdate={swApplyUpdate}
           onSearch={() => setScreen('search')}
           onStart={startLesson}
         />
@@ -114,7 +145,9 @@ export function App() {
       {screen === 'lesson' && (
         <Lesson
           items={items}
-          pool={scopeItems}
+          // Distractors draw from the whole deck even when a category is
+          // selected — tiny categories would otherwise yield 2-option quizzes.
+          pool={deck.items}
           deck={deck}
           listenMode={listenMode}
           onExit={() => setScreen('home')}

@@ -17,13 +17,22 @@ function audio(): AudioContext | null {
     if (!AC) return null
     ctx = new AC()
   }
-  if (ctx.state === 'suspended') void ctx.resume()
   return ctx
 }
 
 function blip(freq: number, when: number, dur: number, type: OscillatorType = 'sine') {
   const a = audio()
   if (!a) return
+  if (a.state === 'suspended') {
+    // iOS suspends the context on backgrounding; scheduling against a
+    // suspended context plays nothing, so wait for the resume to land.
+    void a.resume().then(() => schedule(a, freq, when, dur, type))
+    return
+  }
+  schedule(a, freq, when, dur, type)
+}
+
+function schedule(a: AudioContext, freq: number, when: number, dur: number, type: OscillatorType) {
   const osc = a.createOscillator()
   const gain = a.createGain()
   osc.type = type

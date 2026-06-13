@@ -181,24 +181,16 @@ export const BASIC: Hangul[] = BASIC_ROWS.flat()
 /** 発展デッキの全行 (教える順)。 */
 export const ADVANCED: Hangul[] = ADVANCED_ROWS.flat()
 
-/** Row lookup for a given item text (all decks) — used by distractor selection. */
-export const ROW_OF: Record<string, Hangul[]> = (() => {
+/**
+ * Same-row lookup used by distractor selection, scoped to ONE deck's rows.
+ * A global map would let texts shared across decks (이 the syllable vs 이 "二")
+ * pull distractors from the wrong deck.
+ */
+export function rowLookup(rows: Hangul[][]): Record<string, Hangul[]> {
   const map: Record<string, Hangul[]> = {}
-  for (const row of [
-    ...BASIC_ROWS,
-    ...ADVANCED_ROWS,
-    ...WORD_ROWS,
-    ...LOANWORD_ROWS,
-    ...COUNTER_ROWS,
-    ...MIMETIC_ROWS,
-    ...KEIGO_ROWS,
-    ...GRAMMAR_ROWS,
-    ...PHRASE_ROWS,
-    ...HANJA_ROWS,
-  ])
-    for (const k of row) map[k.hangul] = row
+  for (const row of rows) for (const k of row) map[k.hangul] = row
   return map
-})()
+}
 
 // ---- Decks ----------------------------------------------------------------
 export type DeckId =
@@ -222,6 +214,7 @@ export interface Deck {
   kind: DeckKind
   rows: Hangul[][]
   items: Hangul[] // teaching order; also the distractor pool for this deck
+  rowOf: Record<string, Hangul[]> // same-row lookup for distractor selection
   catLabels?: string[] // category name per row (row-based decks); 1:1 with rows
   kataReading?: boolean // レッスンで韓国語の下にカタカナ読みを表示するか
 }
@@ -231,7 +224,7 @@ export interface Category {
   items: Hangul[]
 }
 
-export const DECKS: Deck[] = [
+const DECK_DEFS: Omit<Deck, 'rowOf'>[] = [
   { id: 'basic', label: 'ハングル基本', kind: 'hangul', rows: BASIC_ROWS, items: BASIC, catLabels: BASIC_CATS },
   { id: 'advanced', label: 'ハングル発展', kind: 'hangul', rows: ADVANCED_ROWS, items: ADVANCED, catLabels: ADVANCED_CATS },
   { id: 'words', label: '単語', kind: 'words', rows: WORD_ROWS, items: WORDS, catLabels: WORD_CATS },
@@ -243,6 +236,8 @@ export const DECKS: Deck[] = [
   { id: 'keigo', label: '敬語', kind: 'sentence', rows: KEIGO_ROWS, items: KEIGO, kataReading: true },
   { id: 'hanja', label: '漢字語', kind: 'words', rows: HANJA_ROWS, items: HANJA, catLabels: HANJA_CATS },
 ]
+
+export const DECKS: Deck[] = DECK_DEFS.map((d) => ({ ...d, rowOf: rowLookup(d.rows) }))
 
 /**
  * Categories a deck can be filtered to.

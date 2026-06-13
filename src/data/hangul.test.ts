@@ -6,7 +6,7 @@ import {
   BASIC_ROWS,
   DECKS,
   deckCategories,
-  ROW_OF,
+  rowLookup,
 } from './hangul'
 
 describe('hangul data', () => {
@@ -27,11 +27,18 @@ describe('hangul data', () => {
     expect(ADVANCED.length).toBeGreaterThanOrEqual(120)
   })
 
-  it('every letter maps to its own row in ROW_OF', () => {
-    for (const k of [...BASIC, ...ADVANCED]) {
-      const row = ROW_OF[k.hangul]
-      expect(row, `missing row for ${k.hangul}`).toBeDefined()
-      expect(row.some((r) => r.hangul === k.hangul)).toBe(true)
+  it('every letter maps to its own row via rowLookup', () => {
+    const basicRowOf = rowLookup(BASIC_ROWS)
+    const advancedRowOf = rowLookup(ADVANCED_ROWS)
+    for (const [items, rowOf] of [
+      [BASIC, basicRowOf],
+      [ADVANCED, advancedRowOf],
+    ] as const) {
+      for (const k of items) {
+        const row = rowOf[k.hangul]
+        expect(row, `missing row for ${k.hangul}`).toBeDefined()
+        expect(row.some((r) => r.hangul === k.hangul)).toBe(true)
+      }
     }
   })
 

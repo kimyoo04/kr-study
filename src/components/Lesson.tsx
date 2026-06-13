@@ -48,9 +48,9 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
     return items.map((item) => {
       if (item.mode === 'intro') return { item }
       const qtype = pickQType(deck.kind, listenMode, voice, quizN++)
-      return { item, question: buildQuestion(item.hangul, qtype, deck.kind, pool) }
+      return { item, question: buildQuestion(item.hangul, qtype, deck.kind, pool, deck.rowOf) }
     })
-  }, [items, pool, deck.kind, listenMode])
+  }, [items, pool, deck, listenMode])
 
   const [index, setIndex] = useState(0)
   const [phase, setPhase] = useState<'answer' | 'feedback'>('answer')
@@ -108,7 +108,7 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
   }
 
   return (
-    <main className="screen lesson">
+    <main className="screen lesson" tabIndex={-1}>
       <div className="lesson-top">
         <button className="link" onClick={onExitClick} aria-label="閉じる">
           ✕
@@ -185,7 +185,14 @@ function IntroCard({
 
 function ExitConfirm({ onStay, onLeave }: { onStay: () => void; onLeave: () => void }) {
   return (
-    <div className="modal-backdrop" role="dialog" aria-modal="true">
+    <div
+      className="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onStay()
+      }}
+    >
       <div className="modal">
         <p className="modal-title">レッスンをやめますか?</p>
         <p className="modal-body">やめると今回のレッスンの進捗は消えます。</p>
@@ -273,6 +280,9 @@ function Quiz({
                   : 'opt dim'
               : 'opt'
           const text = optionText(opt, qtype, deckKind)
+          // Listen-mode hangul options render Korean glyphs; tag the language
+          // so screen readers don't read them with the Japanese synthesizer.
+          const optLang = qtype === 'listen' && deckKind === 'hangul' ? 'ko' : undefined
           const mark =
             phase === 'feedback' && isAnswer
               ? '✓'
@@ -287,7 +297,9 @@ function Quiz({
               disabled={phase === 'feedback'}
               onClick={() => onPick(opt)}
             >
-              <span className="opt-text">{text}</span>
+              <span className="opt-text" lang={optLang}>
+                {text}
+              </span>
               {mark && (
                 <span className="opt-mark" aria-hidden="true">
                   {mark}
@@ -300,9 +312,16 @@ function Quiz({
 
       <p className="sr-only" role="status">
         {phase === 'feedback' &&
-          (picked?.hangul === question.answer.hangul
-            ? '正解'
-            : `不正解。正解は ${optionText(question.answer, qtype, deckKind)}`)}
+          (picked?.hangul === question.answer.hangul ? (
+            '正解'
+          ) : (
+            <>
+              不正解。正解は{' '}
+              <span lang={qtype === 'listen' && deckKind === 'hangul' ? 'ko' : undefined}>
+                {optionText(question.answer, qtype, deckKind)}
+              </span>
+            </>
+          ))}
       </p>
 
       {phase === 'feedback' && (

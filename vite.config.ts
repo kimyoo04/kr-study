@@ -12,7 +12,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt': the new SW waits; the app applies it from the Home banner
+      // (autoUpdate would reload the page mid-lesson and lose quiz state).
+      registerType: 'prompt',
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'かんこくご Pocket',

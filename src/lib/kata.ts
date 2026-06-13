@@ -18,6 +18,7 @@ const CHO_G = 0
 const CHO_GG = 1
 const CHO_N = 2
 const CHO_D = 3
+const CHO_DD = 4
 const CHO_R = 5
 const CHO_M = 6
 const CHO_B = 7
@@ -26,10 +27,25 @@ const CHO_S = 9
 const CHO_SS = 10
 const CHO_NG = 11 // ㅇ (無音)
 const CHO_J = 12
+const CHO_JJ = 13
 const CHO_CH = 14
 const CHO_K = 15
 const CHO_T = 16
 const CHO_P = 17
+const CHO_H = 18
+
+// 中声 ㅣ のインデックス — 口蓋音化 (같이 → 가치) の判定に使う。
+const JUNG_I = 20
+
+// 激音化: ㅎ と隣接した平音は激音になる (ㄱ→ㅋ, ㄷ→ㅌ, ㅈ→ㅊ)。
+const ASPIRATE: Record<number, number> = {
+  [CHO_G]: CHO_K,
+  [CHO_D]: CHO_T,
+  [CHO_J]: CHO_CH,
+}
+
+// 濃音の初声 — 語中では ッ を前置して詰まりを表す (오빠 → オッパ)。
+const TENSE_CHO = new Set([CHO_GG, CHO_DD, CHO_BB, CHO_SS, CHO_JJ])
 
 // 終声 (jong) のインデックス (0 = なし)
 const JONG_NONE = 0
@@ -253,17 +269,22 @@ export function hangulToKata(text: string): string {
   const chars = [...text]
   const syls: (Syl | null)[] = chars.map(decompose)
 
-  // 2) 発音変化の前処理 (連音化・ㅎ弱化・鼻音化)
+  // 2) 発音変化の前処理 (連音化・口蓋音化・ㅎ弱化/激音化・鼻音化・流音化)
   for (let i = 0; i < syls.length; i++) {
     const cur = syls[i]
     const next = syls[i + 1]
-    if (!cur || cur.jong === JONG_NONE) continue
-    if (next && next.cho === CHO_NG && !NG_SPECIAL[next.jung]) {
-      // 連音化: 맛있어요 → 마싰어요 → マシッソヨ。ㅇパッチムは連音しない。
+    if (!cur || cur.jong === JONG_NONE || !next) continue
+    if (next.cho === CHO_NG && !NG_SPECIAL[next.jung]) {
+      // 母音始まりが続く: ㅎ弱化 → 口蓋音化 → 連音化 の順に判定。
       if (cur.jong === JONG_H || cur.jong === JONG_NH || cur.jong === JONG_LH) {
         // ㅎ弱化: 좋아요 → チョアヨ
         cur.jong = cur.jong === JONG_NH ? JONG_N : cur.jong === JONG_LH ? JONG_L : JONG_NONE
+      } else if ((cur.jong === JONG_D || cur.jong === JONG_T) && next.jung === JUNG_I) {
+        // 口蓋音化: ㄷ/ㅌ + 이 → 지/치 (같이 → カチ、굳이 → クジ)
+        next.cho = cur.jong === JONG_T ? CHO_CH : CHO_J
+        cur.jong = JONG_NONE
       } else if (cur.jong !== JONG_NG) {
+        // 連音化: 맛있어요 → 마싰어요 → マシッソヨ。ㅇパッチムは連音しない。
         const split = JONG_SPLIT[cur.jong]
         if (split) {
           cur.jong = split[0]
@@ -274,25 +295,68 @@ export function hangulToKata(text: string): string {
           cur.jong = cur.jong === JONG_SS || cur.jong === JONG_GG ? cur.jong : JONG_NONE
         }
       }
-    } else if (next && (next.cho === CHO_N || next.cho === CHO_M)) {
-      cur.jong = nasalize(cur.jong)
+    } else if (next.cho === CHO_H) {
+      // 激音化 (パッチム + ㅎ): 축하 → 추카、입학 → 이팍、못하다 → 모타다
+      if (JONG_TO_K.has(cur.jong)) {
+        next.cho = CHO_K
+        cur.jong = JONG_NONE
+      } else if (JONG_TO_P.has(cur.jong)) {
+        next.cho = CHO_P
+        cur.jong = JONG_NONE
+      } else if (JONG_TO_TT.has(cur.jong) && cur.jong !== JONG_H) {
+        next.cho = CHO_T
+        cur.jong = JONG_NONE
+      }
+    } else if (
+      (cur.jong === JONG_H || cur.jong === JONG_NH || cur.jong === JONG_LH) &&
+      ASPIRATE[next.cho] !== undefined
+    ) {
+      // 激音化 (ㅎパッチム + 平音): 어떻게 → 어떠케 (オットケ)、많다 → 만타、싫다 → 실타
+      next.cho = ASPIRATE[next.cho]
+      cur.jong = cur.jong === JONG_NH ? JONG_N : cur.jong === JONG_LH ? JONG_L : JONG_NONE
+    } else if (next.cho === CHO_N || next.cho === CHO_M) {
+      if (JONG_TO_L.has(cur.jong) && next.cho === CHO_N) {
+        // 流音化 (ㄹ + ㄴ → ㄹㄹ): 설날 → 설랄 (ソルラル)
+        next.cho = CHO_R
+      } else {
+        // 鼻音化: 합니다 → 함니다 (ハムニダ)
+        cur.jong = nasalize(cur.jong)
+      }
+    } else if (next.cho === CHO_R) {
+      if (JONG_TO_N.has(cur.jong) && cur.jong !== JONG_NG) {
+        // 流音化 (ㄴ + ㄹ → ㄹㄹ): 연락 → 열락 (ヨルラク)
+        cur.jong = JONG_L
+      } else if (JONG_TO_M.has(cur.jong) || cur.jong === JONG_NG) {
+        // ㄹ鼻音化 (ㅁ/ㅇ の後): 음료수 → 음뇨수 (ウムニョス)、정류장 → 정뉴장
+        next.cho = CHO_N
+      } else if (JONG_TO_K.has(cur.jong) || JONG_TO_P.has(cur.jong) || JONG_TO_TT.has(cur.jong)) {
+        // 閉鎖音 + ㄹ: ㄹ が ㄴ になり、パッチムも鼻音化 (협력 → 혐녁、독립 → 동닙)
+        next.cho = CHO_N
+        cur.jong = nasalize(cur.jong)
+      }
     }
   }
 
   // 3) カタカナへ
   const out: string[] = []
   let prev: Syl | undefined
+  let prevJongKana = ''
   for (let i = 0; i < syls.length; i++) {
     const syl = syls[i]
     if (!syl) {
       const ch = chars[i]
       out.push(ch === '.' ? '。' : ch === ',' ? '、' : ch)
       prev = undefined
+      prevJongKana = ''
       continue
     }
+    // 語中の濃音は ッ を前置して詰まりを表す (오빠 → オッパ)。
+    // 直前のパッチムがすでに ッ なら重ねない (있어요 → イッソヨ)。
+    if (prev && TENSE_CHO.has(syl.cho) && prevJongKana !== 'ッ') out.push('ッ')
     out.push(sylToKana(syl, voicingEnv(prev)))
     const next = syls[i + 1] ?? undefined
-    if (syl.jong !== JONG_NONE) out.push(jongToKana(syl.jong, next))
+    prevJongKana = syl.jong !== JONG_NONE ? jongToKana(syl.jong, next) : ''
+    if (prevJongKana) out.push(prevJongKana)
     prev = syl
   }
   return out.join('')

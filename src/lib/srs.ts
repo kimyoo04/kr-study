@@ -16,12 +16,22 @@ export interface Card {
 
 export interface Progress {
   version: number
-  items: Record<string, Card> // keyed by hangul text
+  items: Record<string, Card> // keyed by cardKey(deckId, hangul)
   lessonsDone: number
   lastPlayed: string // YYYY-MM-DD
 }
 
-export const PROGRESS_VERSION = 1
+/**
+ * Progress key — cards are namespaced per deck. The same text can be a
+ * different study item in two decks (the syllable 이 vs the word 이 "二"),
+ * so a raw-hangul key would share one SRS card between them.
+ */
+export function cardKey(deckId: string, hangul: string): string {
+  return `${deckId}:${hangul}`
+}
+
+// v1 keyed cards by raw hangul text; v2 namespaces them per deck.
+export const PROGRESS_VERSION = 2
 export const LESSON_SIZE = 6
 /** "Learned" for the progress bar = box at or above this. */
 export const LEARNED_BOX = 3
@@ -75,23 +85,29 @@ export function learnedCount(progress: Progress): number {
 }
 
 /** Learned count restricted to a single deck's item set. */
-export function learnedCountFor(progress: Progress, deckItems: Hangul[]): number {
-  return deckItems.filter((k) => (progress.items[k.hangul]?.box ?? 0) >= LEARNED_BOX).length
+export function learnedCountFor(progress: Progress, deckItems: Hangul[], deckId: string): number {
+  return deckItems.filter((k) => (progress.items[cardKey(deckId, k.hangul)]?.box ?? 0) >= LEARNED_BOX)
+    .length
 }
 
 /**
  * Weakest items in a deck: seen at least once but not yet learned (box < 3),
  * worst first (lowest box, then most misses). Used by the Home "review weak" button.
  */
-export function weakItems(progress: Progress, deckItems: Hangul[], limit = LESSON_SIZE): Hangul[] {
+export function weakItems(
+  progress: Progress,
+  deckItems: Hangul[],
+  deckId: string,
+  limit = LESSON_SIZE,
+): Hangul[] {
   return deckItems
     .filter((k) => {
-      const c = progress.items[k.hangul]
+      const c = progress.items[cardKey(deckId, k.hangul)]
       return c && c.seen > 0 && c.box < LEARNED_BOX
     })
     .sort((a, b) => {
-      const ca = progress.items[a.hangul]
-      const cb = progress.items[b.hangul]
+      const ca = progress.items[cardKey(deckId, a.hangul)]
+      const cb = progress.items[cardKey(deckId, b.hangul)]
       if (ca.box !== cb.box) return ca.box - cb.box
       return cb.seen - cb.correct - (ca.seen - ca.correct)
     })
@@ -115,9 +131,11 @@ export interface LessonItem {
 export function selectLessonItems(
   progress: Progress,
   order: Hangul[],
+  deckId: string,
   size: number = LESSON_SIZE,
 ): LessonItem[] {
-  const introduced = (k: Hangul) => progress.items[k.hangul] !== undefined
+  const cardOf = (k: Hangul) => progress.items[cardKey(deckId, k.hangul)]
+  const introduced = (k: Hangul) => cardOf(k) !== undefined
   const items: LessonItem[] = []
 
   // Selection happens BEFORE this lesson completes, so the lesson being built is
@@ -125,8 +143,8 @@ export function selectLessonItems(
   const upcoming = progress.lessonsDone + 1
 
   const due = order
-    .filter((k) => introduced(k) && isDue(progress.items[k.hangul], upcoming))
-    .sort((a, b) => progress.items[a.hangul].dueLesson - progress.items[b.hangul].dueLesson)
+    .filter((k) => introduced(k) && isDue(cardOf(k), upcoming))
+    .sort((a, b) => cardOf(a).dueLesson - cardOf(b).dueLesson)
   for (const k of due) {
     if (items.length >= size) break
     items.push({ hangul: k, mode: 'quiz' })
@@ -138,9 +156,7 @@ export function selectLessonItems(
   }
 
   if (items.length === 0) {
-    const byBox = order
-      .filter(introduced)
-      .sort((a, b) => progress.items[a.hangul].box - progress.items[b.hangul].box)
+    const byBox = order.filter(introduced).sort((a, b) => cardOf(a).box - cardOf(b).box)
     for (const k of byBox) {
       if (items.length >= size) break
       items.push({ hangul: k, mode: 'quiz' })

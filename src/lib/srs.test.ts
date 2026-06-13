@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { BASIC } from '../data/hangul'
 import {
   applyAnswer,
+  cardKey,
   emptyProgress,
   intervalFor,
   introducedCard,
@@ -14,6 +15,9 @@ import {
   selectLessonItems,
   type Progress,
 } from './srs'
+
+const DECK = 'basic'
+const k = (hangul: string) => cardKey(DECK, hangul)
 
 describe('nextBox', () => {
   it('advances on correct, capped at 5', () => {
@@ -72,9 +76,9 @@ describe('learnedCount', () => {
   it('counts only cards at box >= 3', () => {
     const p = emptyProgress()
     p.items = {
-      아: { box: 3, dueLesson: 0, seen: 4, correct: 3 },
-      야: { box: 5, dueLesson: 0, seen: 9, correct: 9 },
-      어: { box: 2, dueLesson: 0, seen: 2, correct: 1 },
+      [k('아')]: { box: 3, dueLesson: 0, seen: 4, correct: 3 },
+      [k('야')]: { box: 5, dueLesson: 0, seen: 9, correct: 9 },
+      [k('어')]: { box: 2, dueLesson: 0, seen: 2, correct: 1 },
     }
     expect(learnedCount(p)).toBe(2)
   })
@@ -82,10 +86,10 @@ describe('learnedCount', () => {
   it('weakItems returns seen-but-not-learned, worst first', () => {
     const p = emptyProgress()
     p.items = {
-      아: { box: 3, dueLesson: 0, seen: 5, correct: 5 }, // learned -> excluded
-      야: { box: 2, dueLesson: 0, seen: 4, correct: 3 }, // weak
-      어: { box: 1, dueLesson: 0, seen: 4, correct: 1 }, // weaker (lower box)
-      여: { box: 1, dueLesson: 0, seen: 0, correct: 0 }, // never seen -> excluded
+      [k('아')]: { box: 3, dueLesson: 0, seen: 5, correct: 5 }, // learned -> excluded
+      [k('야')]: { box: 2, dueLesson: 0, seen: 4, correct: 3 }, // weak
+      [k('어')]: { box: 1, dueLesson: 0, seen: 4, correct: 1 }, // weaker (lower box)
+      [k('여')]: { box: 1, dueLesson: 0, seen: 0, correct: 0 }, // never seen -> excluded
     }
     const deck = [
       { hangul: '아', romaji: 'a' },
@@ -93,30 +97,46 @@ describe('learnedCount', () => {
       { hangul: '어', romaji: 'eo' },
       { hangul: '여', romaji: 'yeo' },
     ]
-    const weak = weakItems(p, deck)
-    expect(weak.map((k) => k.hangul)).toEqual(['어', '야']) // lowest box first
+    const weak = weakItems(p, deck, DECK)
+    expect(weak.map((w) => w.hangul)).toEqual(['어', '야']) // lowest box first
   })
 
-  it('learnedCountFor restricts to the given deck', () => {
+  it('learnedCountFor restricts to the given deck (keys are namespaced)', () => {
     const p = emptyProgress()
     p.items = {
-      아: { box: 3, dueLesson: 0, seen: 4, correct: 3 }, // basic, learned
-      카: { box: 4, dueLesson: 0, seen: 5, correct: 5 }, // advanced, learned
-      타: { box: 1, dueLesson: 0, seen: 1, correct: 0 }, // advanced, not yet
+      [cardKey('basic', '아')]: { box: 3, dueLesson: 0, seen: 4, correct: 3 },
+      [cardKey('advanced', '카')]: { box: 4, dueLesson: 0, seen: 5, correct: 5 },
+      [cardKey('advanced', '타')]: { box: 1, dueLesson: 0, seen: 1, correct: 0 },
     }
-    expect(learnedCountFor(p, [{ hangul: '아', romaji: 'a' }])).toBe(1)
+    expect(learnedCountFor(p, [{ hangul: '아', romaji: 'a' }], 'basic')).toBe(1)
     expect(
-      learnedCountFor(p, [
-        { hangul: '카', romaji: 'ka' },
-        { hangul: '타', romaji: 'ta' },
-      ]),
+      learnedCountFor(
+        p,
+        [
+          { hangul: '카', romaji: 'ka' },
+          { hangul: '타', romaji: 'ta' },
+        ],
+        'advanced',
+      ),
     ).toBe(1)
+  })
+
+  it('REGRESSION: progress in one deck does not leak into another deck sharing the text', () => {
+    // 이 is both a basic-chart syllable and the words-deck word 이 (二).
+    const p = emptyProgress()
+    p.items = { [cardKey('basic', '이')]: { box: 5, dueLesson: 0, seen: 9, correct: 9 } }
+    const wordsDeckItems = [{ hangul: '이', romaji: 'i', meaning: '二' }]
+    // Not learned in the words deck...
+    expect(learnedCountFor(p, wordsDeckItems, 'words')).toBe(0)
+    // ...and still introduced there with an intro card, not quizzed blind.
+    const items = selectLessonItems(p, wordsDeckItems, 'words', 6)
+    expect(items[0].mode).toBe('intro')
   })
 })
 
 describe('selectLessonItems', () => {
   it('cold start: all intro, in teaching order, capped at size', () => {
-    const items = selectLessonItems(emptyProgress(), BASIC, 6)
+    const items = selectLessonItems(emptyProgress(), BASIC, DECK, 6)
     expect(items).toHaveLength(6)
     expect(items.every((i) => i.mode === 'intro')).toBe(true)
     expect(items.map((i) => i.hangul.hangul)).toEqual(['아', '야', '어', '여', '오', '요'])
@@ -127,11 +147,11 @@ describe('selectLessonItems', () => {
       ...emptyProgress(),
       lessonsDone: 5,
       items: {
-        아: { box: 2, dueLesson: 4, seen: 2, correct: 2 }, // due (4 <= 5)
-        야: { box: 3, dueLesson: 99, seen: 3, correct: 3 }, // not due
+        [k('아')]: { box: 2, dueLesson: 4, seen: 2, correct: 2 }, // due (4 <= 5)
+        [k('야')]: { box: 3, dueLesson: 99, seen: 3, correct: 3 }, // not due
       },
     }
-    const items = selectLessonItems(p, BASIC, 6)
+    const items = selectLessonItems(p, BASIC, DECK, 6)
     expect(items[0]).toEqual({ hangul: { hangul: '아', romaji: 'a' }, mode: 'quiz' })
     // remaining filled with new items (skipping 아/야 which are introduced)
     const newOnes = items.slice(1)
@@ -144,9 +164,9 @@ describe('selectLessonItems', () => {
     const p: Progress = {
       ...emptyProgress(),
       lessonsDone: 1,
-      items: { 아: introducedCard(1) }, // dueLesson = 1 + interval(1) = 2
+      items: { [k('아')]: introducedCard(1) }, // dueLesson = 1 + interval(1) = 2
     }
-    const items = selectLessonItems(p, BASIC, 6)
+    const items = selectLessonItems(p, BASIC, DECK, 6)
     // Upcoming lesson is #2, so 아 (dueLesson 2) must appear as a quiz, not be skipped.
     expect(items[0]).toEqual({ hangul: { hangul: '아', romaji: 'a' }, mode: 'quiz' })
   })
@@ -154,10 +174,10 @@ describe('selectLessonItems', () => {
   it('fallback: nothing due and nothing new -> review lowest box first', () => {
     // Introduce ALL items, none due.
     const cards: Progress['items'] = {}
-    for (const k of BASIC) cards[k.hangul] = { box: 3, dueLesson: 999, seen: 5, correct: 5 }
-    cards['히'] = { box: 1, dueLesson: 999, seen: 1, correct: 0 } // lowest box
+    for (const it of BASIC) cards[k(it.hangul)] = { box: 3, dueLesson: 999, seen: 5, correct: 5 }
+    cards[k('히')] = { box: 1, dueLesson: 999, seen: 1, correct: 0 } // lowest box
     const p: Progress = { ...emptyProgress(), lessonsDone: 10, items: cards }
-    const items = selectLessonItems(p, BASIC, 6)
+    const items = selectLessonItems(p, BASIC, DECK, 6)
     expect(items).toHaveLength(6)
     expect(items[0].hangul.hangul).toBe('히')
     expect(items.every((i) => i.mode === 'quiz')).toBe(true)

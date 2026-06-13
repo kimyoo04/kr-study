@@ -2,7 +2,10 @@
 // (more confusable -> better practice), then fill from the rest. No side effects;
 // randomness is injected so tests are deterministic.
 import type { DeckKind, Hangul } from '../data/hangul'
-import { BASIC, ROW_OF } from '../data/hangul'
+import { BASIC, BASIC_ROWS, rowLookup } from '../data/hangul'
+
+// Default row lookup for callers that quiz the basic chart (also the test default).
+const BASIC_ROW_OF = rowLookup(BASIC_ROWS)
 
 export type QType = 'read' | 'listen' | 'meaning'
 
@@ -56,7 +59,8 @@ function shuffle<T>(arr: T[], rng: Rng): T[] {
 /**
  * Pick `count` distractors for `answer`: same row first, then global fill.
  * `textOf` is the displayed text — candidates that would render identically to
- * the answer (or to an already-picked distractor) are skipped.
+ * the answer (or to an already-picked distractor) are skipped. `rowOf` is the
+ * active deck's row lookup (rows from other decks must not leak into options).
  */
 export function pickDistractors(
   answer: Hangul,
@@ -64,8 +68,9 @@ export function pickDistractors(
   pool: Hangul[] = BASIC,
   rng: Rng = Math.random,
   textOf: (k: Hangul) => string = (k) => k.hangul,
+  rowOf: Record<string, Hangul[]> = BASIC_ROW_OF,
 ): Hangul[] {
-  const sameRow = (ROW_OF[answer.hangul] ?? []).filter((k) => k.hangul !== answer.hangul)
+  const sameRow = (rowOf[answer.hangul] ?? []).filter((k) => k.hangul !== answer.hangul)
   const others = pool.filter(
     (k) => k.hangul !== answer.hangul && !sameRow.some((s) => s.hangul === k.hangul),
   )
@@ -88,11 +93,12 @@ export function buildQuestion(
   qtype: QType,
   deckKind: DeckKind = 'hangul',
   pool: Hangul[] = BASIC,
+  rowOf: Record<string, Hangul[]> = BASIC_ROW_OF,
   rng: Rng = Math.random,
   optionCount = 4,
 ): Question {
   const textOf = (k: Hangul) => optionText(k, qtype, deckKind)
-  const distractors = pickDistractors(answer, optionCount - 1, pool, rng, textOf)
+  const distractors = pickDistractors(answer, optionCount - 1, pool, rng, textOf, rowOf)
   const options = shuffle([answer, ...distractors], rng)
   return { qtype, answer, options }
 }

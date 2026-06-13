@@ -53,8 +53,41 @@ describe('hangulToKata', () => {
 
   it('handles aspirated and tense consonants', () => {
     expect(hangulToKata('커피')).toBe('コピ')
-    expect(hangulToKata('아빠')).toBe('アパ')
     expect(hangulToKata('치즈')).toBe('チジュ')
+  })
+
+  it('marks word-internal tense consonants with ッ, but not word-initially', () => {
+    expect(hangulToKata('아빠')).toBe('アッパ')
+    expect(hangulToKata('오빠')).toBe('オッパ')
+    expect(hangulToKata('짜요')).toBe('チャヨ')
+    // already-geminated batchim does not double the ッ
+    expect(hangulToKata('맛있어요')).toBe('マシッソヨ')
+  })
+
+  it('aspirates stops before/after ㅎ', () => {
+    expect(hangulToKata('축하해요')).toBe('チュカヘヨ')
+    expect(hangulToKata('입학')).toBe('イパク')
+    expect(hangulToKata('못해요')).toBe('モテヨ')
+    expect(hangulToKata('어떻게')).toBe('オットケ')
+    expect(hangulToKata('괜찮다')).toBe('クェンチャンタ')
+    expect(hangulToKata('싫다')).toBe('シルタ')
+  })
+
+  it('applies liquid assimilation (ㄴ/ㄹ → ㄹㄹ)', () => {
+    expect(hangulToKata('연락')).toBe('ヨルラク')
+    expect(hangulToKata('설날')).toBe('ソルラル')
+    expect(hangulToKata('한류')).toBe('ハルリュ')
+  })
+
+  it('nasalizes ㄹ after ㅁ/ㅇ and after stops', () => {
+    expect(hangulToKata('음료수')).toBe('ウムニョス')
+    expect(hangulToKata('정류장')).toBe('チョンニュジャン')
+    expect(hangulToKata('협력')).toBe('ヒョムニョク')
+  })
+
+  it('palatalizes ㄷ/ㅌ before 이', () => {
+    expect(hangulToKata('같이')).toBe('カチ')
+    expect(hangulToKata('굳이')).toBe('クジ')
   })
 
   it('passes through non-hangul characters and converts sentence punctuation', () => {

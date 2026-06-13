@@ -19,6 +19,8 @@ interface Props {
   listen: boolean
   onToggleListen: () => void
   listenAvailable: boolean
+  updateReady: boolean
+  onApplyUpdate: () => void
   onSearch: () => void
   onStart: () => void
 }
@@ -39,17 +41,19 @@ export function Home({
   listen,
   onToggleListen,
   listenAvailable,
+  updateReady,
+  onApplyUpdate,
   onSearch,
   onStart,
 }: Props) {
   const total = scopeItems.length
-  const learned = learnedCountFor(progress, scopeItems)
+  const learned = learnedCountFor(progress, scopeItems, deck.id)
   const pct = Math.round((learned / total) * 100)
   const learnedAll = learnedCount(progress)
   const scopeLabel = categoryName ?? deck.label
 
   return (
-    <main className="screen home">
+    <main className="screen home" tabIndex={-1}>
       <header className="home-head">
         <button className="search-btn" onClick={onSearch} aria-label="検索">
           🔍
@@ -75,12 +79,19 @@ export function Home({
         </div>
       )}
 
-      <div className="deck-switch" role="tablist" aria-label="デッキ選択">
+      {updateReady && (
+        <button className="banner update" onClick={onApplyUpdate}>
+          ✨ 新しいバージョンがあります — タップして更新
+        </button>
+      )}
+
+      {/* Plain toggle buttons — ARIA tabs would promise arrow-key navigation
+          and tabpanel semantics this switcher doesn't implement. */}
+      <div className="deck-switch" role="group" aria-label="デッキ選択">
         {DECKS.map((d) => (
           <button
             key={d.id}
-            role="tab"
-            aria-selected={d.id === deck.id}
+            aria-pressed={d.id === deck.id}
             className={d.id === deck.id ? 'deck-tab active' : 'deck-tab'}
             onClick={() => onSelectDeck(d)}
           >
