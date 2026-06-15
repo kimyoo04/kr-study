@@ -11,6 +11,14 @@ describe('TOPIK content integrity', () => {
     expect(t1.some((q) => q.part === 'reading')).toBe(true)
   })
 
+  it('has a bank big enough that sampling gives varied exams', () => {
+    // sampleExam draws 10 듣기 + 14 읽기; the bank must comfortably exceed that.
+    const listening = TOPIK_POOL.filter((q) => q.part === 'listening')
+    const reading = TOPIK_POOL.filter((q) => q.part === 'reading')
+    expect(listening.length).toBeGreaterThanOrEqual(24)
+    expect(reading.length).toBeGreaterThanOrEqual(24)
+  })
+
   it('every listening item has a script, 4 choices, and an in-range answer', () => {
     for (const q of TOPIK_POOL) {
       if (q.part !== 'listening') continue

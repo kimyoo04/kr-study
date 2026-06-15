@@ -88,6 +88,33 @@ export function buildExam(
   return out
 }
 
+/**
+ * Build a *mini* exam: randomly sample up to `counts[part]` items from each
+ * section, keeping sections in PART_ORDER and shuffling each item's choices. A
+ * larger bank + sampling means retakes draw fresh questions instead of always
+ * showing the whole pool in a new order. Falls back to all items in a section
+ * when the bank has fewer than requested.
+ */
+export function sampleExam(
+  level: TopikLevel,
+  pool: TopikQuestion[],
+  counts: Partial<Record<TopikPart, number>>,
+  rng: Rng = Math.random,
+): ScoredItem[] {
+  const forLevel = pool.filter((q) => q.level === level)
+  const all = flatten(forLevel)
+  const out: ScoredItem[] = []
+  for (const part of PART_ORDER) {
+    const inPart = shuffle(
+      all.filter((it) => it.part === part),
+      rng,
+    )
+    const take = counts[part] ?? inPart.length
+    for (const it of inPart.slice(0, take)) out.push(shuffleChoices(it, rng))
+  }
+  return out
+}
+
 /** Whether `level` has any content yet (drives the "準備中" disabled state). */
 export function hasContent(level: TopikLevel, pool: TopikQuestion[]): boolean {
   return pool.some((q) => q.level === level)

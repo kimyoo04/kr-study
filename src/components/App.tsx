@@ -24,12 +24,15 @@ import type { ScoredItem, TopikLevel } from '../data/topik/types'
 import { TOPIK_POOL } from '../data/topik'
 import {
   appendResult,
-  buildExam,
   clearProgress,
   loadProgress as loadTopikProgress,
+  sampleExam,
   scoreExam,
   type ExamResult,
 } from '../lib/topik'
+
+// Mini mock-exam size, sampled fresh from the bank each run.
+const TOPIK_EXAM_COUNTS = { listening: 10, reading: 14 }
 
 type Screen =
   | 'home'
@@ -145,7 +148,7 @@ export function App() {
   // ---- TOPIK mock exam ------------------------------------------------------
 
   function startTopik(level: TopikLevel) {
-    const exam = buildExam(level, TOPIK_POOL)
+    const exam = sampleExam(level, TOPIK_POOL, TOPIK_EXAM_COUNTS)
     if (exam.length === 0) return
     setTopikLevel(level)
     setTopikItems(exam)

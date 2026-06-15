@@ -9,6 +9,7 @@ import {
   hasContent,
   loadProgress,
   loadResults,
+  sampleExam,
   saveProgress,
   scoreExam,
 } from './topik'
@@ -113,6 +114,42 @@ describe('buildExam', () => {
       // The shuffled answer index must still point at a real choice.
       expect(it.choices[it.answer]).toBeDefined()
     }
+  })
+})
+
+describe('sampleExam', () => {
+  it('takes up to N per section and keeps listening before reading', () => {
+    const exam = sampleExam('TOPIK1', POOL, { listening: 1, reading: 2 }, seeded(3))
+    expect(exam.filter((i) => i.part === 'listening')).toHaveLength(1)
+    expect(exam.filter((i) => i.part === 'reading')).toHaveLength(2)
+    const firstReading = exam.findIndex((i) => i.part === 'reading')
+    const lastListening = exam.map((i) => i.part).lastIndexOf('listening')
+    expect(lastListening).toBeLessThan(firstReading)
+  })
+
+  it('falls back to all items in a section when the bank has fewer', () => {
+    // POOL has 2 listening, 3 reading scored items.
+    const exam = sampleExam('TOPIK1', POOL, { listening: 99, reading: 99 }, seeded(1))
+    expect(exam.filter((i) => i.part === 'listening')).toHaveLength(2)
+    expect(exam.filter((i) => i.part === 'reading')).toHaveLength(3)
+  })
+
+  it('is deterministic per seed but varies across seeds (fresh questions on retake)', () => {
+    const a = sampleExam('TOPIK1', POOL, { listening: 1, reading: 1 }, seeded(1)).map((i) => i.id)
+    const b = sampleExam('TOPIK1', POOL, { listening: 1, reading: 1 }, seeded(1)).map((i) => i.id)
+    expect(a).toEqual(b)
+    // Across a spread of seeds, the sampled reading id should not always be the same.
+    const readingIds = new Set(
+      [1, 2, 3, 4, 5, 6, 7, 8].map(
+        (s) => sampleExam('TOPIK1', POOL, { reading: 1 }, seeded(s)).find((i) => i.part === 'reading')!.id,
+      ),
+    )
+    expect(readingIds.size).toBeGreaterThan(1)
+  })
+
+  it('only samples the requested level', () => {
+    const exam = sampleExam('TOPIK1', POOL, { listening: 99, reading: 99 }, seeded(1))
+    expect(exam.some((i) => i.id === 'l-t2')).toBe(false)
   })
 })
 
