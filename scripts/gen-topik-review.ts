@@ -87,7 +87,8 @@ function renderMarkdown(entries: Entry[]): string {
   const header = `# TOPIK 문항 원어민 검수 체크리스트
 
 > 자동 생성 문서입니다 (\`pnpm gen:topik-review\`). 내용 수정은 \`src/data/topik/*.ts\`에서 하고 다시 생성하세요.
-> 스프레드시트로 점검하려면 같은 폴더의 \`topik-review.csv\`를 엑셀/구글시트에서 여세요.
+> 스프레드시트로 점검하려면: 전체 \`topik-review.csv\`, 구글시트 붙여넣기용 \`topik-review.tsv\`,
+> 레벨별 탭 import용 \`topik-review-topik1.csv\` / \`topik-review-topik2.csv\` 중 편한 것을 쓰세요.
 
 ## 검수자 안내 (한국어 교사·원어민용)
 
@@ -144,47 +145,66 @@ function renderMarkdown(entries: Entry[]): string {
   return parts.join('\n')
 }
 
-// ── CSV ─────────────────────────────────────────────────────────────────────
-function csvCell(v: string): string {
-  return '"' + (v ?? '').replace(/\r?\n/g, ' ').replace(/"/g, '""') + '"'
-}
+// ── Tabular (CSV / TSV) ──────────────────────────────────────────────────────
+const COLS = [
+  '번호', '레벨', '섹션', '유형', 'id', '스크립트/지문', '문제',
+  '보기1', '보기2', '보기3', '보기4',
+  '정답번호', '정답내용', '참고(일본어해설)', '정답OK(Y/N)', '검수의견',
+]
 
-function renderCsv(entries: Entry[]): string {
-  const cols = [
-    '번호', '레벨', '섹션', '유형', 'id', '스크립트/지문', '문제',
-    '보기1', '보기2', '보기3', '보기4',
-    '정답번호', '정답내용', '참고(일본어해설)', '정답OK(Y/N)', '검수의견',
-  ]
-  const rows = [cols.map(csvCell).join(',')]
+// header + one string[] per entry (numbered within its own slice).
+function toRows(entries: Entry[]): string[][] {
+  const rows: string[][] = [COLS]
   entries.forEach((e, i) => {
     const ch = [0, 1, 2, 3].map((j) => e.choices[j] ?? '')
-    rows.push(
-      [
-        String(i + 1),
-        TOPIK_LEVEL_LABEL[e.level],
-        TOPIK_PART_KO[e.part],
-        e.tag,
-        e.id,
-        e.context,
-        e.prompt,
-        ...ch,
-        String(e.answer + 1),
-        e.choices[e.answer] ?? '',
-        e.explain,
-        '', // 정답OK — reviewer fills
-        '', // 검수의견 — reviewer fills
-      ].map(csvCell).join(','),
-    )
+    rows.push([
+      String(i + 1),
+      TOPIK_LEVEL_LABEL[e.level],
+      TOPIK_PART_KO[e.part],
+      e.tag,
+      e.id,
+      e.context,
+      e.prompt,
+      ...ch,
+      String(e.answer + 1),
+      e.choices[e.answer] ?? '',
+      e.explain,
+      '', // 정답OK — reviewer fills
+      '', // 검수의견 — reviewer fills
+    ])
   })
-  // BOM so Excel reads UTF-8 (Korean/Japanese) correctly.
-  return '﻿' + rows.join('\r\n') + '\r\n'
+  return rows
 }
+
+const csvCell = (v: string) => '"' + (v ?? '').replace(/\r?\n/g, ' ').replace(/"/g, '""') + '"'
+// TSV cells must not contain tabs or newlines; no quoting needed (paste-friendly).
+const tsvCell = (v: string) => (v ?? '').replace(/[\t\r\n]+/g, ' ')
+
+// BOM so Excel reads UTF-8 (Korean/Japanese) correctly.
+const toCsv = (rows: string[][]) => '﻿' + rows.map((r) => r.map(csvCell).join(',')).join('\r\n') + '\r\n'
+const toTsv = (rows: string[][]) => '﻿' + rows.map((r) => r.map(tsvCell).join('\t')).join('\r\n') + '\r\n'
 
 // ── write ───────────────────────────────────────────────────────────────────
 const entries = buildEntries()
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const docsDir = resolve(__dirname, '../docs')
 mkdirSync(docsDir, { recursive: true })
-writeFileSync(resolve(docsDir, 'topik-review.md'), renderMarkdown(entries), 'utf8')
-writeFileSync(resolve(docsDir, 'topik-review.csv'), renderCsv(entries), 'utf8')
-console.log(`wrote docs/topik-review.md and docs/topik-review.csv (${entries.length} items)`)
+
+const written: string[] = []
+function write(name: string, content: string) {
+  writeFileSync(resolve(docsDir, name), content, 'utf8')
+  written.push(name)
+}
+
+// Combined: readable checklist + spreadsheet (CSV) + paste-friendly (TSV).
+write('topik-review.md', renderMarkdown(entries))
+write('topik-review.csv', toCsv(toRows(entries)))
+write('topik-review.tsv', toTsv(toRows(entries)))
+
+// Per-level CSV — import each as its own Google Sheets / Excel tab.
+for (const level of LEVELS) {
+  const rows = toRows(entries.filter((e) => e.level === level))
+  write(`topik-review-${level.toLowerCase()}.csv`, toCsv(rows))
+}
+
+console.log(`wrote ${written.length} files to docs/ (${entries.length} items):\n  ${written.join('\n  ')}`)

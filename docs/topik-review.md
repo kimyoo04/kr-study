@@ -1,7 +1,8 @@
 # TOPIK 문항 원어민 검수 체크리스트
 
 > 자동 생성 문서입니다 (`pnpm gen:topik-review`). 내용 수정은 `src/data/topik/*.ts`에서 하고 다시 생성하세요.
-> 스프레드시트로 점검하려면 같은 폴더의 `topik-review.csv`를 엑셀/구글시트에서 여세요.
+> 스프레드시트로 점검하려면: 전체 `topik-review.csv`, 구글시트 붙여넣기용 `topik-review.tsv`,
+> 레벨별 탭 import용 `topik-review-topik1.csv` / `topik-review-topik2.csv` 중 편한 것을 쓰세요.
 
 ## 검수자 안내 (한국어 교사·원어민용)
 
