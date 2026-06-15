@@ -1,9 +1,10 @@
-// Generates docs/topik-review.md — a native-speaker review checklist of every
-// TOPIK question, ready to hand to a Korean teacher / native speaker. Each item
-// shows the Korean text, choices (✅ on the keyed answer), the (Japanese,
-// learner-facing) rationale, and a blank line for the reviewer's note.
+// Generates the native-speaker review checklist of every TOPIK question, ready
+// to hand to a Korean teacher / native speaker, in two formats:
+//   docs/topik-review.md   — readable checklist with per-item 검수 의견 line
+//   docs/topik-review.csv   — spreadsheet (Excel/Sheets) with blank review cols
 //
-// Run: pnpm gen:topik-review   (vite-node compiles the TS imports)
+// Each item shows the Korean text, choices (✅ on the keyed answer), and the
+// (Japanese, learner-facing) rationale. Run: pnpm gen:topik-review
 
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
@@ -15,10 +16,11 @@ import {
   type ReadingKind,
   type TopikLevel,
   type TopikPart,
-  type TopikQuestion,
 } from '../src/data/topik/types'
 
 const CIRCLED = ['①', '②', '③', '④', '⑤']
+const LEVELS: TopikLevel[] = ['TOPIK1', 'TOPIK2']
+const PARTS: TopikPart[] = ['listening', 'reading']
 
 const READING_KIND_KO: Record<ReadingKind, string> = {
   cloze: '빈칸 채우기',
@@ -27,110 +29,65 @@ const READING_KIND_KO: Record<ReadingKind, string> = {
   passage: '지문 세트',
 }
 
-// One reviewable block: choices with ✅ on the key, the JP rationale, and a
-// blank "검수 의견" line for the reviewer to fill in.
-function block(opts: {
-  n: number
-  id: string
+interface Entry {
+  level: TopikLevel
+  part: TopikPart
+  sectionN: number // 1-based within its section
   tag: string
-  context?: string // script or passage
-  contextLabel?: string
+  id: string
+  context: string // script or passage ('' when none)
+  contextLabel: string // 스크립트 / 지문 / ''
   prompt: string
   choices: string[]
-  answer: number
-  explain?: string
-}): string {
-  const lines: string[] = []
-  lines.push(`- [ ] **${opts.n}. [${opts.tag}]** \`${opts.id}\``)
-  if (opts.context) lines.push(`  - ${opts.contextLabel}: ${opts.context}`)
-  lines.push(`  - 문제: ${opts.prompt}`)
-  const choiceStr = opts.choices
-    .map((c, i) => `${CIRCLED[i]} ${c}${i === opts.answer ? ' ✅' : ''}`)
-    .join('　')
-  lines.push(`  - 보기: ${choiceStr}`)
-  lines.push(`  - 정답: ${CIRCLED[opts.answer]}　|　참고(일본어 해설): ${opts.explain ?? '(없음)'}`)
-  lines.push(`  - 검수 의견: `)
-  return lines.join('\n')
+  answer: number // 0-based
+  explain: string
 }
 
-// Returns the section markdown + the number of scored items it covers.
-function section(questions: TopikQuestion[], part: TopikPart): { md: string; count: number } {
-  const inPart = questions.filter((q) => q.part === part)
-  if (inPart.length === 0) return { md: '', count: 0 }
-
-  const blocks: string[] = []
-  let n = 0
-  for (const q of inPart) {
-    if (q.part === 'listening') {
-      n += 1
-      blocks.push(
-        block({
-          n,
-          id: q.id,
-          tag: '듣기',
-          context: q.script,
-          contextLabel: '스크립트',
-          prompt: q.prompt,
-          choices: q.choices,
-          answer: q.answer,
-          explain: q.explain,
-        }),
-      )
-    } else if (q.kind === 'passage') {
-      q.questions.forEach((sub, i) => {
-        n += 1
-        blocks.push(
-          block({
-            n,
-            id: `${q.id}-${i + 1}`,
-            tag: READING_KIND_KO.passage,
-            context: q.passage,
-            contextLabel: '지문',
-            prompt: sub.prompt,
-            choices: sub.choices,
-            answer: sub.answer,
-            explain: sub.explain,
-          }),
-        )
-      })
-    } else {
-      n += 1
-      blocks.push(
-        block({
-          n,
-          id: q.id,
-          tag: READING_KIND_KO[q.kind],
-          prompt: q.prompt,
-          choices: q.choices,
-          answer: q.answer,
-          explain: q.explain,
-        }),
-      )
+function buildEntries(): Entry[] {
+  const entries: Entry[] = []
+  for (const level of LEVELS) {
+    for (const part of PARTS) {
+      let n = 0
+      for (const q of TOPIK_POOL.filter((x) => x.level === level && x.part === part)) {
+        if (q.part === 'listening') {
+          n += 1
+          entries.push({
+            level, part, sectionN: n, tag: '듣기', id: q.id,
+            context: q.script, contextLabel: '스크립트',
+            prompt: q.prompt, choices: q.choices, answer: q.answer, explain: q.explain ?? '',
+          })
+        } else if (q.kind === 'passage') {
+          q.questions.forEach((sub, i) => {
+            n += 1
+            entries.push({
+              level, part, sectionN: n, tag: READING_KIND_KO.passage, id: `${q.id}-${i + 1}`,
+              context: q.passage, contextLabel: '지문',
+              prompt: sub.prompt, choices: sub.choices, answer: sub.answer, explain: sub.explain ?? '',
+            })
+          })
+        } else {
+          n += 1
+          entries.push({
+            level, part, sectionN: n, tag: READING_KIND_KO[q.kind], id: q.id,
+            context: '', contextLabel: '',
+            prompt: q.prompt, choices: q.choices, answer: q.answer, explain: q.explain ?? '',
+          })
+        }
+      }
     }
   }
-  const md = `### ${TOPIK_PART_KO[part]} (${part}) — ${n}문항\n\n${blocks.join('\n\n')}\n`
-  return { md, count: n }
+  return entries
 }
 
-const levels: TopikLevel[] = ['TOPIK1', 'TOPIK2']
-const body: string[] = []
-const perLevelCount: Record<string, number> = {}
-let total = 0
-for (const level of levels) {
-  const qs = TOPIK_POOL.filter((q) => q.level === level)
-  const listening = section(qs, 'listening')
-  const reading = section(qs, 'reading')
-  const count = listening.count + reading.count
-  perLevelCount[level] = count
-  total += count
-  body.push(`## ${TOPIK_LEVEL_LABEL[level]} — 計 ${count}문항\n`)
-  body.push(listening.md)
-  body.push(reading.md)
-}
+// ── Markdown ────────────────────────────────────────────────────────────────
+function renderMarkdown(entries: Entry[]): string {
+  const perLevel = (lv: TopikLevel) => entries.filter((e) => e.level === lv).length
+  const total = entries.length
 
-const header = `# TOPIK 문항 원어민 검수 체크리스트
+  const header = `# TOPIK 문항 원어민 검수 체크리스트
 
 > 자동 생성 문서입니다 (\`pnpm gen:topik-review\`). 내용 수정은 \`src/data/topik/*.ts\`에서 하고 다시 생성하세요.
+> 스프레드시트로 점검하려면 같은 폴더의 \`topik-review.csv\`를 엑셀/구글시트에서 여세요.
 
 ## 검수자 안내 (한국어 교사·원어민용)
 
@@ -144,12 +101,33 @@ const header = `# TOPIK 문항 원어민 검수 체크리스트
 
 > **표기 안내**: TOPIK II의 쓰기(작문)는 주관식이라 자동 채점이 불가하여 듣기·읽기만 다룹니다.
 
-**합계 ${total}문항** (TOPIK I ${perLevelCount.TOPIK1}문항 / TOPIK II ${perLevelCount.TOPIK2}문항)
+**합계 ${total}문항** (TOPIK I ${perLevel('TOPIK1')}문항 / TOPIK II ${perLevel('TOPIK2')}문항)
 
 ---
 `
 
-const summary = `
+  const parts: string[] = [header]
+  for (const level of LEVELS) {
+    parts.push(`\n## ${TOPIK_LEVEL_LABEL[level]} — 計 ${perLevel(level)}문항\n`)
+    for (const part of PARTS) {
+      const inSec = entries.filter((e) => e.level === level && e.part === part)
+      if (inSec.length === 0) continue
+      parts.push(`### ${TOPIK_PART_KO[part]} (${part}) — ${inSec.length}문항\n`)
+      for (const e of inSec) {
+        const lines = [`- [ ] **${e.sectionN}. [${e.tag}]** \`${e.id}\``]
+        if (e.context) lines.push(`  - ${e.contextLabel}: ${e.context}`)
+        lines.push(`  - 문제: ${e.prompt}`)
+        lines.push(
+          `  - 보기: ${e.choices.map((c, i) => `${CIRCLED[i]} ${c}${i === e.answer ? ' ✅' : ''}`).join('　')}`,
+        )
+        lines.push(`  - 정답: ${CIRCLED[e.answer]}　|　참고(일본어 해설): ${e.explain || '(없음)'}`)
+        lines.push(`  - 검수 의견: `)
+        parts.push(lines.join('\n') + '\n')
+      }
+    }
+  }
+
+  parts.push(`
 ---
 
 ## 검수 요약 (문제 발견 시 기록)
@@ -162,12 +140,51 @@ const summary = `
 
 - 전반 의견:
 - 검수자 / 날짜:
-`
+`)
+  return parts.join('\n')
+}
 
-const out = `${header}\n${body.join('\n')}${summary}`
+// ── CSV ─────────────────────────────────────────────────────────────────────
+function csvCell(v: string): string {
+  return '"' + (v ?? '').replace(/\r?\n/g, ' ').replace(/"/g, '""') + '"'
+}
 
+function renderCsv(entries: Entry[]): string {
+  const cols = [
+    '번호', '레벨', '섹션', '유형', 'id', '스크립트/지문', '문제',
+    '보기1', '보기2', '보기3', '보기4',
+    '정답번호', '정답내용', '참고(일본어해설)', '정답OK(Y/N)', '검수의견',
+  ]
+  const rows = [cols.map(csvCell).join(',')]
+  entries.forEach((e, i) => {
+    const ch = [0, 1, 2, 3].map((j) => e.choices[j] ?? '')
+    rows.push(
+      [
+        String(i + 1),
+        TOPIK_LEVEL_LABEL[e.level],
+        TOPIK_PART_KO[e.part],
+        e.tag,
+        e.id,
+        e.context,
+        e.prompt,
+        ...ch,
+        String(e.answer + 1),
+        e.choices[e.answer] ?? '',
+        e.explain,
+        '', // 정답OK — reviewer fills
+        '', // 검수의견 — reviewer fills
+      ].map(csvCell).join(','),
+    )
+  })
+  // BOM so Excel reads UTF-8 (Korean/Japanese) correctly.
+  return '﻿' + rows.join('\r\n') + '\r\n'
+}
+
+// ── write ───────────────────────────────────────────────────────────────────
+const entries = buildEntries()
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const target = resolve(__dirname, '../docs/topik-review.md')
-mkdirSync(dirname(target), { recursive: true })
-writeFileSync(target, out, 'utf8')
-console.log(`wrote ${target} (${total} items)`)
+const docsDir = resolve(__dirname, '../docs')
+mkdirSync(docsDir, { recursive: true })
+writeFileSync(resolve(docsDir, 'topik-review.md'), renderMarkdown(entries), 'utf8')
+writeFileSync(resolve(docsDir, 'topik-review.csv'), renderCsv(entries), 'utf8')
+console.log(`wrote docs/topik-review.md and docs/topik-review.csv (${entries.length} items)`)
