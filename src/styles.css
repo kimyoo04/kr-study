@@ -740,6 +740,11 @@ body {
   font-size: 13px;
   font-weight: 700;
 }
+.topik-level-note {
+  align-self: flex-start;
+  color: var(--muted);
+  font-size: 12px;
+}
 .topik-level-actions {
   display: flex;
   flex-direction: column;

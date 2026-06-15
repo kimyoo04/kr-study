@@ -43,6 +43,9 @@ export function TopikHome({ voiceReady, onStart, onResume, onExit }: Props) {
                 <span className="topik-level-name">{TOPIK_LEVEL_LABEL[level]}</span>
                 {!ready && <span className="topik-level-soon">準備中</span>}
               </div>
+              {ready && level === 'TOPIK2' && (
+                <p className="topik-level-note">聞き取り・読解のみ（作文は対象外）</p>
+              )}
               {ready ? (
                 resumable ? (
                   <div className="topik-level-actions">

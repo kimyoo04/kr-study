@@ -5,10 +5,12 @@ import type { ReadingSetQ } from './types'
 // Integrity checks over the TOPIK bank — content is hand-authored and agent-
 // editable, so the invariants the exam engine relies on are enforced here.
 describe('TOPIK content integrity', () => {
-  it('has both sections populated for TOPIK1', () => {
-    const t1 = TOPIK_POOL.filter((q) => q.level === 'TOPIK1')
-    expect(t1.some((q) => q.part === 'listening')).toBe(true)
-    expect(t1.some((q) => q.part === 'reading')).toBe(true)
+  it('has both sections populated for TOPIK1 and TOPIK2', () => {
+    for (const level of ['TOPIK1', 'TOPIK2'] as const) {
+      const items = TOPIK_POOL.filter((q) => q.level === level)
+      expect(items.some((q) => q.part === 'listening'), `${level} listening`).toBe(true)
+      expect(items.some((q) => q.part === 'reading'), `${level} reading`).toBe(true)
+    }
   })
 
   it('has a bank big enough that sampling gives varied exams', () => {

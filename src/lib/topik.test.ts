@@ -5,7 +5,7 @@ import {
   buildExam,
   clearProgress,
   flatten,
-  gradeFromPercent,
+  gradeFor,
   hasContent,
   loadProgress,
   loadResults,
@@ -161,13 +161,22 @@ describe('hasContent', () => {
   })
 })
 
-describe('gradeFromPercent', () => {
-  it('maps to TOPIK I bands (≥70% → 2級, ≥40% → 1級, else 0)', () => {
-    expect(gradeFromPercent(0.9)).toBe(2)
-    expect(gradeFromPercent(0.7)).toBe(2)
-    expect(gradeFromPercent(0.55)).toBe(1)
-    expect(gradeFromPercent(0.4)).toBe(1)
-    expect(gradeFromPercent(0.3)).toBe(0)
+describe('gradeFor', () => {
+  it('maps TOPIK I bands (≥70% → 2級, ≥40% → 1級, else 0)', () => {
+    expect(gradeFor('TOPIK1', 0.9)).toBe(2)
+    expect(gradeFor('TOPIK1', 0.7)).toBe(2)
+    expect(gradeFor('TOPIK1', 0.55)).toBe(1)
+    expect(gradeFor('TOPIK1', 0.4)).toBe(1)
+    expect(gradeFor('TOPIK1', 0.3)).toBe(0)
+  })
+
+  it('maps TOPIK II bands (3級 ≥40%, 4級 ≥50%, 5級 ≥63.3%, 6級 ≥76.7%)', () => {
+    expect(gradeFor('TOPIK2', 0.8)).toBe(6)
+    expect(gradeFor('TOPIK2', 230 / 300)).toBe(6)
+    expect(gradeFor('TOPIK2', 0.65)).toBe(5)
+    expect(gradeFor('TOPIK2', 0.5)).toBe(4)
+    expect(gradeFor('TOPIK2', 0.45)).toBe(3)
+    expect(gradeFor('TOPIK2', 0.39)).toBe(0)
   })
 })
 
@@ -180,28 +189,30 @@ describe('scoreExam', () => {
   ]
 
   it('counts per section and unanswered (null) as wrong', () => {
-    const r = scoreExam(items, [0, 0, 1, null])
+    const r = scoreExam(items, [0, 0, 1, null], 'TOPIK1')
     expect(r.partScores.listening).toEqual({ correct: 2, total: 2 })
     expect(r.partScores.reading).toEqual({ correct: 0, total: 2 })
     expect(r.total).toEqual({ correct: 2, total: 4 })
   })
 
   it('flags the weaker section when it is at least one question worse', () => {
-    const r = scoreExam(items, [0, 0, 1, 1]) // listening 2/2, reading 0/2
+    const r = scoreExam(items, [0, 0, 1, 1], 'TOPIK1') // listening 2/2, reading 0/2
     expect(r.weakestPart).toBe('reading')
     expect(r.inconclusive).toBe(false)
   })
 
   it('is inconclusive when sections are within a question of each other', () => {
-    const r = scoreExam(items, [0, 1, 0, 1]) // listening 1/2, reading 1/2
+    const r = scoreExam(items, [0, 1, 0, 1], 'TOPIK1') // listening 1/2, reading 1/2
     expect(r.inconclusive).toBe(true)
     expect(r.weakestPart).toBeNull()
   })
 
-  it('assigns the estimated 級 from the overall percentage', () => {
-    expect(scoreExam(items, [0, 0, 0, 0]).grade).toBe(2) // 100%
-    expect(scoreExam(items, [0, 0, 1, 1]).grade).toBe(1) // 50%
-    expect(scoreExam(items, [1, 1, 1, 1]).grade).toBe(0) // 0%
+  it('assigns the estimated 級 from the overall percentage and level', () => {
+    expect(scoreExam(items, [0, 0, 0, 0], 'TOPIK1').grade).toBe(2) // 100% → 2級
+    expect(scoreExam(items, [0, 0, 1, 1], 'TOPIK1').grade).toBe(1) // 50% → 1級
+    expect(scoreExam(items, [1, 1, 1, 1], 'TOPIK1').grade).toBe(0) // 0%
+    expect(scoreExam(items, [0, 0, 0, 0], 'TOPIK2').grade).toBe(6) // 100% → 6級
+    expect(scoreExam(items, [0, 0, 1, 1], 'TOPIK2').grade).toBe(4) // 50% → 4級
   })
 })
 

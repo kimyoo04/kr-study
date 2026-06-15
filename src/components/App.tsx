@@ -32,8 +32,12 @@ import {
   type ExamResult,
 } from '../lib/topik'
 
-// Mini mock-exam size, sampled fresh from the bank each run.
-const TOPIK_EXAM_COUNTS = { listening: 10, reading: 14 }
+// Mini mock-exam size per level, sampled fresh from the bank each run.
+// (TOPIK II reading passages run longer, so it takes slightly fewer.)
+const TOPIK_EXAM_COUNTS: Record<TopikLevel, { listening: number; reading: number }> = {
+  TOPIK1: { listening: 10, reading: 14 },
+  TOPIK2: { listening: 10, reading: 12 },
+}
 
 type Screen =
   | 'home'
@@ -150,7 +154,7 @@ export function App() {
   // ---- TOPIK mock exam ------------------------------------------------------
 
   function startTopik(level: TopikLevel) {
-    const exam = sampleExam(level, TOPIK_POOL, TOPIK_EXAM_COUNTS)
+    const exam = sampleExam(level, TOPIK_POOL, TOPIK_EXAM_COUNTS[level])
     if (exam.length === 0) return
     setTopikLevel(level)
     setTopikItems(exam)
@@ -170,7 +174,7 @@ export function App() {
   }
 
   function completeTopik(examItems: ScoredItem[], answers: (number | null)[]) {
-    const result = scoreExam(examItems, answers)
+    const result = scoreExam(examItems, answers, topikLevel)
     clearProgress()
     appendResult({
       level: topikLevel,

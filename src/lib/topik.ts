@@ -125,8 +125,9 @@ export function hasContent(level: TopikLevel, pool: TopikQuestion[]): boolean {
 
 export type PartScore = { correct: number; total: number }
 
-// 0 = below level 1 (불합격), else the estimated TOPIK 級 (1 or 2 for TOPIK I).
-export type TopikGrade = 0 | 1 | 2
+// 0 = below the lowest 級 (불합격), else the estimated TOPIK 級.
+// TOPIK I yields 1〜2, TOPIK II yields 3〜6.
+export type TopikGrade = 0 | 1 | 2 | 3 | 4 | 5 | 6
 
 export interface ExamResult {
   partScores: Record<TopikPart, PartScore>
@@ -139,13 +140,22 @@ export interface ExamResult {
 }
 
 /**
- * Map a percentage to a TOPIK I 級. Real TOPIK I is scored out of 200, with the
- * cut lines at 80 (1級) and 140 (2級). We scale the mini-exam percentage to that
- * band: ≥70% → 2級, ≥40% → 1級, else below 1級 (불합격).
+ * Map an overall percentage to an estimated 級 using the real TOPIK cut lines,
+ * scaled from the mini-exam to the full paper:
+ *   TOPIK I  (/200): 1級 ≥80,  2級 ≥140.
+ *   TOPIK II (/300): 3級 ≥120, 4級 ≥150, 5級 ≥190, 6級 ≥230.
+ * Below the lowest line returns 0 (불합격).
  */
-export function gradeFromPercent(pct: number): TopikGrade {
-  if (pct >= 0.7) return 2
-  if (pct >= 0.4) return 1
+export function gradeFor(level: TopikLevel, pct: number): TopikGrade {
+  if (level === 'TOPIK2') {
+    if (pct >= 230 / 300) return 6
+    if (pct >= 190 / 300) return 5
+    if (pct >= 150 / 300) return 4
+    if (pct >= 120 / 300) return 3
+    return 0
+  }
+  if (pct >= 140 / 200) return 2
+  if (pct >= 80 / 200) return 1
   return 0
 }
 
@@ -154,7 +164,11 @@ export function gradeFromPercent(pct: number): TopikGrade {
  * weak area. If the two sections are within one question's worth of each other,
  * the weakness is inconclusive — better than a confidently wrong label.
  */
-export function scoreExam(items: ScoredItem[], answers: (number | null)[]): ExamResult {
+export function scoreExam(
+  items: ScoredItem[],
+  answers: (number | null)[],
+  level: TopikLevel,
+): ExamResult {
   const partScores = {} as Record<TopikPart, PartScore>
   for (const part of PART_ORDER) partScores[part] = { correct: 0, total: 0 }
 
@@ -171,7 +185,7 @@ export function scoreExam(items: ScoredItem[], answers: (number | null)[]): Exam
   }
 
   const pct = total.total > 0 ? total.correct / total.total : 0
-  const grade = gradeFromPercent(pct)
+  const grade = gradeFor(level, pct)
 
   // Rank sections that actually have questions by percent (asc), tie-break by
   // fewer raw correct.

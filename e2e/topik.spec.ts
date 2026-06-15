@@ -9,7 +9,7 @@ test('runs a TOPIK I mini mock exam and shows a graded report', async ({ page })
   await page.getByRole('button', { name: /TOPIK 模擬試験/ }).click()
   await expect(page.getByText('レベルを選んでください')).toBeVisible()
 
-  await page.getByRole('button', { name: 'ミニ模擬試験を始める' }).click()
+  await page.getByRole('button', { name: 'ミニ模擬試験を始める' }).first().click()
 
   // First item is a listening item — the section tag proves 듣기 runs first.
   await expect(page.getByText(/聞き取り/)).toBeVisible()
@@ -48,8 +48,13 @@ test('runs a TOPIK I mini mock exam and shows a graded report', async ({ page })
   await expect(page.getByRole('heading', { name: 'かんこくご Pocket' })).toBeVisible()
 })
 
-test('TOPIK II is shown but not yet playable', async ({ page }) => {
+test('TOPIK II is playable (listening/reading only, writing excluded)', async ({ page }) => {
   await page.goto('./')
   await page.getByRole('button', { name: /TOPIK 模擬試験/ }).click()
-  await expect(page.getByText('準備中')).toBeVisible()
+  // TOPIK II now has content: it shows the writing-excluded note and a start button.
+  await expect(page.getByText(/作文は対象外/)).toBeVisible()
+  // Two levels, each with its own start button — start the second (TOPIK II).
+  await page.getByRole('button', { name: 'ミニ模擬試験を始める' }).nth(1).click()
+  await expect(page.getByText(/TOPIK II/)).toBeVisible()
+  await expect(page.getByText(/聞き取り|読解/)).toBeVisible()
 })
