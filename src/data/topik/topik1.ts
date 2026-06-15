@@ -6,8 +6,9 @@
 // The bank is intentionally larger than one exam: lib/topik.ts `sampleExam`
 // draws a random subset each run (default 10 듣기 + 14 읽기), so retakes get
 // fresh questions. All items are 4-choice; `answer` is the index of the correct
-// option. Content is original but follows the real type families and 초급
-// vocabulary — not verbatim past-paper text.
+// option; `explain` is a short Japanese rationale shown on the review screen.
+// Content is original but follows the real type families and 초급 vocabulary —
+// not verbatim past-paper text.
 
 import type { TopikQuestion } from './types'
 
@@ -22,6 +23,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '問いに合う答えを選んでください。',
     choices: ['네, 학생이에요.', '아니요, 학생을 좋아해요.', '네, 학생이 없어요.', '아니요, 학생이 와요.'],
     answer: 0,
+    explain: '「학생이에요?(学生ですか)」には はい/いいえ で答える。肯定は「네, 학생이에요」。',
   },
   {
     id: 'l-ans-japanese',
@@ -31,6 +33,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '問いに合う答えを選んでください。',
     choices: ['네, 일본 사람이에요.', '아니요, 일본에 가요.', '네, 일본을 좋아해요.', '아니요, 일본이 멀어요.'],
     answer: 0,
+    explain: '「일본 사람이에요?(日本人ですか)」への自然な肯定は「네, 일본 사람이에요」。',
   },
   {
     id: 'l-ans-sibling',
@@ -40,6 +43,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '問いに合う答えを選んでください。',
     choices: ['아니요, 동생이 없어요.', '네, 동생을 만나요.', '아니요, 동생이 와요.', '네, 동생에 가요.'],
     answer: 0,
+    explain: '「있어요?(いますか)」の否定は「없어요(いません)」。',
   },
   // 의문사 대답 (무엇/어디/언제/몇/누구)
   {
@@ -50,6 +54,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '問いに合う答えを選んでください。',
     choices: ['책이에요.', '책을 읽어요.', '책이 좋아요.', '책이 많아요.'],
     answer: 0,
+    explain: '「뭐예요?(何ですか)」にはモノで答える →「책이에요(本です)」。',
   },
   {
     id: 'l-wh-where',
@@ -59,6 +64,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '問いに合う答えを選んでください。',
     choices: ['학교에 가요.', '친구를 만나요.', '버스를 타요.', '지금 가요.'],
     answer: 0,
+    explain: '「어디에 가요?(どこへ行きますか)」には場所 →「학교에 가요」。',
   },
   {
     id: 'l-wh-time',
@@ -68,6 +74,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '問いに合う答えを選んでください。',
     choices: ['세 시예요.', '세 개예요.', '삼 일이에요.', '세 명이에요.'],
     answer: 0,
+    explain: '「몇 시예요?(何時ですか)」には時刻 →「세 시(3時)」。「세 개」は個数。',
   },
   {
     id: 'l-wh-birthday',
@@ -77,6 +84,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '問いに合う答えを選んでください。',
     choices: ['오월 십오 일이에요.', '네 명이에요.', '세 시예요.', '학교에 가요.'],
     answer: 0,
+    explain: '「언제예요?(いつですか)」には日付 →「오월 십오 일(5月15日)」。',
   },
   {
     id: 'l-wh-family',
@@ -86,6 +94,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '問いに合う答えを選んでください。',
     choices: ['네 명이에요.', '네 시예요.', '네 개예요.', '네 권이에요.'],
     answer: 0,
+    explain: '人数を聞く「몇 명이에요?」には「~명(人)」→「네 명(4人)」。',
   },
   {
     id: 'l-wh-who',
@@ -95,6 +104,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '問いに合う答えを選んでください。',
     choices: ['친구를 만나요.', '학교에 가요.', '책을 읽어요.', '집에 있어요.'],
     answer: 0,
+    explain: '「누구를 만나요?(誰に会いますか)」には人 →「친구를 만나요」。',
   },
   // 이어지는 말 고르기 (인사·관용 표현)
   {
@@ -105,6 +115,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '続く言葉として正しいものを選んでください。',
     choices: ['아니에요.', '고맙습니다.', '안녕하세요.', '미안해요.'],
     answer: 0,
+    explain: '「고맙습니다(ありがとう)」への返事は「아니에요(どういたしまして)」。',
   },
   {
     id: 'l-greet-goodbye',
@@ -114,6 +125,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '続く言葉として正しいものを選んでください。',
     choices: ['안녕히 계세요.', '안녕히 가세요.', '잘 먹겠습니다.', '처음 뵙겠습니다.'],
     answer: 0,
+    explain: '去る人に「안녕히 가세요」、残る人は「안녕히 계세요」と返す。',
   },
   {
     id: 'l-greet-firstmeet',
@@ -123,6 +135,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '続く言葉として正しいものを選んでください。',
     choices: ['만나서 반갑습니다.', '안녕히 가세요.', '잘 먹겠습니다.', '아니에요.'],
     answer: 0,
+    explain: '「처음 뵙겠습니다(はじめまして)」には「만나서 반갑습니다(お会いできてうれしい)」。',
   },
   {
     id: 'l-greet-meal',
@@ -132,6 +145,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '続く言葉として正しいものを選んでください。',
     choices: ['잘 먹겠습니다.', '안녕히 계세요.', '괜찮아요.', '반갑습니다.'],
     answer: 0,
+    explain: '「맛있게 드세요(召し上がれ)」には「잘 먹겠습니다(いただきます)」。',
   },
   {
     id: 'l-greet-sorry',
@@ -141,6 +155,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '続く言葉として正しいものを選んでください。',
     choices: ['괜찮아요.', '고맙습니다.', '안녕하세요.', '잘 먹겠습니다.'],
     answer: 0,
+    explain: '「죄송합니다(すみません)」には「괜찮아요(大丈夫です)」。',
   },
   // 장소 고르기 (여기는 어디입니까)
   {
@@ -151,6 +166,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: 'ここはどこですか。',
     choices: ['가게', '학교', '병원', '은행'],
     answer: 0,
+    explain: '値段「얼마예요?」と「~개 주세요」のやり取り → 店(가게)。',
   },
   {
     id: 'l-place-salon',
@@ -160,6 +176,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: 'ここはどこですか。',
     choices: ['미용실', '도서관', '식당', '공항'],
     answer: 0,
+    explain: '「머리를 자르다(髪を切る)」→ 美容室(미용실)。',
   },
   {
     id: 'l-place-bank',
@@ -169,6 +186,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: 'ここはどこですか。',
     choices: ['은행', '병원', '가게', '학교'],
     answer: 0,
+    explain: '「통장(通帳)」「신분증(身分証)」→ 銀行(은행)。',
   },
   {
     id: 'l-place-cinema',
@@ -178,6 +196,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: 'ここはどこですか。',
     choices: ['영화관', '식당', '서점', '공원'],
     answer: 0,
+    explain: '「표(チケット)」「영화(映画)」→ 映画館(영화관)。',
   },
   {
     id: 'l-place-hospital',
@@ -187,6 +206,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: 'ここはどこですか。',
     choices: ['병원', '약국', '학교', '회사'],
     answer: 0,
+    explain: '「어디가 아프세요?(どこが痛いですか)」→ 病院(병원)。',
   },
   // 화제 고르기 (무엇에 대해 이야기합니까)
   {
@@ -197,6 +217,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '二人は何について話していますか。',
     choices: ['주말', '날씨', '음식', '가족'],
     answer: 0,
+    explain: '「주말에 뭐 했어요?(週末に何をした)」→ 週末(주말)の話。',
   },
   {
     id: 'l-topic-family',
@@ -206,6 +227,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '二人は何について話していますか。',
     choices: ['가족', '직업', '날씨', '여행'],
     answer: 0,
+    explain: '「가족이 몇 명」「부모님하고 동생」→ 家族(가족)。',
   },
   {
     id: 'l-topic-sport',
@@ -215,6 +237,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '二人は何について話していますか。',
     choices: ['운동', '공부', '음식', '계절'],
     answer: 0,
+    explain: '「무슨 운동을 좋아해요?」「수영(水泳)」→ 運動(운동)。',
   },
   {
     id: 'l-topic-job',
@@ -224,6 +247,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '二人は何について話していますか。',
     choices: ['직업', '취미', '학교', '여행'],
     answer: 0,
+    explain: '「어디에서 일해요?(どこで働く)」「회사」→ 職業(직업)。',
   },
   // 내용 일치 · 중심 생각 · 이어질 행동
   {
@@ -234,6 +258,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '男性は今、何をしていますか。',
     choices: ['음악을 들어요.', '텔레비전을 봐요.', '밥을 먹어요.', '책을 읽어요.'],
     answer: 0,
+    explain: '男性は「음악을 들어요(音楽を聞く)」と言っている。',
   },
   {
     id: 'l-do-coffee',
@@ -243,6 +268,7 @@ const LISTENING: TopikQuestion[] = [
     prompt: '女性はこのあと何をしますか。',
     choices: ['커피를 삽니다.', '집에 갑니다.', '책을 읽습니다.', '밥을 만듭니다.'],
     answer: 0,
+    explain: '女性が「제가 살게요(私が買います)」→ 女性がコーヒーを買う。',
   },
   {
     id: 'l-match-hiking',
@@ -257,6 +283,7 @@ const LISTENING: TopikQuestion[] = [
       '두 사람은 오늘 등산을 했습니다.',
     ],
     answer: 0,
+    explain: '女性は「일이 있어요(用事がある)」と断った → 明日は登山に行かない。',
   },
   {
     id: 'l-mind-korean',
@@ -271,6 +298,7 @@ const LISTENING: TopikQuestion[] = [
       '한국어 공부가 재미없습니다.',
     ],
     answer: 0,
+    explain: '「재미있어요. 그런데 좀 어려워요」→ 中心は「面白い」。',
   },
   {
     id: 'l-match-weather',
@@ -285,6 +313,7 @@ const LISTENING: TopikQuestion[] = [
       '여자는 비를 좋아합니다.',
     ],
     answer: 0,
+    explain: '「비가 와요. 그래서 우산을 가지고 왔어요」→ 傘を持ってきた。',
   },
 ]
 
@@ -299,6 +328,7 @@ const READING: TopikQuestion[] = [
     prompt: '이것은 사과입니다. 저것은 바나나입니다. 그것은 포도입니다.　何についての話ですか。',
     choices: ['과일', '채소', '운동', '계절'],
     answer: 0,
+    explain: '사과(りんご)・바나나(バナナ)・포도(ぶどう)は果物(과일)。',
   },
   {
     id: 'r-topic-season',
@@ -308,6 +338,7 @@ const READING: TopikQuestion[] = [
     prompt: '봄은 따뜻합니다. 여름은 덥습니다. 겨울은 춥습니다.　何についての話ですか。',
     choices: ['계절', '음식', '가족', '취미'],
     answer: 0,
+    explain: '봄(春)・여름(夏)・겨울(冬)は季節(계절)。',
   },
   {
     id: 'r-topic-sport',
@@ -317,6 +348,7 @@ const READING: TopikQuestion[] = [
     prompt: '저는 야구를 좋아합니다. 그리고 축구도 좋아합니다.　何についての話ですか。',
     choices: ['운동', '공부', '여행', '날씨'],
     answer: 0,
+    explain: '야구(野球)・축구(サッカー)は運動(운동)。',
   },
   {
     id: 'r-topic-food',
@@ -326,6 +358,7 @@ const READING: TopikQuestion[] = [
     prompt: '저는 김치를 좋아합니다. 그리고 불고기도 좋아합니다.　何についての話ですか。',
     choices: ['음식', '과일', '운동', '계절'],
     answer: 0,
+    explain: '김치・불고기は食べ物(음식)。',
   },
   {
     id: 'r-topic-family',
@@ -335,6 +368,7 @@ const READING: TopikQuestion[] = [
     prompt: '아버지가 있습니다. 어머니가 있습니다. 형도 있습니다.　何についての話ですか。',
     choices: ['가족', '친구', '학교', '직업'],
     answer: 0,
+    explain: '아버지(父)・어머니(母)・형(兄)は家族(가족)。',
   },
   {
     id: 'r-topic-school',
@@ -344,6 +378,7 @@ const READING: TopikQuestion[] = [
     prompt: '교실이 있습니다. 칠판이 있습니다. 학생들이 공부합니다.　何についての話ですか。',
     choices: ['학교', '회사', '시장', '공원'],
     answer: 0,
+    explain: '교실(教室)・칠판(黒板)・학생(学生)は学校(학교)。',
   },
   {
     id: 'r-topic-transport',
@@ -353,6 +388,7 @@ const READING: TopikQuestion[] = [
     prompt: '버스를 탑니다. 지하철도 탑니다. 택시도 탑니다.　何についての話ですか。',
     choices: ['교통', '여행', '운동', '날씨'],
     answer: 0,
+    explain: '버스・지하철・택시は交通(교통)。',
   },
   // 빈칸 채우기 — 조사
   {
@@ -363,6 +399,7 @@ const READING: TopikQuestion[] = [
     prompt: '저는 학생( ) 아닙니다.　（　）に入るものを選んでください。',
     choices: ['이', '가', '을', '에'],
     answer: 0,
+    explain: '「~ではない」は ~이/가 아닙니다。パッチムのある「학생」には 이。',
   },
   {
     id: 'r-josa-e',
@@ -372,6 +409,7 @@ const READING: TopikQuestion[] = [
     prompt: '아침에 학교( ) 갑니다.　（　）に入るものを選んでください。',
     choices: ['에', '를', '이', '도'],
     answer: 0,
+    explain: '移動先「~へ」は 에。「학교에 가다(学校へ行く)」。',
   },
   {
     id: 'r-josa-reul',
@@ -381,6 +419,7 @@ const READING: TopikQuestion[] = [
     prompt: '저는 한국어( ) 공부합니다.　（　）に入るものを選んでください。',
     choices: ['를', '에', '이', '와'],
     answer: 0,
+    explain: '目的語「~を」は 을/를。母音終わりの「한국어」には 를。',
   },
   {
     id: 'r-josa-wa',
@@ -390,6 +429,7 @@ const READING: TopikQuestion[] = [
     prompt: '친구( ) 같이 영화를 봅니다.　（　）に入るものを選んでください。',
     choices: ['와', '를', '이', '에'],
     answer: 0,
+    explain: '「~と一緒に」は ~와/과 같이。母音終わりの「친구」には 와。',
   },
   {
     id: 'r-josa-eseo',
@@ -399,6 +439,7 @@ const READING: TopikQuestion[] = [
     prompt: '도서관( ) 책을 읽습니다.　（　）に入るものを選んでください。',
     choices: ['에서', '를', '이', '도'],
     answer: 0,
+    explain: '動作をする場所「~で」は 에서。「도서관에서 읽다(図書館で読む)」。',
   },
   // 빈칸 채우기 — 어휘(동사·형용사)
   {
@@ -409,6 +450,7 @@ const READING: TopikQuestion[] = [
     prompt: '날씨가 덥습니다. 그래서 창문을 ___.　（　）に入るものを選んでください。',
     choices: ['엽니다', '닫습니다', '씻습니다', '탑니다'],
     answer: 0,
+    explain: '暑い → 窓を「열다(開ける)」。닫다は閉める。',
   },
   {
     id: 'r-verb-clean',
@@ -418,6 +460,7 @@ const READING: TopikQuestion[] = [
     prompt: '교실이 더럽습니다. 그래서 교실을 ___.　（　）に入るものを選んでください。',
     choices: ['청소합니다', '공부합니다', '구경합니다', '출발합니다'],
     answer: 0,
+    explain: '汚い → 「청소하다(掃除する)」。',
   },
   {
     id: 'r-verb-wear',
@@ -427,6 +470,7 @@ const READING: TopikQuestion[] = [
     prompt: '날씨가 춥습니다. 그래서 따뜻한 옷을 ___.　（　）に入るものを選んでください。',
     choices: ['입습니다', '벗습니다', '씻습니다', '엽니다'],
     answer: 0,
+    explain: '寒い → 服を「입다(着る)」。벗다は脱ぐ。',
   },
   {
     id: 'r-verb-wash',
@@ -436,6 +480,7 @@ const READING: TopikQuestion[] = [
     prompt: '손이 더럽습니다. 그래서 손을 ___.　（　）に入るものを選んでください。',
     choices: ['씻습니다', '입습니다', '엽니다', '탑니다'],
     answer: 0,
+    explain: '手が汚い → 「씻다(洗う)」。',
   },
   {
     id: 'r-verb-study',
@@ -445,6 +490,7 @@ const READING: TopikQuestion[] = [
     prompt: '내일 시험이 있습니다. 그래서 열심히 ___.　（　）に入るものを選んでください。',
     choices: ['공부합니다', '운동합니다', '요리합니다', '여행합니다'],
     answer: 0,
+    explain: '試験がある → 「공부하다(勉強する)」。',
   },
   {
     id: 'r-adj-expensive',
@@ -454,6 +500,7 @@ const READING: TopikQuestion[] = [
     prompt: '이 가방은 십만 원입니다. 값이 아주 ___.　（　）に入るものを選んでください。',
     choices: ['비쌉니다', '쌉니다', '짧습니다', '낮습니다'],
     answer: 0,
+    explain: '10万ウォン → 値段が「비싸다(高い)」。싸다は安い。',
   },
   // 빈칸 채우기 — 접속사
   {
@@ -464,6 +511,7 @@ const READING: TopikQuestion[] = [
     prompt: '배가 고픕니다. ( ) 밥을 먹습니다.　（　）に入るものを選んでください。',
     choices: ['그래서', '그러나', '그리고', '그런데'],
     answer: 0,
+    explain: '原因→結果は 그래서(だから)。お腹がすいた → だから食べる。',
   },
   {
     id: 'r-conj-geureochiman',
@@ -473,6 +521,7 @@ const READING: TopikQuestion[] = [
     prompt: '비가 옵니다. ( ) 우산이 없습니다.　（　）に入るものを選んでください。',
     choices: ['그렇지만', '그래서', '그리고', '그러면'],
     answer: 0,
+    explain: '逆接「だが」は 그렇지만。雨が降る「だが」傘がない。',
   },
   {
     id: 'r-conj-geurigo',
@@ -482,6 +531,7 @@ const READING: TopikQuestion[] = [
     prompt: '손을 씻습니다. ( ) 밥을 먹습니다.　（　）に入るものを選んでください。',
     choices: ['그리고', '그러나', '그렇지만', '그러면'],
     answer: 0,
+    explain: '前後を並べる・順序は 그리고(そして)。手を洗う「そして」食べる。',
   },
   // 빈칸 채우기 — 수량사(단위 명사)
   {
@@ -492,6 +542,7 @@ const READING: TopikQuestion[] = [
     prompt: '교실에 학생이 다섯 ___ 있습니다.　（　）に入るものを選んでください。',
     choices: ['명', '개', '권', '마리'],
     answer: 0,
+    explain: '人を数える単位は「명(人)」。',
   },
   {
     id: 'r-counter-gae',
@@ -501,6 +552,7 @@ const READING: TopikQuestion[] = [
     prompt: '시장에서 사과를 세 ___ 샀습니다.　（　）に入るものを選んでください。',
     choices: ['개', '명', '권', '장'],
     answer: 0,
+    explain: 'モノを数える単位は「개(個)」。',
   },
   {
     id: 'r-counter-gwon',
@@ -510,6 +562,7 @@ const READING: TopikQuestion[] = [
     prompt: '도서관에서 책을 두 ___ 빌렸습니다.　（　）に入るものを選んでください。',
     choices: ['권', '개', '마리', '장'],
     answer: 0,
+    explain: '本を数える単位は「권(冊)」。',
   },
   {
     id: 'r-counter-mari',
@@ -519,6 +572,7 @@ const READING: TopikQuestion[] = [
     prompt: '우리 집에 고양이가 한 ___ 있습니다.　（　）に入るものを選んでください。',
     choices: ['마리', '명', '개', '대'],
     answer: 0,
+    explain: '動物を数える単位は「마리(匹)」。',
   },
   // 내용 일치 (글을 읽고 같은 것 고르기)
   {
@@ -535,6 +589,7 @@ const READING: TopikQuestion[] = [
       '저는 저녁에 학교에 갑니다.',
     ],
     answer: 0,
+    explain: '本文「아침 일곱 시에 일어납니다」と一致。배우다は習う(가르치다=教えるは×)。',
   },
   {
     id: 'r-detail-movie',
@@ -550,6 +605,7 @@ const READING: TopikQuestion[] = [
       '주말에 일을 했습니다.',
     ],
     answer: 0,
+    explain: '本文「친구를 만났습니다」と一致。같이=一緒に(혼자=一人は×)。',
   },
   {
     id: 'r-detail-exercise',
@@ -565,6 +621,7 @@ const READING: TopikQuestion[] = [
       '저는 운동을 안 합니다.',
     ],
     answer: 0,
+    explain: '本文「일요일에 운동」と一致。ア침(朝)・공원(公園)なので저녁/집は×。',
   },
   {
     id: 'r-detail-library',
@@ -580,6 +637,7 @@ const READING: TopikQuestion[] = [
       '도서관이 집에서 멉니다.',
     ],
     answer: 0,
+    explain: '本文「집 근처에 도서관」と一致。조용하다=静か(시끄럽다=うるさいは×)。',
   },
   // 내용과 다른 것 고르기 (안내문)
   {
@@ -596,6 +654,7 @@ const READING: TopikQuestion[] = [
       '책과 공책을 준비합니다.',
     ],
     answer: 0,
+    explain: '授業は화요일(火曜)。「월요일(月曜)」は案内と違う → これが答え。',
   },
   // 중심 생각 고르기
   {
@@ -612,6 +671,7 @@ const READING: TopikQuestion[] = [
       '운동은 위험합니다.',
     ],
     answer: 0,
+    explain: '全体の中心は「운동을 좋아합니다(運動が好き)」。',
   },
   // 지문 세트 (passage + 복수 문항)
   {
@@ -626,6 +686,7 @@ const READING: TopikQuestion[] = [
         prompt: '다나카 씨는 어느 나라 사람입니까?　田中さんはどこの国の人ですか。',
         choices: ['일본', '한국', '중국', '미국'],
         answer: 0,
+        explain: '「일본에서 왔습니다(日本から来た)」→ 日本人。',
       },
       {
         prompt: '内容と同じものを選んでください。',
@@ -636,6 +697,7 @@ const READING: TopikQuestion[] = [
           '다나카 씨는 김치찌개를 싫어합니다.',
         ],
         answer: 0,
+        explain: '「한국 음식을 좋아합니다」と一致。회사에서 일하므로学生は×。',
       },
     ],
   },
@@ -651,6 +713,7 @@ const READING: TopikQuestion[] = [
         prompt: '이 사람은 지난주에 어디에 갔습니까?　この人は先週どこへ行きましたか。',
         choices: ['제주도', '서울', '부산', '일본'],
         answer: 0,
+        explain: '「제주도에 갔습니다(済州島へ行った)」。',
       },
       {
         prompt: '内容と同じものを選んでください。',
@@ -661,6 +724,7 @@ const READING: TopikQuestion[] = [
           '여행이 즐겁지 않았습니다.',
         ],
         answer: 0,
+        explain: '「바다에서 수영도 했습니다」と一致。',
       },
     ],
   },

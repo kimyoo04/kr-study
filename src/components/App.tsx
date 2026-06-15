@@ -20,6 +20,7 @@ import { Search } from './Search'
 import { TopikHome } from './TopikHome'
 import { TopikExam } from './TopikExam'
 import { TopikReport } from './TopikReport'
+import { TopikReview } from './TopikReview'
 import type { ScoredItem, TopikLevel } from '../data/topik/types'
 import { TOPIK_POOL } from '../data/topik'
 import {
@@ -42,6 +43,7 @@ type Screen =
   | 'topik-home'
   | 'topik-exam'
   | 'topik-report'
+  | 'topik-review'
 
 export function App() {
   const { progress, persistent, update } = useProgress()
@@ -177,6 +179,9 @@ export function App() {
       grade: result.grade,
       weakestPart: result.weakestPart,
     })
+    // Keep the graded items + answers so the review screen can show them.
+    setTopikItems(examItems)
+    setTopikAnswers(answers)
     setTopikResult(result)
     setScreen('topik-report')
   }
@@ -255,8 +260,16 @@ export function App() {
         <TopikReport
           level={topikLevel}
           result={topikResult}
+          onReview={() => setScreen('topik-review')}
           onRetake={() => startTopik(topikLevel)}
           onHome={() => setScreen('home')}
+        />
+      )}
+      {screen === 'topik-review' && (
+        <TopikReview
+          items={topikItems}
+          answers={topikAnswers}
+          onClose={() => setScreen('topik-report')}
         />
       )}
     </div>

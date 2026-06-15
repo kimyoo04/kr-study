@@ -45,6 +45,7 @@ export interface ListeningQ extends Base {
   prompt: string // the question (Japanese)
   choices: string[] // 4 options
   answer: number // index into choices
+  explain?: string // Japanese explanation shown on the answer-review screen
 }
 
 // 읽기 single item: one prompt + 4 choices (어휘/문법 빈칸, 주제 고르기, 세부내용).
@@ -54,6 +55,7 @@ export interface ReadingSingleQ extends Base {
   prompt: string // sentence with a ( ) blank, or a short text + question
   choices: string[]
   answer: number
+  explain?: string // Japanese explanation shown on the answer-review screen
 }
 
 // 읽기 passage set: one passage, one or more sub-questions. Each sub-question
@@ -62,7 +64,7 @@ export interface ReadingSetQ extends Base {
   part: 'reading'
   kind: 'passage'
   passage: string
-  questions: { prompt: string; choices: string[]; answer: number }[]
+  questions: { prompt: string; choices: string[]; answer: number; explain?: string }[]
 }
 
 export type ReadingQ = ReadingSingleQ | ReadingSetQ
@@ -79,4 +81,5 @@ export interface ScoredItem {
   answer: number // index into choices
   passage?: string // present for reading passage items
   script?: string // present for listening items
+  explain?: string // Japanese explanation for the answer-review screen
 }

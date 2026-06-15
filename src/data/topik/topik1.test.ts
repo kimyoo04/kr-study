@@ -50,6 +50,18 @@ describe('TOPIK content integrity', () => {
     }
   })
 
+  it('every item (and passage sub-question) has a Japanese explanation', () => {
+    for (const q of TOPIK_POOL) {
+      if (q.part === 'reading' && q.kind === 'passage') {
+        for (const sub of (q as ReadingSetQ).questions) {
+          expect(sub.explain, `${q.id} sub missing explain`).toBeTruthy()
+        }
+      } else {
+        expect(q.explain, `${q.id} missing explain`).toBeTruthy()
+      }
+    }
+  })
+
   it('has no duplicate question ids', () => {
     const ids = TOPIK_POOL.map((q) => q.id)
     expect(new Set(ids).size).toBe(ids.length)

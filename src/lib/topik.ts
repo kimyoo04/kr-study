@@ -28,6 +28,7 @@ export function flatten(questions: TopikQuestion[]): ScoredItem[] {
         choices: q.choices,
         answer: q.answer,
         script: q.script,
+        explain: q.explain,
       })
     } else if (q.kind === 'passage') {
       q.questions.forEach((sub, i) => {
@@ -38,6 +39,7 @@ export function flatten(questions: TopikQuestion[]): ScoredItem[] {
           choices: sub.choices,
           answer: sub.answer,
           passage: q.passage,
+          explain: sub.explain,
         })
       })
     } else {
@@ -48,6 +50,7 @@ export function flatten(questions: TopikQuestion[]): ScoredItem[] {
         prompt: q.prompt,
         choices: q.choices,
         answer: q.answer,
+        explain: q.explain,
       })
     }
   }

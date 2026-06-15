@@ -791,3 +791,43 @@ body {
 .progress-fill.weak {
   background: var(--wrong);
 }
+.topik-review-filter {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.topik-review-filter .btn-ghost {
+  flex: 1;
+  min-height: 40px;
+}
+.topik-review-filter .btn-ghost.active {
+  border-color: var(--primary);
+  color: #fff;
+}
+.topik-review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+.topik-review-item {
+  gap: 10px;
+  align-items: stretch;
+}
+.topik-rev-ok {
+  color: var(--correct);
+  font-weight: 800;
+}
+.topik-rev-ng {
+  color: var(--wrong);
+  font-weight: 800;
+}
+.topik-explain {
+  width: 100%;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+}

@@ -33,6 +33,16 @@ test('runs a TOPIK I mini mock exam and shows a graded report', async ({ page })
   await expect(page.locator('.topik-hero-grade')).toBeVisible()
   await expect(page.locator('.topik-hero-grade')).toHaveText(/級|不合格/)
 
+  // Answer review: every answered item shows a correct mark and an explanation.
+  await page.getByRole('button', { name: '答えを見直す' }).click()
+  await expect(page.getByText('答え合わせ')).toBeVisible()
+  await expect(page.locator('.topik-explain').first()).toBeVisible()
+  await expect(page.locator('.topik-review-item').first()).toBeVisible()
+  // Filter to mistakes only, then return to the report.
+  await page.getByRole('button', { name: /間違いだけ/ }).click()
+  await page.getByRole('button', { name: '結果に戻る' }).click()
+  await expect(page.getByText(/判定結果/)).toBeVisible()
+
   // Back home.
   await page.getByRole('button', { name: 'ホームへ' }).click()
   await expect(page.getByRole('heading', { name: 'かんこくご Pocket' })).toBeVisible()

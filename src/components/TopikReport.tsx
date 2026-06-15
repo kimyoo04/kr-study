@@ -10,11 +10,12 @@ import { PART_ORDER, type ExamResult } from '../lib/topik'
 interface Props {
   level: TopikLevel
   result: ExamResult
+  onReview: () => void
   onRetake: () => void
   onHome: () => void
 }
 
-export function TopikReport({ level, result, onRetake, onHome }: Props) {
+export function TopikReport({ level, result, onReview, onRetake, onHome }: Props) {
   const { partScores, total, grade, weakestPart, inconclusive } = result
   const pct = total.total > 0 ? Math.round((total.correct / total.total) * 100) : 0
 
@@ -68,7 +69,10 @@ export function TopikReport({ level, result, onRetake, onHome }: Props) {
       </div>
 
       <div className="complete-actions">
-        <button className="btn-primary" onClick={onRetake}>
+        <button className="btn-primary" onClick={onReview}>
+          答えを見直す
+        </button>
+        <button className="btn-ghost" onClick={onRetake}>
           もう一度
         </button>
         <button className="btn-ghost" onClick={onHome}>
