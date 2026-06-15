@@ -22,6 +22,7 @@ interface Props {
   updateReady: boolean
   onApplyUpdate: () => void
   onSearch: () => void
+  onTopik: () => void
   onStart: () => void
 }
 
@@ -44,6 +45,7 @@ export function Home({
   updateReady,
   onApplyUpdate,
   onSearch,
+  onTopik,
   onStart,
 }: Props) {
   const total = scopeItems.length
@@ -151,6 +153,11 @@ export function Home({
           苦手だけ復習 ({weakCount})
         </button>
       )}
+
+      <button className="topik-entry" onClick={onTopik}>
+        📝 TOPIK 模擬試験
+        <small>聞き取り・読解のミニ模試で実力チェック</small>
+      </button>
     </main>
   )
 }

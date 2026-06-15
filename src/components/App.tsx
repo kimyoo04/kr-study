@@ -17,8 +17,28 @@ import { Home } from './Home'
 import { Lesson, type LessonResult } from './Lesson'
 import { Complete } from './Complete'
 import { Search } from './Search'
+import { TopikHome } from './TopikHome'
+import { TopikExam } from './TopikExam'
+import { TopikReport } from './TopikReport'
+import type { ScoredItem, TopikLevel } from '../data/topik/types'
+import { TOPIK_POOL } from '../data/topik'
+import {
+  appendResult,
+  buildExam,
+  clearProgress,
+  loadProgress as loadTopikProgress,
+  scoreExam,
+  type ExamResult,
+} from '../lib/topik'
 
-type Screen = 'home' | 'lesson' | 'complete' | 'search'
+type Screen =
+  | 'home'
+  | 'lesson'
+  | 'complete'
+  | 'search'
+  | 'topik-home'
+  | 'topik-exam'
+  | 'topik-report'
 
 export function App() {
   const { progress, persistent, update } = useProgress()
@@ -30,6 +50,14 @@ export function App() {
   const [results, setResults] = useState<LessonResult[]>([])
   // Review lessons (間違いだけ/苦手だけ) must not advance the SRS lesson clock.
   const [isReview, setIsReview] = useState(false)
+
+  // TOPIK mock-exam state. Kept separate from the SRS lesson loop — it has its
+  // own pool, persistence, and scoring.
+  const [topikLevel, setTopikLevel] = useState<TopikLevel>('TOPIK1')
+  const [topikItems, setTopikItems] = useState<ScoredItem[]>([])
+  const [topikAnswers, setTopikAnswers] = useState<(number | null)[]>([])
+  const [topikIdx, setTopikIdx] = useState(0)
+  const [topikResult, setTopikResult] = useState<ExamResult | null>(null)
 
   // Listen mode needs a Korean TTS voice. Voices load asynchronously and some
   // devices fire voiceschanged late, so keep listening instead of probing once.
@@ -114,6 +142,42 @@ export function App() {
     setScreen('complete')
   }
 
+  // ---- TOPIK mock exam ------------------------------------------------------
+
+  function startTopik(level: TopikLevel) {
+    const exam = buildExam(level, TOPIK_POOL)
+    if (exam.length === 0) return
+    setTopikLevel(level)
+    setTopikItems(exam)
+    setTopikAnswers(new Array(exam.length).fill(null))
+    setTopikIdx(0)
+    setScreen('topik-exam')
+  }
+
+  function resumeTopik() {
+    const saved = loadTopikProgress()
+    if (!saved) return
+    setTopikLevel(saved.level)
+    setTopikItems(saved.items)
+    setTopikAnswers(saved.answers)
+    setTopikIdx(saved.idx)
+    setScreen('topik-exam')
+  }
+
+  function completeTopik(examItems: ScoredItem[], answers: (number | null)[]) {
+    const result = scoreExam(examItems, answers)
+    clearProgress()
+    appendResult({
+      level: topikLevel,
+      takenAt: new Date().toISOString().slice(0, 10),
+      partScores: result.partScores,
+      grade: result.grade,
+      weakestPart: result.weakestPart,
+    })
+    setTopikResult(result)
+    setScreen('topik-report')
+  }
+
   const wrong = results.filter((r) => r.mode === 'quiz' && !r.correct).map((r) => r.hangul)
   const weak = weakItems(progress, scopeItems, deck.id)
 
@@ -139,6 +203,7 @@ export function App() {
           updateReady={updateReady}
           onApplyUpdate={swApplyUpdate}
           onSearch={() => setScreen('search')}
+          onTopik={() => setScreen('topik-home')}
           onStart={startLesson}
         />
       )}
@@ -164,6 +229,33 @@ export function App() {
         />
       )}
       {screen === 'search' && <Search onExit={() => setScreen('home')} />}
+      {screen === 'topik-home' && (
+        <TopikHome
+          voiceReady={voiceReady}
+          onStart={startTopik}
+          onResume={resumeTopik}
+          onExit={() => setScreen('home')}
+        />
+      )}
+      {screen === 'topik-exam' && (
+        <TopikExam
+          level={topikLevel}
+          items={topikItems}
+          initialAnswers={topikAnswers}
+          initialIdx={topikIdx}
+          voiceReady={voiceReady}
+          onComplete={completeTopik}
+          onExit={() => setScreen('topik-home')}
+        />
+      )}
+      {screen === 'topik-report' && topikResult && (
+        <TopikReport
+          level={topikLevel}
+          result={topikResult}
+          onRetake={() => startTopik(topikLevel)}
+          onHome={() => setScreen('home')}
+        />
+      )}
     </div>
   )
 }

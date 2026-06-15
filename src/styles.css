@@ -654,3 +654,140 @@ body {
   min-width: 44px;
   min-height: 44px;
 }
+
+/* ---- TOPIK mock exam ---- */
+.topik-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  margin-top: 4px;
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 14px 16px;
+  min-height: 52px;
+  cursor: pointer;
+}
+.topik-entry small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.topik-part-tag {
+  align-self: flex-start;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.topik-prompt {
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: 700;
+  text-align: center;
+  margin: 8px 0;
+}
+.topik-passage,
+.topik-script-fallback {
+  width: 100%;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 16px;
+  font-size: 16px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  text-align: left;
+}
+.topik-script-fallback {
+  color: var(--muted);
+  font-size: 15px;
+}
+.topik-nav {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.topik-nav .btn-primary,
+.topik-nav .btn-ghost {
+  flex: 1;
+}
+.topik-levels {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+.topik-level {
+  gap: 12px;
+}
+.topik-level-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.topik-level-name {
+  font-size: 20px;
+  font-weight: 800;
+}
+.topik-level-soon {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+.topik-level-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.topik-hero {
+  gap: 8px;
+  text-align: center;
+}
+.topik-hero-grade {
+  font-size: 22px;
+  font-weight: 800;
+}
+.topik-hero-sub {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.topik-score-pct {
+  color: var(--muted);
+  font-size: 0.6em;
+}
+.topik-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+.topik-bar-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 48px;
+  align-items: center;
+  gap: 10px;
+}
+.topik-bar-label {
+  font-size: 13px;
+  font-weight: 700;
+}
+.topik-bar-weak {
+  color: var(--wrong);
+  font-weight: 800;
+}
+.topik-bar-val {
+  font-size: 14px;
+  color: var(--muted);
+  text-align: right;
+}
+.progress-fill.weak {
+  background: var(--wrong);
+}
