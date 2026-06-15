@@ -36,8 +36,8 @@ import {
 // Mini mock-exam size per level, sampled fresh from the bank each run.
 // (TOPIK II reading passages run longer, so it takes slightly fewer.)
 const TOPIK_EXAM_COUNTS: Record<TopikLevel, { listening: number; reading: number }> = {
-  TOPIK1: { listening: 10, reading: 14 },
-  TOPIK2: { listening: 10, reading: 12 },
+  TOPIK1: { listening: 12, reading: 16 },
+  TOPIK2: { listening: 12, reading: 14 },
 }
 
 type Screen =
