@@ -4,17 +4,19 @@
 import type { TopikLevel } from '../data/topik/types'
 import { TOPIK_LEVEL_LABEL } from '../data/topik/types'
 import { TOPIK_LEVELS, TOPIK_POOL } from '../data/topik'
-import { hasContent, loadProgress } from '../lib/topik'
+import { hasContent, loadProgress, loadResults } from '../lib/topik'
 
 interface Props {
   voiceReady: boolean
   onStart: (level: TopikLevel) => void
   onResume: () => void
+  onHistory: () => void
   onExit: () => void
 }
 
-export function TopikHome({ voiceReady, onStart, onResume, onExit }: Props) {
+export function TopikHome({ voiceReady, onStart, onResume, onHistory, onExit }: Props) {
   const inProgress = loadProgress()
+  const historyCount = loadResults().length
 
   return (
     <main className="screen" tabIndex={-1}>
@@ -70,6 +72,12 @@ export function TopikHome({ voiceReady, onStart, onResume, onExit }: Props) {
           )
         })}
       </div>
+
+      {historyCount > 0 && (
+        <button className="btn-ghost" onClick={onHistory}>
+          受験履歴を見る ({historyCount})
+        </button>
+      )}
     </main>
   )
 }

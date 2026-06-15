@@ -46,6 +46,12 @@ test('runs a TOPIK I mini mock exam and shows a graded report', async ({ page })
   // Back home.
   await page.getByRole('button', { name: 'ホームへ' }).click()
   await expect(page.getByRole('heading', { name: 'かんこくご Pocket' })).toBeVisible()
+
+  // The finished exam is now recorded in the history screen.
+  await page.getByRole('button', { name: /TOPIK 模擬試験/ }).click()
+  await page.getByRole('button', { name: /受験履歴を見る/ }).click()
+  await expect(page.getByText('受験履歴')).toBeVisible()
+  await expect(page.locator('.topik-history-item').first()).toBeVisible()
 })
 
 test('TOPIK II is playable (listening/reading only, writing excluded)', async ({ page }) => {

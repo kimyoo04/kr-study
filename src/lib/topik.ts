@@ -251,6 +251,11 @@ export function appendResult(result: Omit<TopikResult, 'version'>): void {
   saveJson(RESULTS_KEY, all)
 }
 
+/** Wipe the saved exam history. */
+export function clearResults(): void {
+  saveJson(RESULTS_KEY, [])
+}
+
 export function saveProgress(p: Omit<InProgress, 'version'>): void {
   saveJson(PROGRESS_KEY, { ...p, version: SCHEMA_VERSION })
 }

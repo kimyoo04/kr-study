@@ -21,6 +21,7 @@ import { TopikHome } from './TopikHome'
 import { TopikExam } from './TopikExam'
 import { TopikReport } from './TopikReport'
 import { TopikReview } from './TopikReview'
+import { TopikHistory } from './TopikHistory'
 import type { ScoredItem, TopikLevel } from '../data/topik/types'
 import { TOPIK_POOL } from '../data/topik'
 import {
@@ -48,6 +49,7 @@ type Screen =
   | 'topik-exam'
   | 'topik-report'
   | 'topik-review'
+  | 'topik-history'
 
 export function App() {
   const { progress, persistent, update } = useProgress()
@@ -246,8 +248,12 @@ export function App() {
           voiceReady={voiceReady}
           onStart={startTopik}
           onResume={resumeTopik}
+          onHistory={() => setScreen('topik-history')}
           onExit={() => setScreen('home')}
         />
+      )}
+      {screen === 'topik-history' && (
+        <TopikHistory onClose={() => setScreen('topik-home')} />
       )}
       {screen === 'topik-exam' && (
         <TopikExam

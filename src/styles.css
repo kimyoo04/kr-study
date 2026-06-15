@@ -836,3 +836,66 @@ body {
   line-height: 1.6;
   color: var(--muted);
 }
+.topik-trend {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.topik-trend-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.topik-trend-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.topik-trend-chip {
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.topik-trend-chip:not(:last-child)::after {
+  content: '→';
+  margin-left: 8px;
+  color: var(--muted);
+}
+.topik-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+.topik-history-item {
+  gap: 6px;
+  align-items: stretch;
+}
+.topik-history-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.topik-history-grade {
+  font-size: 18px;
+  font-weight: 800;
+}
+.topik-history-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+.topik-history-score {
+  font-size: 15px;
+  font-weight: 700;
+}
+.topik-history-parts {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
