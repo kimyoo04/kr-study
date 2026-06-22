@@ -10,6 +10,9 @@ export interface LessonResult {
   hangul: Hangul
   mode: LessonMode
   correct: boolean
+  // Skipped items are neutral: excluded from scoring and left untouched in the
+  // SRS schedule (the card stays due, so the item naturally reappears later).
+  skipped?: boolean
 }
 
 interface Props {
@@ -52,28 +55,37 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
     })
   }, [items, pool, deck, listenMode])
 
+  // Results and picks are indexed by step position (not append-only) so the
+  // learner can move back to review earlier items and forward again without
+  // losing answers. A null entry means "not yet answered/skipped".
   const [index, setIndex] = useState(0)
-  const [phase, setPhase] = useState<'answer' | 'feedback'>('answer')
-  const [picked, setPicked] = useState<Hangul | null>(null)
-  const [results, setResults] = useState<LessonResult[]>([])
+  const [results, setResults] = useState<(LessonResult | null)[]>(() => steps.map(() => null))
+  const [picks, setPicks] = useState<(Hangul | null)[]>(() => steps.map(() => null))
   const [confirmExit, setConfirmExit] = useState(false)
 
   const step = steps[index]
+  const result = results[index]
+  const answered = result != null
+  // Revisiting an already-answered/skipped step shows it read-only (feedback).
+  const phase: 'answer' | 'feedback' = answered ? 'feedback' : 'answer'
+  const picked = picks[index]
   const progressPct = Math.round((index / steps.length) * 100)
 
-  function record(correct: boolean): LessonResult[] {
-    return [...results, { hangul: step.item.hangul, mode: step.item.mode, correct }]
+  const withAt = <T,>(arr: T[], i: number, v: T): T[] => {
+    const copy = arr.slice()
+    copy[i] = v
+    return copy
   }
 
-  function advance(next: LessonResult[]) {
+  // Move on from the current step; complete the lesson if it was the last one.
+  // `merged` carries the just-committed results so completion sees them despite
+  // React state batching.
+  function advanceFrom(merged: (LessonResult | null)[]) {
     if (index + 1 >= steps.length) {
-      onComplete(next)
-      return
+      onComplete(merged.filter((r): r is LessonResult => r != null))
+    } else {
+      setIndex(index + 1)
     }
-    setResults(next)
-    setIndex(index + 1)
-    setPhase('answer')
-    setPicked(null)
   }
 
   function sayCurrent() {
@@ -83,27 +95,53 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
   function onIntroNext() {
     primeSpeech()
     sayCurrent()
-    advance(record(true))
+    if (answered) {
+      advanceFrom(results)
+      return
+    }
+    const merged = withAt(results, index, {
+      hangul: step.item.hangul,
+      mode: step.item.mode,
+      correct: true,
+    })
+    setResults(merged)
+    advanceFrom(merged)
   }
 
   function onPick(option: Hangul) {
-    if (phase === 'feedback') return
+    if (answered) return // read-only when revisiting
     primeSpeech()
     const correct = isCorrect(step.question!, option)
-    setPicked(option)
-    setPhase('feedback')
+    setResults(withAt(results, index, { hangul: step.item.hangul, mode: step.item.mode, correct }))
+    setPicks(withAt(picks, index, option))
     if (correct) playCorrect()
     else playWrong()
     sayCurrent()
   }
 
   function onContinue() {
-    advance(record(isCorrect(step.question!, picked!)))
+    advanceFrom(results)
+  }
+
+  function onSkip() {
+    if (answered) return
+    const merged = withAt(results, index, {
+      hangul: step.item.hangul,
+      mode: step.item.mode,
+      correct: false,
+      skipped: true,
+    })
+    setResults(merged)
+    advanceFrom(merged)
+  }
+
+  function onBack() {
+    if (index > 0) setIndex(index - 1)
   }
 
   function onExitClick() {
-    // Confirm once the user has made any progress (answered or advanced).
-    if (index > 0 || phase === 'feedback' || results.length > 0) setConfirmExit(true)
+    // Confirm once the user has made any progress (moved on or answered).
+    if (index > 0 || results.some((r) => r != null)) setConfirmExit(true)
     else onExit()
   }
 
@@ -112,6 +150,14 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
       <div className="lesson-top">
         <button className="link" onClick={onExitClick} aria-label="閉じる">
           ✕
+        </button>
+        <button
+          className="link"
+          onClick={onBack}
+          disabled={index === 0}
+          aria-label="前の問題へ戻る"
+        >
+          ←
         </button>
         <div className="progress-bar slim">
           <div className="progress-fill" style={{ width: `${progressPct}%` }} />
@@ -135,9 +181,11 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
           kataReading={!!deck.kataReading}
           phase={phase}
           picked={picked}
+          skipped={!!result?.skipped}
           onReplay={sayCurrent}
           onPick={onPick}
           onContinue={onContinue}
+          onSkip={onSkip}
         />
       )}
 
@@ -213,18 +261,22 @@ function Quiz({
   kataReading,
   phase,
   picked,
+  skipped,
   onReplay,
   onPick,
   onContinue,
+  onSkip,
 }: {
   question: Question
   deckKind: DeckKind
   kataReading: boolean
   phase: 'answer' | 'feedback'
   picked: Hangul | null
+  skipped: boolean
   onReplay: () => void
   onPick: (k: Hangul) => void
   onContinue: () => void
+  onSkip: () => void
 }) {
   const { qtype } = question
   // In listen mode hangul decks still pick the glyph; word/sentence decks
@@ -323,6 +375,18 @@ function Quiz({
             </>
           ))}
       </p>
+
+      {phase === 'feedback' && skipped && (
+        <p className="skip-note" role="status">
+          スキップしました(採点に含まれません)
+        </p>
+      )}
+
+      {phase === 'answer' && (
+        <button className="btn-ghost skip" onClick={onSkip}>
+          スキップ
+        </button>
+      )}
 
       {phase === 'feedback' && (
         <button className="btn-primary" onClick={onContinue}>

@@ -309,6 +309,10 @@ body {
   min-height: 48px;
   margin-left: -10px;
 }
+.lesson-top .link:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
 .counter {
   color: var(--muted);
   font-size: 13px;
@@ -537,6 +541,26 @@ body {
 .chip.miss {
   background: rgba(255, 92, 124, 0.18);
   color: var(--wrong);
+}
+.chip.skip {
+  background: rgba(150, 150, 150, 0.18);
+  color: var(--muted);
+}
+.score-skip {
+  color: var(--muted);
+  font-size: 15px;
+  margin-left: 6px;
+}
+/* スキップ操作: 主要動線より目立たないゴーストボタン */
+.btn-ghost.skip {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.skip-note {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 4px 0 0;
 }
 .complete-actions {
   width: 100%;

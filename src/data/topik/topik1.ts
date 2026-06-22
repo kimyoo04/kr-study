@@ -1237,10 +1237,10 @@ const READING_EXTRA2: TopikQuestion[] = [
     level: 'TOPIK1',
     part: 'reading',
     kind: 'cloze',
-    prompt: '아침 아홉 시( ) 일합니다.　（　）に入るものを選んでください。',
+    prompt: '아침 아홉 시( ) 저녁 여섯 시까지 일합니다.　（　）に入るものを選んでください。',
     choices: ['부터', '까지', '에서', '도'],
     answer: 0,
-    explain: '時間の起点「~から」は 부터。9時から働く。',
+    explain: '時間の起点「~から」は 부터。「9時から夕方6時まで」のように 부터~까지 で範囲を表す。',
   },
   {
     id: 'l3-r-josa-boda',
