@@ -16,15 +16,19 @@ export function Complete({ results, wrong, onReview, onAgain, onHome }: Props) {
     playComplete()
   }, [])
 
-  const graded = results.filter((r) => r.mode === 'quiz')
+  // Skipped items are neutral — not counted in the score.
+  const graded = results.filter((r) => r.mode === 'quiz' && !r.skipped)
   const correct = graded.filter((r) => r.correct).length
   const total = graded.length
   const allRight = total > 0 && correct === total
+  const skippedCount = results.filter((r) => r.skipped).length
 
   // Unique items touched this lesson, in order.
   const studied: Hangul[] = []
   const seen = new Set<string>()
+  const skippedSet = new Set<string>()
   for (const r of results) {
+    if (r.skipped) skippedSet.add(r.hangul.hangul)
     if (!seen.has(r.hangul.hangul)) {
       seen.add(r.hangul.hangul)
       studied.push(r.hangul)
@@ -39,17 +43,25 @@ export function Complete({ results, wrong, onReview, onAgain, onHome }: Props) {
       {total > 0 ? (
         <p className="score">
           正解 {correct} / {total}
+          {skippedCount > 0 && <span className="score-skip">（スキップ {skippedCount}）</span>}
         </p>
       ) : (
         <p className="score">新しい文字を学びました</p>
       )}
 
       <div className="chips" aria-label="今回学んだ項目">
-        {studied.map((k) => (
-          <span key={k.hangul} className={wrongSet.has(k.hangul) ? 'chip miss' : 'chip'} lang="ko">
-            {k.hangul}
-          </span>
-        ))}
+        {studied.map((k) => {
+          const cls = wrongSet.has(k.hangul)
+            ? 'chip miss'
+            : skippedSet.has(k.hangul)
+              ? 'chip skip'
+              : 'chip'
+          return (
+            <span key={k.hangul} className={cls} lang="ko">
+              {k.hangul}
+            </span>
+          )
+        })}
       </div>
 
       <div className="complete-actions">

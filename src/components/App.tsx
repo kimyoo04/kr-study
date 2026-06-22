@@ -135,6 +135,9 @@ export function App() {
     // tick would bring ALL cards closer to due and shrink the SRS intervals.
     const base = isReview ? progress.lessonsDone : progress.lessonsDone + 1
     for (const r of lessonResults) {
+      // Skipped items are neutral — leave their SRS card untouched so they stay
+      // due and resurface in a later lesson.
+      if (r.skipped) continue
       const key = cardKey(deck.id, r.hangul.hangul)
       if (r.mode === 'intro') {
         cards[key] = introducedCard(base)
@@ -192,7 +195,9 @@ export function App() {
     setScreen('topik-report')
   }
 
-  const wrong = results.filter((r) => r.mode === 'quiz' && !r.correct).map((r) => r.hangul)
+  const wrong = results
+    .filter((r) => r.mode === 'quiz' && !r.correct && !r.skipped)
+    .map((r) => r.hangul)
   const weak = weakItems(progress, scopeItems, deck.id)
 
   return (
