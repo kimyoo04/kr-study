@@ -616,6 +616,77 @@ export const HANJA_ROWS: Hangul[][] = [
     { hangul: '통화', romaji: 'tonghwa', meaning: '通話' },
     { hangul: '문자', romaji: 'munja', meaning: '文字(SMS)' },
   ],
+  // 法律 / 司法
+  [
+    { hangul: '입법', romaji: 'ipbeop', meaning: '立法' },
+    { hangul: '헌법', romaji: 'heonbeop', meaning: '憲法' },
+    { hangul: '검찰', romaji: 'geomchal', meaning: '検察' },
+    { hangul: '소송', romaji: 'sosong', meaning: '訴訟' },
+    { hangul: '증인', romaji: 'jeungin', meaning: '証人' },
+    { hangul: '판결', romaji: 'pangyeol', meaning: '判決' },
+    { hangul: '처벌', romaji: 'cheobeol', meaning: '処罰' },
+  ],
+  // 軍事 / 防衛
+  [
+    { hangul: '국방', romaji: 'gukbang', meaning: '国防' },
+    { hangul: '무기', romaji: 'mugi', meaning: '武器' },
+    { hangul: '병사', romaji: 'byeongsa', meaning: '兵士' },
+    { hangul: '작전', romaji: 'jakjeon', meaning: '作戦' },
+    { hangul: '공격', romaji: 'gonggyeok', meaning: '攻撃' },
+    { hangul: '함대', romaji: 'hamdae', meaning: '艦隊' },
+    { hangul: '동맹', romaji: 'dongmaeng', meaning: '同盟' },
+  ],
+  // 宗教 / 哲学
+  [
+    { hangul: '신앙', romaji: 'sinang', meaning: '信仰' },
+    { hangul: '기도', romaji: 'gido', meaning: '祈祷(祈り)' },
+    { hangul: '천국', romaji: 'cheonguk', meaning: '天国' },
+    { hangul: '도덕', romaji: 'dodeok', meaning: '道徳' },
+    { hangul: '윤리', romaji: 'yulli', meaning: '倫理' },
+    { hangul: '논리', romaji: 'nolli', meaning: '論理' },
+    { hangul: '진리', romaji: 'jilli', meaning: '真理' },
+  ],
+  // 文学 / 芸術
+  [
+    { hangul: '문학', romaji: 'munhak', meaning: '文学' },
+    { hangul: '시집', romaji: 'sijip', meaning: '詩集' },
+    { hangul: '수필', romaji: 'supil', meaning: '随筆(エッセイ)' },
+    { hangul: '비평', romaji: 'bipyeong', meaning: '批評' },
+    { hangul: '창작', romaji: 'changjak', meaning: '創作' },
+    { hangul: '조각', romaji: 'jogak', meaning: '彫刻' },
+    { hangul: '서예', romaji: 'seoye', meaning: '書道 ※漢字は「書芸」' },
+  ],
+  // 農業 / 漁業
+  [
+    { hangul: '농업', romaji: 'nongeop', meaning: '農業' },
+    { hangul: '농부', romaji: 'nongbu', meaning: '農夫' },
+    { hangul: '농작물', romaji: 'nongjangmul', meaning: '農作物' },
+    { hangul: '수확', romaji: 'suhwak', meaning: '収穫' },
+    { hangul: '재배', romaji: 'jaebae', meaning: '栽培' },
+    { hangul: '어업', romaji: 'eoeop', meaning: '漁業' },
+    { hangul: '축산', romaji: 'chuksan', meaning: '畜産' },
+  ],
+  // 化学 / 物理
+  [
+    { hangul: '원소', romaji: 'wonso', meaning: '元素' },
+    { hangul: '분자', romaji: 'bunja', meaning: '分子' },
+    { hangul: '원자', romaji: 'wonja', meaning: '原子' },
+    { hangul: '반응', romaji: 'baneung', meaning: '反応' },
+    { hangul: '물질', romaji: 'muljil', meaning: '物質' },
+    { hangul: '압력', romaji: 'amnyeok', meaning: '圧力' },
+    { hangul: '중력', romaji: 'jungnyeok', meaning: '重力' },
+  ],
+  // 天文 / 宇宙
+  [
+    { hangul: '천문학', romaji: 'cheonmunhak', meaning: '天文学' },
+    { hangul: '행성', romaji: 'haengseong', meaning: '惑星 ※漢字は「行星」' },
+    { hangul: '항성', romaji: 'hangseong', meaning: '恒星' },
+    { hangul: '위성', romaji: 'wiseong', meaning: '衛星' },
+    { hangul: '은하', romaji: 'eunha', meaning: '銀河' },
+    { hangul: '궤도', romaji: 'gwedo', meaning: '軌道' },
+    { hangul: '관측', romaji: 'gwancheuk', meaning: '観測' },
+    { hangul: '망원경', romaji: 'mangwongyeong', meaning: '望遠鏡' },
+  ],
 ]
 
 // 行ごとのカテゴリ名 (HANJA_ROWS と 1:1)
@@ -674,6 +745,13 @@ export const HANJA_CATS: string[] = [
   '運動 / 競技',
   '程度 / 順序',
   '言語 / 文字',
+  '法律 / 司法',
+  '軍事 / 防衛',
+  '宗教 / 哲学',
+  '文学 / 芸術',
+  '農業 / 漁業',
+  '化学 / 物理',
+  '天文 / 宇宙',
 ]
 
 export const HANJA: Hangul[] = HANJA_ROWS.flat()
