@@ -43,7 +43,7 @@ test('listen-mode toggle is present on Home', async ({ page }) => {
   // here it renders disabled — assert it exists either way. The qtype logic it
   // drives is covered by the pickQType unit tests.
   await page.goto('./')
-  await expect(page.getByRole('button', { name: /リスニングモード/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: /聞いて解く/ })).toBeVisible()
 })
 
 test('search finds items across decks by romaji, meaning, and hangul', async ({ page }) => {

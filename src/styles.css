@@ -367,6 +367,88 @@ body {
   color: var(--primary);
   font-weight: 700;
 }
+
+/* ---- Listen player (passive auto-play) ---- */
+.nav-arrow {
+  font-size: 24px;
+  line-height: 1;
+  padding: 0 4px;
+}
+.nav-arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.listen-card .speaking {
+  color: var(--primary);
+  transition: color 0.15s ease;
+}
+.listen-status {
+  color: var(--muted);
+  font-size: 14px;
+  min-height: 20px;
+}
+.listen-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 8px 0 12px;
+}
+.listen-controls .nav-arrow {
+  font-size: 32px;
+}
+.listen-play-btn {
+  min-width: 140px;
+}
+.listen-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.listen-opt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.seg {
+  display: flex;
+  gap: 4px;
+}
+.seg-item {
+  border: 1px solid var(--surface-2);
+  background: transparent;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.seg-item.on {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.listen-chip {
+  border: 1px solid var(--surface-2);
+  background: transparent;
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+.listen-chip.on {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.listen-chip:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
 .sr-only {
   position: absolute;
   width: 1px;

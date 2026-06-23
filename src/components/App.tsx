@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { DECKS, deckCategories, type Deck, type Hangul } from '../data/hangul'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
-import { hasKoVoice, loadVoices } from '../lib/speak'
+import { hasJaVoice, hasKoVoice, loadVoices } from '../lib/speak'
 import { swApplyUpdate, swOnUpdate } from '../lib/sw'
 import {
   applyAnswer,
@@ -14,6 +14,7 @@ import {
   type LessonItem,
 } from '../lib/srs'
 import { Home } from './Home'
+import { ListenPlayer } from './ListenPlayer'
 import { Lesson, type LessonResult } from './Lesson'
 import { Complete } from './Complete'
 import { Search } from './Search'
@@ -43,6 +44,7 @@ const TOPIK_EXAM_COUNTS: Record<TopikLevel, { listening: number; reading: number
 type Screen =
   | 'home'
   | 'lesson'
+  | 'listen-play'
   | 'complete'
   | 'search'
   | 'topik-home'
@@ -73,11 +75,15 @@ export function App() {
   // Listen mode needs a Korean TTS voice. Voices load asynchronously and some
   // devices fire voiceschanged late, so keep listening instead of probing once.
   const [voiceReady, setVoiceReady] = useState(false)
+  // Passive listen can also read the Japanese (native) side — needs a ja voice.
+  const [jaReady, setJaReady] = useState(false)
   useEffect(() => {
     let active = true
     const refresh = () => {
       void loadVoices().then(() => {
-        if (active) setVoiceReady(hasKoVoice())
+        if (!active) return
+        setVoiceReady(hasKoVoice())
+        setJaReady(hasJaVoice())
       })
     }
     refresh()
@@ -119,6 +125,12 @@ export function App() {
     setItems(next)
     setIsReview(false)
     setScreen('lesson')
+  }
+
+  // Passive listen: auto-play the current scope (no quizzing, no progress change).
+  function startListen() {
+    if (scopeItems.length === 0) return
+    setScreen('listen-play')
   }
 
   // Review only the given items (e.g. the ones missed last lesson), all as quizzes.
@@ -224,6 +236,15 @@ export function App() {
           onSearch={() => setScreen('search')}
           onTopik={() => setScreen('topik-home')}
           onStart={startLesson}
+          onListen={startListen}
+        />
+      )}
+      {screen === 'listen-play' && (
+        <ListenPlayer
+          items={scopeItems}
+          deck={deck}
+          jaReady={jaReady}
+          onExit={() => setScreen('home')}
         />
       )}
       {screen === 'lesson' && (

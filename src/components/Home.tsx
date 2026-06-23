@@ -24,6 +24,7 @@ interface Props {
   onSearch: () => void
   onTopik: () => void
   onStart: () => void
+  onListen: () => void
 }
 
 export function Home({
@@ -47,6 +48,7 @@ export function Home({
   onSearch,
   onTopik,
   onStart,
+  onListen,
 }: Props) {
   const total = scopeItems.length
   const learned = learnedCountFor(progress, scopeItems, deck.id)
@@ -139,7 +141,7 @@ export function Home({
         aria-pressed={listen}
       >
         <span className="mode-toggle-text">
-          🎧 リスニングモード
+          🎧 聞いて解く
           {!listenAvailable && <small> (この端末は音声非対応)</small>}
         </span>
         <span className="mode-toggle-state">{listen ? 'オン' : 'オフ'}</span>
@@ -147,6 +149,9 @@ export function Home({
 
       <button className="btn-primary" onClick={onStart}>
         {learned > 0 ? '今日のレッスン' : 'はじめる'}
+      </button>
+      <button className="btn-ghost" onClick={onListen} disabled={!listenAvailable}>
+        🎧 流し聞き ({total})
       </button>
       {weakCount > 0 && (
         <button className="btn-ghost" onClick={onReviewWeak}>
