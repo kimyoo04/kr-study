@@ -467,6 +467,138 @@ export const CLOZE_ROWS: Hangul[][] = [
     { hangul: '졸업식에 가족이 모두 왔어요.', romaji: 'joreopsige gajogi modu wasseoyo.', meaning: '卒業式に家族が皆来ました', answer: '졸업식' },
     { hangul: '어린이날에 놀이공원에 가요.', romaji: 'eorininare noyigongwone gayo.', meaning: 'こどもの日に遊園地へ行きます', answer: '어린이날' },
   ],
+  // 教科・科目
+  [
+    { hangul: '저는 수학을 좋아해요.', romaji: 'jeoneun suhageul joahaeyo.', meaning: '私は数学が好きです', answer: '수학' },
+    { hangul: '과학 시간에 실험을 해요.', romaji: 'gwahak sigane silheomeul haeyo.', meaning: '理科の時間に実験をします', answer: '과학' },
+    { hangul: '역사를 배우면 옛날을 알 수 있어요.', romaji: 'yeoksareul baeumyeon yennareul al su isseoyo.', meaning: '歴史を学ぶと昔のことがわかります', answer: '역사' },
+    { hangul: '음악 시간에 노래를 불러요.', romaji: 'eumak sigane noraereul bulleoyo.', meaning: '音楽の時間に歌を歌います', answer: '음악' },
+    { hangul: '미술 시간에 그림을 그려요.', romaji: 'misul sigane geurimeul geuryeoyo.', meaning: '美術の時間に絵を描きます', answer: '미술' },
+    { hangul: '체육 시간에 운동을 해요.', romaji: 'cheyuk sigane undongeul haeyo.', meaning: '体育の時間に運動をします', answer: '체육' },
+    { hangul: '국어 시간에 글을 읽어요.', romaji: 'gugeo sigane geureul ilgeoyo.', meaning: '国語の時間に文を読みます', answer: '국어' },
+    { hangul: '지리 시간에 지도를 봐요.', romaji: 'jiri sigane jidoreul bwayo.', meaning: '地理の時間に地図を見ます', answer: '지리' },
+  ],
+  // 海の生き物
+  [
+    { hangul: '바다에서 고래를 봤어요.', romaji: 'badaeseo goraereul bwasseoyo.', meaning: '海でクジラを見ました', answer: '고래' },
+    { hangul: '수족관에서 상어를 봤어요.', romaji: 'sujokgwaneseo sangeoreul bwasseoyo.', meaning: '水族館でサメを見ました', answer: '상어' },
+    { hangul: '다리가 여덟 개인 문어를 봤어요.', romaji: 'dariga yeodeol gaein muneoreul bwasseoyo.', meaning: '足が8本のタコを見ました', answer: '문어' },
+    { hangul: '게가 옆으로 걸어요.', romaji: 'gega yeopeuro georeoyo.', meaning: 'カニが横に歩きます', answer: '게' },
+    { hangul: '새우를 구워 먹었어요.', romaji: 'saeureul guwo meogeosseoyo.', meaning: 'エビを焼いて食べました', answer: '새우' },
+    { hangul: '거북이가 천천히 헤엄쳐요.', romaji: 'geobugiga cheoncheonhi heeomchyeoyo.', meaning: '亀がゆっくり泳ぎます', answer: '거북이' },
+    { hangul: '조개를 모래에서 캤어요.', romaji: 'jogaereul moraeeseo kaesseoyo.', meaning: '貝を砂から掘りました', answer: '조개' },
+    { hangul: '해파리는 만지면 위험해요.', romaji: 'haepharineun manjimyeon wiheomhaeyo.', meaning: 'クラゲは触ると危険です', answer: '해파리' },
+  ],
+  // 昆虫
+  [
+    { hangul: '여름에 모기가 많아요.', romaji: 'yeoreume mogiga manayo.', meaning: '夏は蚊が多いです', answer: '모기' },
+    { hangul: '꽃에 나비가 앉았어요.', romaji: 'kkoche nabiga anjasseoyo.', meaning: '花に蝶がとまりました', answer: '나비' },
+    { hangul: '꿀벌이 꿀을 모아요.', romaji: 'kkulbeori kkureul moayo.', meaning: 'ミツバチが蜜を集めます', answer: '꿀벌' },
+    { hangul: '개미가 줄을 지어 가요.', romaji: 'gaemiga jureul jieo gayo.', meaning: 'アリが列を作って進みます', answer: '개미' },
+    { hangul: '거미가 벽에 붙어 있어요.', romaji: 'geomiga byeoge buteo isseoyo.', meaning: 'クモが壁にくっついています', answer: '거미' },
+    { hangul: '밤에 반딧불이가 빛나요.', romaji: 'bame banditburiga binnayo.', meaning: '夜にホタルが光ります', answer: '반딧불이' },
+    { hangul: '잠자리가 하늘을 날아요.', romaji: 'jamjariga haneureul narayo.', meaning: 'トンボが空を飛びます', answer: '잠자리' },
+    { hangul: '바퀴벌레는 정말 싫어요.', romaji: 'bakwibeolleneun jeongmal sireoyo.', meaning: 'ゴキブリは本当に嫌いです', answer: '바퀴벌레' },
+  ],
+  // 鳥
+  [
+    { hangul: '참새가 마당에서 뛰어요.', romaji: 'chamsaega madangeseo ttwieoyo.', meaning: 'スズメが庭で跳ねます', answer: '참새' },
+    { hangul: '비둘기가 공원에 많아요.', romaji: 'bidulgiga gongwone manayo.', meaning: 'ハトが公園に多いです', answer: '비둘기' },
+    { hangul: '까치가 아침에 울어요.', romaji: 'kkachiga achime ureoyo.', meaning: 'カササギが朝に鳴きます', answer: '까치' },
+    { hangul: '독수리가 높이 날아요.', romaji: 'doksuriga nopi narayo.', meaning: 'ワシが高く飛びます', answer: '독수리' },
+    { hangul: '닭이 아침에 울어요.', romaji: 'dalgi achime ureoyo.', meaning: 'ニワトリが朝に鳴きます', answer: '닭' },
+    { hangul: '오리가 물에서 헤엄쳐요.', romaji: 'origa mureseo heeomchyeoyo.', meaning: 'アヒルが水で泳ぎます', answer: '오리' },
+    { hangul: '부엉이가 밤에 활동해요.', romaji: 'bueongiga bame hwaldonghaeyo.', meaning: 'フクロウが夜に活動します', answer: '부엉이' },
+    { hangul: '제비가 봄에 돌아와요.', romaji: 'jebiga bome dorawayo.', meaning: 'ツバメが春に戻ってきます', answer: '제비' },
+  ],
+  // 植物・花
+  [
+    { hangul: '봄에 장미가 펴요.', romaji: 'bome jangmiga pyeoyo.', meaning: '春にバラが咲きます', answer: '장미' },
+    { hangul: '해바라기가 해를 향해요.', romaji: 'haebaragiga haereul hyanghaeyo.', meaning: 'ひまわりが太陽を向きます', answer: '해바라기' },
+    { hangul: '가을에 국화가 펴요.', romaji: 'gaeure gukhwaga pyeoyo.', meaning: '秋に菊が咲きます', answer: '국화' },
+    { hangul: '연못에 연꽃이 폈어요.', romaji: 'yeonmose yeonkkochi pyeosseoyo.', meaning: '池に蓮の花が咲きました', answer: '연꽃' },
+    { hangul: '봄에 벚꽃이 아름다워요.', romaji: 'bome beotkkochi areumdawoyo.', meaning: '春に桜が美しいです', answer: '벚꽃' },
+    { hangul: '화분에 선인장을 키워요.', romaji: 'hwabune seoninjangeul kiwoyo.', meaning: '鉢にサボテンを育てます', answer: '선인장' },
+    { hangul: '마당에 소나무가 있어요.', romaji: 'madange sonamuga isseoyo.', meaning: '庭に松の木があります', answer: '소나무' },
+    { hangul: '들판에 풀이 많아요.', romaji: 'deulpane puri manayo.', meaning: '野原に草が多いです', answer: '풀' },
+  ],
+  // 台所用品
+  [
+    { hangul: '국을 냄비에 끓여요.', romaji: 'gugeul naembie kkeuryeoyo.', meaning: 'スープを鍋で煮ます', answer: '냄비' },
+    { hangul: '계란을 프라이팬에 부쳐요.', romaji: 'gyeraneul peuraipaene buchyeoyo.', meaning: '卵をフライパンで焼きます', answer: '프라이팬' },
+    { hangul: '밥을 그릇에 담아요.', romaji: 'babeul geureute damayo.', meaning: 'ご飯を器に盛ります', answer: '그릇' },
+    { hangul: '국을 숟가락으로 떠요.', romaji: 'gugeul sutgarageuro tteoyo.', meaning: 'スープをスプーンですくいます', answer: '숟가락' },
+    { hangul: '면을 젓가락으로 먹어요.', romaji: 'myeoneul jeotgarageuro meogeoyo.', meaning: '麺を箸で食べます', answer: '젓가락' },
+    { hangul: '빵을 칼로 잘라요.', romaji: 'ppangeul kallo jallayo.', meaning: 'パンを包丁で切ります', answer: '칼' },
+    { hangul: '물을 컵에 따라요.', romaji: 'mureul keobe ttarayo.', meaning: '水をコップに注ぎます', answer: '컵' },
+    { hangul: '음식을 접시에 놓아요.', romaji: 'eumsigeul jeopsie noayo.', meaning: '料理を皿に置きます', answer: '접시' },
+  ],
+  // 浴室・洗面
+  [
+    { hangul: '손을 비누로 씻어요.', romaji: 'soneul binuro ssiseoyo.', meaning: '手を石鹸で洗います', answer: '비누' },
+    { hangul: '머리를 샴푸로 감아요.', romaji: 'meorireul syampuro gamayo.', meaning: '髪をシャンプーで洗います', answer: '샴푸' },
+    { hangul: '이를 칫솔로 닦아요.', romaji: 'ireul chissollo dakkayo.', meaning: '歯を歯ブラシで磨きます', answer: '칫솔' },
+    { hangul: '치약을 칫솔에 짜요.', romaji: 'chiyageul chissore jjayo.', meaning: '歯磨き粉を歯ブラシに絞ります', answer: '치약' },
+    { hangul: '샤워 후에 수건으로 닦아요.', romaji: 'syawo hue sugeoneuro dakkayo.', meaning: 'シャワーの後にタオルで拭きます', answer: '수건' },
+    { hangul: '거울 앞에서 면도를 해요.', romaji: 'geoul apeseo myeondoreul haeyo.', meaning: '鏡の前でひげそりをします', answer: '면도' },
+    { hangul: '머리를 빗으로 정리해요.', romaji: 'meorireul biseuro jeongnihaeyo.', meaning: '髪をくしで整えます', answer: '빗' },
+    { hangul: '욕조에 따뜻한 물을 받아요.', romaji: 'yokjoe ttatteutan mureul badayo.', meaning: '浴槽に温かい水をためます', answer: '욕조' },
+  ],
+  // アクセサリー
+  [
+    { hangul: '손가락에 반지를 꼈어요.', romaji: 'songarage banjireul kkyeosseoyo.', meaning: '指に指輪をはめました', answer: '반지' },
+    { hangul: '목에 목걸이를 했어요.', romaji: 'moge mokgeorireul haesseoyo.', meaning: '首にネックレスをしました', answer: '목걸이' },
+    { hangul: '귀에 귀걸이를 했어요.', romaji: 'gwie gwigeorireul haesseoyo.', meaning: '耳にイヤリングをしました', answer: '귀걸이' },
+    { hangul: '손목에 시계를 찼어요.', romaji: 'sonmoge sigyereul chasseoyo.', meaning: '手首に時計をつけました', answer: '시계' },
+    { hangul: '햇빛이 강해서 선글라스를 꼈어요.', romaji: 'haetbichi ganghaeseo seongeullaseureul kkyeosseoyo.', meaning: '日差しが強くてサングラスをかけました', answer: '선글라스' },
+    { hangul: '책을 읽으려고 안경을 썼어요.', romaji: 'chaegeul ilgeuryeogo angyeongeul sseosseoyo.', meaning: '本を読もうと眼鏡をかけました', answer: '안경' },
+    { hangul: '허리에 벨트를 맸어요.', romaji: 'heorie belteureul maesseoyo.', meaning: '腰にベルトを締めました', answer: '벨트' },
+    { hangul: '머리에 머리핀을 꽂았어요.', romaji: 'meorie meoripineul kkojasseoyo.', meaning: '髪にヘアピンをさしました', answer: '머리핀' },
+  ],
+  // 顔
+  [
+    { hangul: '웃을 때 입이 커져요.', romaji: 'useul ttae ibi keojyeoyo.', meaning: '笑うとき口が大きくなります', answer: '입' },
+    { hangul: '안경을 코에 걸쳐요.', romaji: 'angyeongeul koe geolchyeoyo.', meaning: '眼鏡を鼻にかけます', answer: '코' },
+    { hangul: '소리를 귀로 들어요.', romaji: 'sorireul gwiro deureoyo.', meaning: '音を耳で聞きます', answer: '귀' },
+    { hangul: '무서워서 눈을 감았어요.', romaji: 'museowoseo nuneul gamasseoyo.', meaning: '怖くて目を閉じました', answer: '눈' },
+    { hangul: '부끄러워서 볼이 빨개졌어요.', romaji: 'bukkeureowoseo bori ppalgaejyeosseoyo.', meaning: '恥ずかしくて頬が赤くなりました', answer: '볼' },
+    { hangul: '추워서 뺨이 시려요.', romaji: 'chuwoseo ppyami siryeoyo.', meaning: '寒くて頬が冷たいです', answer: '뺨' },
+    { hangul: '웃으면 이가 보여요.', romaji: 'useumyeon iga boyeoyo.', meaning: '笑うと歯が見えます', answer: '이' },
+    { hangul: '턱에 수염이 났어요.', romaji: 'teoge suyeomi nasseoyo.', meaning: 'あごにひげが生えました', answer: '턱' },
+  ],
+  // 家事
+  [
+    { hangul: '주말마다 청소를 해요.', romaji: 'jumalmada cheongsoreul haeyo.', meaning: '毎週末掃除をします', answer: '청소' },
+    { hangul: '더러운 옷은 빨래를 해요.', romaji: 'deoreoun oseun ppallaereul haeyo.', meaning: '汚れた服は洗濯をします', answer: '빨래' },
+    { hangul: '밥을 먹고 설거지를 해요.', romaji: 'babeul meokgo seolgeojireul haeyo.', meaning: 'ご飯を食べて皿洗いをします', answer: '설거지' },
+    { hangul: '바닥을 걸레로 닦아요.', romaji: 'badageul geollero dakkayo.', meaning: '床を雑巾で拭きます', answer: '걸레' },
+    { hangul: '옷을 다리미로 다려요.', romaji: 'oseul darimiro daryeoyo.', meaning: '服をアイロンでかけます', answer: '다리미' },
+    { hangul: '쓰레기를 분리해서 버려요.', romaji: 'sseuregireul bullihaeseo beoryeoyo.', meaning: 'ゴミを分別して捨てます', answer: '쓰레기' },
+    { hangul: '마른 옷을 옷장에 정리해요.', romaji: 'mareun oseul otjange jeongnihaeyo.', meaning: '乾いた服をクローゼットに整理します', answer: '정리' },
+    { hangul: '진공청소기로 먼지를 빨아들여요.', romaji: 'jingongcheongsogiro meonjireul pparadeuryeoyo.', meaning: '掃除機でほこりを吸い取ります', answer: '진공청소기' },
+  ],
+  // 食事の動作
+  [
+    { hangul: '밥을 맛있게 먹어요.', romaji: 'babeul masitge meogeoyo.', meaning: 'ご飯をおいしく食べます', answer: '먹어요' },
+    { hangul: '물을 시원하게 마셔요.', romaji: 'mureul siwonhage masyeoyo.', meaning: '水を涼しく飲みます', answer: '마셔요' },
+    { hangul: '사과 껍질을 깎아요.', romaji: 'sagwa kkeopjireul kkakkayo.', meaning: 'りんごの皮をむきます', answer: '깎아요' },
+    { hangul: '고기를 잘게 씹어요.', romaji: 'gogireul jalge ssibeoyo.', meaning: '肉を細かく噛みます', answer: '씹어요' },
+    { hangul: '음식을 천천히 삼켜요.', romaji: 'eumsigeul cheoncheonhi samkyeoyo.', meaning: '食べ物をゆっくり飲み込みます', answer: '삼켜요' },
+    { hangul: '뜨거운 국을 후후 불어요.', romaji: 'tteugeoun gugeul huhu bureoyo.', meaning: '熱いスープをふうふう冷まします', answer: '불어요' },
+    { hangul: '컵에 주스를 따라요.', romaji: 'keobe juseureul ttarayo.', meaning: 'コップにジュースを注ぎます', answer: '따라요' },
+    { hangul: '식탁을 깨끗이 차려요.', romaji: 'siktageul kkaekkeusi charyeoyo.', meaning: '食卓をきれいに整えます', answer: '차려요' },
+  ],
+  // 文化・芸術
+  [
+    { hangul: '미술관에서 그림을 감상해요.', romaji: 'misulgwaneseo geurimeul gamsanghaeyo.', meaning: '美術館で絵を鑑賞します', answer: '그림' },
+    { hangul: '극장에서 연극을 봤어요.', romaji: 'geukjangeseo yeongeugeul bwasseoyo.', meaning: '劇場で演劇を見ました', answer: '연극' },
+    { hangul: '무대에서 춤을 춰요.', romaji: 'mudaeeseo chumeul chwoyo.', meaning: '舞台で踊りを踊ります', answer: '춤' },
+    { hangul: '아름다운 노래를 불러요.', romaji: 'areumdaun noraereul bulleoyo.', meaning: '美しい歌を歌います', answer: '노래' },
+    { hangul: '아름다운 시를 읽었어요.', romaji: 'areumdaun sireul ilgeosseoyo.', meaning: '美しい詩を読みました', answer: '시' },
+    { hangul: '박물관에서 조각을 봤어요.', romaji: 'bangmulgwaneseo jogageul bwasseoyo.', meaning: '博物館で彫刻を見ました', answer: '조각' },
+    { hangul: '작가가 소설을 썼어요.', romaji: 'jakgaga soseoreul sseosseoyo.', meaning: '作家が小説を書きました', answer: '소설' },
+    { hangul: '예술 영화를 좋아해요.', romaji: 'yesul yeonghwareul joahaeyo.', meaning: '芸術映画が好きです', answer: '영화' },
+  ],
 ]
 
 export const CLOZE_CATS = [
@@ -512,6 +644,18 @@ export const CLOZE_CATS = [
   '五感・感覚',
   '性格',
   '行事・記念日',
+  '教科・科目',
+  '海の生き物',
+  '昆虫',
+  '鳥',
+  '植物・花',
+  '台所用品',
+  '浴室・洗面',
+  'アクセサリー',
+  '顔',
+  '家事',
+  '食事の動作',
+  '文化・芸術',
 ]
 
 export const CLOZE: Hangul[] = CLOZE_ROWS.flat()
