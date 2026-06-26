@@ -599,6 +599,105 @@ export const CLOZE_ROWS: Hangul[][] = [
     { hangul: '작가가 소설을 썼어요.', romaji: 'jakgaga soseoreul sseosseoyo.', meaning: '作家が小説を書きました', answer: '소설' },
     { hangul: '예술 영화를 좋아해요.', romaji: 'yesul yeonghwareul joahaeyo.', meaning: '芸術映画が好きです', answer: '영화' },
   ],
+  // デザート・お菓子
+  [
+    { hangul: '친구 생일에 케이크를 샀어요.', romaji: 'chingu saengire keikeureul sasseoyo.', meaning: '友達の誕生日にケーキを買いました', answer: '케이크' },
+    { hangul: '더울 때 아이스크림을 먹어요.', romaji: 'deoul ttae aiseukeurimeul meogeoyo.', meaning: '暑いときアイスクリームを食べます', answer: '아이스크림' },
+    { hangul: '영화를 보며 초콜릿을 먹어요.', romaji: 'yeonghwareul bomyeo chokolliseul meogeoyo.', meaning: '映画を見ながらチョコを食べます', answer: '초콜릿' },
+    { hangul: '아이들이 사탕을 좋아해요.', romaji: 'aideuri satangeul joahaeyo.', meaning: '子どもたちがあめが好きです', answer: '사탕' },
+    { hangul: '간식으로 과자를 먹어요.', romaji: 'gansigeuro gwajareul meogeoyo.', meaning: 'おやつにお菓子を食べます', answer: '과자' },
+    { hangul: '달콤한 도넛을 샀어요.', romaji: 'dalkomhan doneoseul sasseoyo.', meaning: '甘いドーナツを買いました', answer: '도넛' },
+    { hangul: '차와 함께 쿠키를 먹어요.', romaji: 'chawa hamkke kukireul meogeoyo.', meaning: 'お茶と一緒にクッキーを食べます', answer: '쿠키' },
+    { hangul: '후식으로 푸딩을 먹었어요.', romaji: 'husigeuro pudingeul meogeosseoyo.', meaning: 'デザートにプリンを食べました', answer: '푸딩' },
+  ],
+  // 調味料
+  [
+    { hangul: '음식에 소금을 넣어요.', romaji: 'eumsige sogeumeul neoeoyo.', meaning: '料理に塩を入れます', answer: '소금' },
+    { hangul: '국에 간장을 조금 넣어요.', romaji: 'guge ganjangeul jogeum neoeoyo.', meaning: 'スープに醤油を少し入れます', answer: '간장' },
+    { hangul: '매운 음식에 고춧가루를 넣어요.', romaji: 'maeun eumsige gochutgarureul neoeoyo.', meaning: '辛い料理に唐辛子粉を入れます', answer: '고춧가루' },
+    { hangul: '샐러드에 식초를 뿌려요.', romaji: 'saelleodeue sikchoreul ppuryeoyo.', meaning: 'サラダに酢をかけます', answer: '식초' },
+    { hangul: '커피에 설탕을 넣어요.', romaji: 'keopie seoltangeul neoeoyo.', meaning: 'コーヒーに砂糖を入れます', answer: '설탕' },
+    { hangul: '나물에 참기름을 넣어요.', romaji: 'namure chamgireumeul neoeoyo.', meaning: 'ナムルにごま油を入れます', answer: '참기름' },
+    { hangul: '찌개에 된장을 풀어요.', romaji: 'jjigaee doenjangeul pureoyo.', meaning: 'チゲにみそを溶きます', answer: '된장' },
+    { hangul: '고기에 후추를 뿌려요.', romaji: 'gogie huchureul ppuryeoyo.', meaning: '肉にこしょうをかけます', answer: '후추' },
+  ],
+  // 自然災害・天気
+  [
+    { hangul: '비가 많이 와서 홍수가 났어요.', romaji: 'biga mani waseo hongsuga nasseoyo.', meaning: '雨がたくさん降って洪水になりました', answer: '홍수' },
+    { hangul: '땅이 흔들리는 지진이 났어요.', romaji: 'ttangi heundeullineun jijini nasseoyo.', meaning: '地面が揺れる地震が起きました', answer: '지진' },
+    { hangul: '강한 태풍이 왔어요.', romaji: 'ganghan taepungi wasseoyo.', meaning: '強い台風が来ました', answer: '태풍' },
+    { hangul: '산에 큰 불이 나서 산불이 번졌어요.', romaji: 'sane keun buri naseo sanburi beonjyeosseoyo.', meaning: '山に大きな火が出て山火事が広がりました', answer: '산불' },
+    { hangul: '비가 안 와서 가뭄이 들었어요.', romaji: 'biga an waseo gamumi deureosseoyo.', meaning: '雨が降らなくて干ばつになりました', answer: '가뭄' },
+    { hangul: '겨울에 폭설이 내렸어요.', romaji: 'gyeoure pokseori naeryeosseoyo.', meaning: '冬に大雪が降りました', answer: '폭설' },
+    { hangul: '하늘에서 천둥이 쳐요.', romaji: 'haneureseo cheondungi chyeoyo.', meaning: '空で雷が鳴ります', answer: '천둥' },
+    { hangul: '번개가 번쩍였어요.', romaji: 'beongaega beonjjeogyeosseoyo.', meaning: '稲妻が光りました', answer: '번개' },
+  ],
+  // 服を着る動作
+  [
+    { hangul: '추워서 외투를 입어요.', romaji: 'chuwoseo oetureul ibeoyo.', meaning: '寒くてコートを着ます', answer: '입어요' },
+    { hangul: '새 신발을 신어요.', romaji: 'sae sinbareul sineoyo.', meaning: '新しい靴を履きます', answer: '신어요' },
+    { hangul: '외출할 때 모자를 써요.', romaji: 'oechulhal ttae mojareul sseoyo.', meaning: '外出するとき帽子をかぶります', answer: '써요' },
+    { hangul: '손이 시려서 장갑을 껴요.', romaji: 'soni siryeoseo janggabeul kkyeoyo.', meaning: '手が冷たくて手袋をはめます', answer: '껴요' },
+    { hangul: '허리에 벨트를 매요.', romaji: 'heorie belteureul maeyo.', meaning: '腰にベルトを締めます', answer: '매요' },
+    { hangul: '목에 목도리를 둘러요.', romaji: 'moge mokdorireul dulleoyo.', meaning: '首にマフラーを巻きます', answer: '둘러요' },
+    { hangul: '집에 와서 외투를 벗어요.', romaji: 'jibe waseo oetureul beoseoyo.', meaning: '家に帰ってコートを脱ぎます', answer: '벗어요' },
+    { hangul: '단추를 잠가요.', romaji: 'danchureul jamgayo.', meaning: 'ボタンを留めます', answer: '잠가요' },
+  ],
+  // 学校の場所
+  [
+    { hangul: '학생들이 교실에서 공부해요.', romaji: 'haksaengdeuri gyosireseo gongbuhaeyo.', meaning: '生徒たちが教室で勉強します', answer: '교실' },
+    { hangul: '점심을 급식실에서 먹어요.', romaji: 'jeomsimeul geupsiksireseo meogeoyo.', meaning: '昼食を給食室で食べます', answer: '급식실' },
+    { hangul: '책을 빌리러 도서관에 가요.', romaji: 'chaegeul billireo doseogwane gayo.', meaning: '本を借りに図書館へ行きます', answer: '도서관' },
+    { hangul: '체육 시간에 운동장에서 뛰어요.', romaji: 'cheyuk sigane undongjangeseo ttwieoyo.', meaning: '体育の時間に運動場で走ります', answer: '운동장' },
+    { hangul: '실험을 과학실에서 해요.', romaji: 'silheomeul gwahaksireseo haeyo.', meaning: '実験を理科室でします', answer: '과학실' },
+    { hangul: '음악 수업은 음악실에서 해요.', romaji: 'eumak sueobeun eumaksireseo haeyo.', meaning: '音楽の授業は音楽室でします', answer: '음악실' },
+    { hangul: '선생님을 교무실에서 만났어요.', romaji: 'seonsaengnimeul gyomusireseo mannasseoyo.', meaning: '先生を職員室で会いました', answer: '교무실' },
+    { hangul: '쉬는 시간에 복도에서 놀아요.', romaji: 'swineun sigane bokdoeseo norayo.', meaning: '休み時間に廊下で遊びます', answer: '복도' },
+  ],
+  // 伝える・話す
+  [
+    { hangul: '친구에게 큰 소리로 말해요.', romaji: 'chinguege keun soriro malhaeyo.', meaning: '友達に大きな声で話します', answer: '말해요' },
+    { hangul: '모르는 것을 선생님께 물어요.', romaji: 'moreuneun geoseul seonsaengnimkke mureoyo.', meaning: 'わからないことを先生に尋ねます', answer: '물어요' },
+    { hangul: '질문에 바르게 대답해요.', romaji: 'jilmune bareuge daedapaeyo.', meaning: '質問に正しく答えます', answer: '대답해요' },
+    { hangul: '친구와 전화로 이야기해요.', romaji: 'chinguwa jeonhwaro iyagihaeyo.', meaning: '友達と電話で話します', answer: '이야기해요' },
+    { hangul: '잘못해서 친구에게 사과해요.', romaji: 'jalmotaeseo chinguege sagwahaeyo.', meaning: '失敗して友達に謝ります', answer: '사과해요' },
+    { hangul: '도와준 친구에게 감사해요.', romaji: 'dowajun chinguege gamsahaeyo.', meaning: '助けてくれた友達に感謝します', answer: '감사해요' },
+    { hangul: '선생님 말씀을 잘 들어요.', romaji: 'seonsaengnim malsseumeul jal deureoyo.', meaning: '先生の話をよく聞きます', answer: '들어요' },
+    { hangul: '친구를 큰 소리로 불러요.', romaji: 'chingureul keun soriro bulleoyo.', meaning: '友達を大きな声で呼びます', answer: '불러요' },
+  ],
+  // 宇宙・天体
+  [
+    { hangul: '밤하늘에 별이 많아요.', romaji: 'bamhaneure byeori manayo.', meaning: '夜空に星が多いです', answer: '별' },
+    { hangul: '보름달이 아주 밝아요.', romaji: 'boreumdari aju balgayo.', meaning: '満月がとても明るいです', answer: '보름달' },
+    { hangul: '아침에 해가 떠올라요.', romaji: 'achime haega tteoollayo.', meaning: '朝、太陽が昇ります', answer: '해' },
+    { hangul: '지구는 둥글어요.', romaji: 'jiguneun dunggeureoyo.', meaning: '地球は丸いです', answer: '지구' },
+    { hangul: '우주에는 행성이 많아요.', romaji: 'ujueneun haengseongi manayo.', meaning: '宇宙には惑星が多いです', answer: '우주' },
+    { hangul: '망원경으로 토성을 봤어요.', romaji: 'mangwongyeongeuro toseongeul bwasseoyo.', meaning: '望遠鏡で土星を見ました', answer: '토성' },
+    { hangul: '밤에 은하수가 보여요.', romaji: 'bame eunhasuga boyeoyo.', meaning: '夜に天の川が見えます', answer: '은하수' },
+    { hangul: '하늘에 별똥별이 떨어졌어요.', romaji: 'haneure byeolttongbyeori tteoreojyeosseoyo.', meaning: '空に流れ星が落ちました', answer: '별똥별' },
+  ],
+  // 味の形容詞
+  [
+    { hangul: '설탕은 달아요.', romaji: 'seoltangeun darayo.', meaning: '砂糖は甘いです', answer: '달아요' },
+    { hangul: '소금은 짜요.', romaji: 'sogeumeun jjayo.', meaning: '塩はしょっぱいです', answer: '짜요' },
+    { hangul: '레몬은 시어요.', romaji: 'remoneun sieoyo.', meaning: 'レモンは酸っぱいです', answer: '시어요' },
+    { hangul: '고추는 매워요.', romaji: 'gochuneun maewoyo.', meaning: '唐辛子は辛いです', answer: '매워요' },
+    { hangul: '약은 써요.', romaji: 'yageun sseoyo.', meaning: '薬は苦いです', answer: '써요' },
+    { hangul: '이 국은 좀 싱거워요.', romaji: 'i gugeun jom singgeowoyo.', meaning: 'このスープは少し味が薄いです', answer: '싱거워요' },
+    { hangul: '갓 구운 빵은 고소해요.', romaji: 'gat guun ppangeun gosohaeyo.', meaning: '焼きたてのパンは香ばしいです', answer: '고소해요' },
+    { hangul: '잘 익은 과일은 맛있어요.', romaji: 'jal igeun gwaireun masisseoyo.', meaning: 'よく熟した果物はおいしいです', answer: '맛있어요' },
+  ],
+  // 体の動き
+  [
+    { hangul: '운동장을 빠르게 달려요.', romaji: 'undongjangeul ppareuge dallyeoyo.', meaning: '運動場を速く走ります', answer: '달려요' },
+    { hangul: '허리를 앞으로 굽혀요.', romaji: 'heorireul apeuro gupyeoyo.', meaning: '腰を前に曲げます', answer: '굽혀요' },
+    { hangul: '제자리에서 한 바퀴 돌아요.', romaji: 'jejarieseo han bakwi dorayo.', meaning: 'その場で一回まわります', answer: '돌아요' },
+    { hangul: '팔을 쭉 뻗어요.', romaji: 'pareul jjuk ppeodeoyo.', meaning: '腕をぐっと伸ばします', answer: '뻗어요' },
+    { hangul: '손을 좌우로 흔들어요.', romaji: 'soneul jwauro heundeureoyo.', meaning: '手を左右に振ります', answer: '흔들어요' },
+    { hangul: '아기가 바닥을 기어요.', romaji: 'agiga badageul gieoyo.', meaning: '赤ちゃんが床をはいます', answer: '기어요' },
+    { hangul: '돌에 걸려 넘어졌어요.', romaji: 'dore geollyeo neomeojyeosseoyo.', meaning: '石につまずいて転びました', answer: '넘어졌어요' },
+    { hangul: '무거운 문을 힘껏 밀어요.', romaji: 'mugeoun muneul himkkeot mireoyo.', meaning: '重いドアを力いっぱい押します', answer: '밀어요' },
+  ],
 ]
 
 export const CLOZE_CATS = [
@@ -656,6 +755,15 @@ export const CLOZE_CATS = [
   '家事',
   '食事の動作',
   '文化・芸術',
+  'デザート・お菓子',
+  '調味料',
+  '自然災害・天気',
+  '服を着る動作',
+  '学校の場所',
+  '伝える・話す',
+  '宇宙・天体',
+  '味の形容詞',
+  '体の動き',
 ]
 
 export const CLOZE: Hangul[] = CLOZE_ROWS.flat()
