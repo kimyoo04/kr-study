@@ -7,7 +7,7 @@ describe('SEARCH_INDEX', () => {
     // dropped from the flatten.
     expect(SEARCH_INDEX.length).toBeGreaterThan(1500)
     const labels = new Set(SEARCH_INDEX.map((e) => e.deckLabel))
-    expect(labels.size).toBe(10)
+    expect(labels.size).toBe(11)
   })
 })
 

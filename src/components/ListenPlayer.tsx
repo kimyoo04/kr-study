@@ -18,7 +18,7 @@ const CARD_GAP = 700
 const RATES = [0.8, 1.0, 1.2] as const
 
 function glyphClassFor(kind: DeckKind): string {
-  if (kind === 'sentence') return 'glyph sentence'
+  if (kind === 'sentence' || kind === 'cloze') return 'glyph sentence'
   if (kind === 'words') return 'glyph word'
   return 'glyph big'
 }
@@ -175,7 +175,9 @@ export function ListenPlayer({ items, deck, jaReady, onExit }: Props) {
       </div>
 
       <section className="card listen-card">
-        {deck.kind === 'sentence' && step.note && <div className="pattern">{step.note}</div>}
+        {(deck.kind === 'sentence' || deck.kind === 'cloze') && step.note && (
+          <div className="pattern">{step.note}</div>
+        )}
         <div className={glyphClassFor(deck.kind) + (part === 'ko' ? ' speaking' : '')}>
           {step.hangul}
         </div>
@@ -202,6 +204,27 @@ export function ListenPlayer({ items, deck, jaReady, onExit }: Props) {
           ›
         </button>
       </div>
+
+      {items.length > 10 && (
+        <div className="listen-skip">
+          {items.length > 50 && (
+            <button className="listen-jump" onClick={() => goTo(index - 50)} aria-label="50個前へ戻る">
+              «50
+            </button>
+          )}
+          <button className="listen-jump" onClick={() => goTo(index - 10)} aria-label="10個前へ戻る">
+            «10
+          </button>
+          <button className="listen-jump" onClick={() => goTo(index + 10)} aria-label="10個先へ進む">
+            10»
+          </button>
+          {items.length > 50 && (
+            <button className="listen-jump" onClick={() => goTo(index + 50)} aria-label="50個先へ進む">
+              50»
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="listen-options">
         <div className="listen-opt">

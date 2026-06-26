@@ -400,6 +400,23 @@ body {
 .listen-play-btn {
   min-width: 140px;
 }
+.listen-skip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+.listen-jump {
+  border: 1px solid var(--surface-2);
+  background: transparent;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
 .listen-options {
   display: flex;
   flex-direction: column;
@@ -470,6 +487,14 @@ body {
 .meaning {
   font-size: 20px;
   color: var(--text);
+}
+/* Cloze: the blanked sentence reads larger; the hint translation sits muted. */
+.cloze-prompt {
+  letter-spacing: 0.5px;
+}
+.cloze-hint {
+  font-size: 15px;
+  color: var(--muted);
 }
 .big-audio {
   font-size: 40px;

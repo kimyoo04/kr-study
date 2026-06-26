@@ -7,12 +7,19 @@ import { BASIC, BASIC_ROWS, rowLookup } from '../data/hangul'
 // Default row lookup for callers that quiz the basic chart (also the test default).
 const BASIC_ROW_OF = rowLookup(BASIC_ROWS)
 
-export type QType = 'read' | 'listen' | 'meaning'
+export type QType = 'read' | 'listen' | 'meaning' | 'cloze'
+
+/** The sentence with its answer word replaced by a blank (cloze prompt). */
+export function clozePrompt(item: Hangul): string {
+  const answer = item.answer ?? ''
+  return answer ? item.hangul.replace(answer, '____') : item.hangul
+}
 
 /**
- * Decide a quiz step's type. Listen mode (user toggle) forces audio prompts on
- * every deck when a voice exists. Otherwise word decks quiz on meaning and
- * hangul decks round-robin read/listen, dropping listen when no voice is available.
+ * Decide a quiz step's type. Cloze decks always quiz by filling the blank.
+ * Listen mode (user toggle) forces audio prompts on every other deck when a
+ * voice exists. Otherwise word decks quiz on meaning and hangul decks
+ * round-robin read/listen, dropping listen when no voice is available.
  */
 export function pickQType(
   deckKind: DeckKind,
@@ -20,6 +27,7 @@ export function pickQType(
   hasVoice: boolean,
   quizIndex: number,
 ): QType {
+  if (deckKind === 'cloze') return 'cloze'
   if (listenMode && hasVoice) return 'listen'
   if (deckKind !== 'hangul') return 'meaning'
   if (!hasVoice) return 'read'
@@ -40,6 +48,7 @@ export interface Question {
  */
 export function optionText(opt: Hangul, qtype: QType, deckKind: DeckKind): string {
   if (qtype === 'read') return opt.romaji
+  if (qtype === 'cloze') return opt.answer ?? opt.hangul
   if (qtype === 'meaning') return opt.meaning ?? ''
   // listen: hangul decks pick the glyph; other decks pick the meaning.
   return deckKind === 'hangul' ? opt.hangul : (opt.meaning ?? '')

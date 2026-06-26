@@ -51,9 +51,9 @@ describe('hangul data', () => {
     for (const k of [...BASIC, ...ADVANCED]) expect(k.meaning).toBeUndefined()
   })
 
-  it('registers ten decks', () => {
-    expect(DECKS).toHaveLength(10)
-    expect(new Set(DECKS.map((d) => d.id)).size).toBe(10)
+  it('registers eleven decks', () => {
+    expect(DECKS).toHaveLength(11)
+    expect(new Set(DECKS.map((d) => d.id)).size).toBe(11)
   })
 
   it('every deck: items is rows flattened, and catLabels (if present) is 1:1 with rows', () => {

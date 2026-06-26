@@ -8,12 +8,14 @@ import { KEIGO_ROWS, KEIGO } from './keigo'
 import { GRAMMAR_ROWS, GRAMMAR } from './grammar'
 import { PHRASE_ROWS, PHRASES } from './phrases'
 import { HANJA_ROWS, HANJA_CATS, HANJA } from './hanja'
+import { CLOZE_ROWS, CLOZE_CATS, CLOZE } from './cloze'
 
 export interface Hangul {
   hangul: string
   romaji: string
   meaning?: string // present for word/sentence decks; absent for hangul letters
   note?: string // grammar pattern / situation label (sentence decks)
+  answer?: string // cloze decks: the word filling the blank (a substring of hangul)
 }
 
 // 完成形ハングルは字母 (자모) の合成で機械的に作れる:
@@ -204,9 +206,11 @@ export type DeckId =
   | 'phrases'
   | 'keigo'
   | 'hanja'
+  | 'cloze'
 // 'hangul' -> quiz reads romaji; 'words'/'sentence' -> quiz reads meaning.
 // 'sentence' renders smaller + shows the pattern/situation label.
-export type DeckKind = 'hangul' | 'words' | 'sentence'
+// 'cloze' -> quiz blanks a word in the sentence; options are the answer words.
+export type DeckKind = 'hangul' | 'words' | 'sentence' | 'cloze'
 
 export interface Deck {
   id: DeckId
@@ -235,6 +239,7 @@ const DECK_DEFS: Omit<Deck, 'rowOf'>[] = [
   { id: 'phrases', label: '会話', kind: 'sentence', rows: PHRASE_ROWS, items: PHRASES, kataReading: true },
   { id: 'keigo', label: '敬語', kind: 'sentence', rows: KEIGO_ROWS, items: KEIGO, kataReading: true },
   { id: 'hanja', label: '漢字語', kind: 'words', rows: HANJA_ROWS, items: HANJA, catLabels: HANJA_CATS },
+  { id: 'cloze', label: '穴埋め', kind: 'cloze', rows: CLOZE_ROWS, items: CLOZE, catLabels: CLOZE_CATS },
 ]
 
 export const DECKS: Deck[] = DECK_DEFS.map((d) => ({ ...d, rowOf: rowLookup(d.rows) }))

@@ -1,7 +1,14 @@
 import { useMemo, useState } from 'react'
 import type { Deck, DeckKind, Hangul } from '../data/hangul'
 import type { LessonItem, LessonMode } from '../lib/srs'
-import { buildQuestion, isCorrect, optionText, pickQType, type Question } from '../lib/quiz'
+import {
+  buildQuestion,
+  clozePrompt,
+  isCorrect,
+  optionText,
+  pickQType,
+  type Question,
+} from '../lib/quiz'
 import { hasKoVoice, primeSpeech, speakItem } from '../lib/speak'
 import { hangulToKata } from '../lib/kata'
 import { playCorrect, playWrong } from '../lib/sound'
@@ -30,7 +37,7 @@ interface Step {
 }
 
 function glyphClassFor(kind: DeckKind): string {
-  if (kind === 'sentence') return 'glyph sentence'
+  if (kind === 'sentence' || kind === 'cloze') return 'glyph sentence'
   if (kind === 'words') return 'glyph word'
   return 'glyph big'
 }
@@ -39,6 +46,7 @@ const INTRO_LABEL: Record<DeckKind, string> = {
   hangul: '新しい文字',
   words: '新しい単語',
   sentence: '例文',
+  cloze: '例文',
 }
 
 export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Props) {
@@ -282,19 +290,30 @@ function Quiz({
   // In listen mode hangul decks still pick the glyph; word/sentence decks
   // pick the Japanese meaning (you only have the sound to go on).
   const label =
-    qtype === 'listen'
-      ? deckKind === 'hangul'
-        ? '音を聞いて文字を選んでください'
-        : '音を聞いて意味を選んでください'
-      : qtype === 'meaning'
-        ? deckKind === 'sentence'
-          ? 'この文の意味は?'
-          : 'この単語の意味は?'
-        : 'この文字の読みは?'
+    qtype === 'cloze'
+      ? '空欄に入る言葉を選んでください'
+      : qtype === 'listen'
+        ? deckKind === 'hangul'
+          ? '音を聞いて文字を選んでください'
+          : '音を聞いて意味を選んでください'
+        : qtype === 'meaning'
+          ? deckKind === 'sentence'
+            ? 'この文の意味は?'
+            : 'この単語の意味は?'
+          : 'この文字の読みは?'
 
   return (
     <section className="card quiz">
-      {qtype === 'listen' ? (
+      {qtype === 'cloze' ? (
+        <>
+          <p className="prompt-label">{label}</p>
+          {/* Answer-phase shows the blank; feedback reveals the full sentence. */}
+          <div className="glyph sentence cloze-prompt" lang="ko">
+            {phase === 'feedback' ? question.answer.hangul : clozePrompt(question.answer)}
+          </div>
+          {question.answer.meaning && <div className="meaning cloze-hint">{question.answer.meaning}</div>}
+        </>
+      ) : qtype === 'listen' ? (
         <>
           <p className="prompt-label">{label}</p>
           <button className="btn-ghost big-audio" onClick={onReplay} aria-label="もう一度聞く">
@@ -332,9 +351,10 @@ function Quiz({
                   : 'opt dim'
               : 'opt'
           const text = optionText(opt, qtype, deckKind)
-          // Listen-mode hangul options render Korean glyphs; tag the language
-          // so screen readers don't read them with the Japanese synthesizer.
-          const optLang = qtype === 'listen' && deckKind === 'hangul' ? 'ko' : undefined
+          // Korean-glyph options (cloze words, or listen-mode hangul) get a lang
+          // tag so screen readers don't read them with the Japanese synthesizer.
+          const optLang =
+            qtype === 'cloze' || (qtype === 'listen' && deckKind === 'hangul') ? 'ko' : undefined
           const mark =
             phase === 'feedback' && isAnswer
               ? '✓'
@@ -369,7 +389,7 @@ function Quiz({
           ) : (
             <>
               不正解。正解は{' '}
-              <span lang={qtype === 'listen' && deckKind === 'hangul' ? 'ko' : undefined}>
+              <span lang={qtype === 'cloze' || (qtype === 'listen' && deckKind === 'hangul') ? 'ko' : undefined}>
                 {optionText(question.answer, qtype, deckKind)}
               </span>
             </>
