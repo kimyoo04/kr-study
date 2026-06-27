@@ -12,6 +12,7 @@ import {
 import { hasKoVoice, primeSpeech, speakItem } from '../lib/speak'
 import { hangulToKata } from '../lib/kata'
 import { playCorrect, playWrong } from '../lib/sound'
+import { ChoiceGrid, type Choice } from './ChoiceGrid'
 
 export interface LessonResult {
   hangul: Hangul
@@ -325,6 +326,22 @@ function Quiz({
             : 'この単語の意味は?'
           : 'この文字の読みは?'
 
+  // Korean-glyph options (cloze words, or listen-mode hangul) get a lang tag so
+  // screen readers don't read them with the Japanese synthesizer.
+  const koOptionLang =
+    qtype === 'cloze' || (qtype === 'listen' && deckKind === 'hangul') ? 'ko' : undefined
+  // Options are keyed by position so equal display texts can't collide. Pass the
+  // answer key even in the answer phase: it stays unselectable, but tags the
+  // correct option (data-correct) for our e2e hooks, matching prior markup.
+  const choices: Choice[] = question.options.map((opt, i) => ({
+    key: String(i),
+    text: optionText(opt, qtype, deckKind),
+    lang: koOptionLang,
+  }))
+  const answerKey = String(question.options.findIndex((o) => o.hangul === question.answer.hangul))
+  const pickedKey =
+    picked != null ? String(question.options.findIndex((o) => o.hangul === picked.hangul)) : null
+
   return (
     <section className="card quiz">
       {qtype === 'cloze' ? (
@@ -361,49 +378,14 @@ function Quiz({
         </>
       )}
 
-      <div className="options">
-        {question.options.map((opt) => {
-          const isAnswer = opt.hangul === question.answer.hangul
-          const isPicked = picked?.hangul === opt.hangul
-          const cls =
-            phase === 'feedback'
-              ? isAnswer
-                ? 'opt correct'
-                : isPicked
-                  ? 'opt wrong'
-                  : 'opt dim'
-              : 'opt'
-          const text = optionText(opt, qtype, deckKind)
-          // Korean-glyph options (cloze words, or listen-mode hangul) get a lang
-          // tag so screen readers don't read them with the Japanese synthesizer.
-          const optLang =
-            qtype === 'cloze' || (qtype === 'listen' && deckKind === 'hangul') ? 'ko' : undefined
-          const mark =
-            phase === 'feedback' && isAnswer
-              ? '✓'
-              : phase === 'feedback' && isPicked
-                ? '✗'
-                : null
-          return (
-            <button
-              key={opt.hangul}
-              className={cls}
-              data-correct={isAnswer || undefined}
-              disabled={phase === 'feedback'}
-              onClick={() => onPick(opt)}
-            >
-              <span className="opt-text" lang={optLang}>
-                {text}
-              </span>
-              {mark && (
-                <span className="opt-mark" aria-hidden="true">
-                  {mark}
-                </span>
-              )}
-            </button>
-          )
-        })}
-      </div>
+      <ChoiceGrid
+        options={choices}
+        mode={phase}
+        selectedKey={phase === 'feedback' ? pickedKey : null}
+        correctKey={answerKey}
+        pressable={false}
+        onPick={(key) => onPick(question.options[Number(key)])}
+      />
 
       <p className="sr-only" role="status">
         {phase === 'feedback' &&
@@ -412,9 +394,7 @@ function Quiz({
           ) : (
             <>
               不正解。正解は{' '}
-              <span lang={qtype === 'cloze' || (qtype === 'listen' && deckKind === 'hangul') ? 'ko' : undefined}>
-                {optionText(question.answer, qtype, deckKind)}
-              </span>
+              <span lang={koOptionLang}>{optionText(question.answer, qtype, deckKind)}</span>
             </>
           ))}
       </p>

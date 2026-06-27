@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { DECKS, deckCategories, type Deck, type Hangul } from '../data/hangul'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
+import { today } from '../lib/date'
 import { hasJaVoice, hasKoVoice, loadVoices } from '../lib/speak'
 import { swApplyUpdate, swOnUpdate } from '../lib/sw'
 import {
@@ -162,7 +163,7 @@ export function App() {
       ...progress,
       items: cards,
       lessonsDone: base,
-      lastPlayed: new Date().toISOString().slice(0, 10),
+      lastPlayed: today(),
     })
     setResults(lessonResults)
     setScreen('complete')
@@ -195,7 +196,7 @@ export function App() {
     clearProgress()
     appendResult({
       level: topikLevel,
-      takenAt: new Date().toISOString().slice(0, 10),
+      takenAt: today(),
       partScores: result.partScores,
       grade: result.grade,
       weakestPart: result.weakestPart,

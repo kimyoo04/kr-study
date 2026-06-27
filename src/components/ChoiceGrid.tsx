@@ -17,9 +17,22 @@ interface Props {
   /** Required in feedback mode: which option is correct. */
   correctKey?: string
   onPick: (key: string) => void
+  /**
+   * Expose answer-phase selection as aria-pressed — fits select-then-submit
+   * flows (TOPIK exam). Off for grade-on-click flows (SRS lesson), where a tap
+   * commits the answer immediately and "pressed" state would mislead. Default on.
+   */
+  pressable?: boolean
 }
 
-export function ChoiceGrid({ options, mode, selectedKey, correctKey, onPick }: Props) {
+export function ChoiceGrid({
+  options,
+  mode,
+  selectedKey,
+  correctKey,
+  onPick,
+  pressable = true,
+}: Props) {
   const feedback = mode === 'feedback'
   return (
     <div className="options">
@@ -41,7 +54,7 @@ export function ChoiceGrid({ options, mode, selectedKey, correctKey, onPick }: P
             key={opt.key}
             className={cls}
             data-correct={correctKey !== undefined && isAnswer ? true : undefined}
-            aria-pressed={!feedback ? isSelected : undefined}
+            aria-pressed={pressable && !feedback ? isSelected : undefined}
             disabled={feedback}
             onClick={() => onPick(opt.key)}
           >
