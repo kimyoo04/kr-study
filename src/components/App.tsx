@@ -11,7 +11,7 @@ import {
   cardKey,
   introducedCard,
   newCard,
-  selectLessonItems,
+  selectSessionItems,
   weakItems,
   type LessonItem,
 } from '../lib/srs'
@@ -102,7 +102,9 @@ export function App() {
   }
 
   function startLesson() {
-    const next = selectLessonItems(progress, scopeItems, deck.id)
+    // One continuous session: all due reviews (uncapped, so 1/5/10-skip pays off)
+    // plus a fenced batch of new items. See selectSessionItems.
+    const next = selectSessionItems(progress, scopeItems, deck.id)
     if (next.length === 0) return
     setItems(next)
     setIsReview(false)
