@@ -664,6 +664,32 @@ body {
   color: var(--muted);
   font-size: 14px;
 }
+/* スキップ操作バー: 1/5/10 問先へジャンプ。戻る(←)と対で前後移動。 */
+.skip-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.skip-bar-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+.skip-btn {
+  flex: 1;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--surface-2);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.skip-btn:active {
+  background: var(--surface-2);
+}
 .skip-note {
   color: var(--muted);
   font-size: 14px;

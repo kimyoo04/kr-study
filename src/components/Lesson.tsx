@@ -131,16 +131,28 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
     advanceFrom(results)
   }
 
-  function onSkip() {
-    if (answered) return
-    const merged = withAt(results, index, {
-      hangul: step.item.hangul,
-      mode: step.item.mode,
-      correct: false,
-      skipped: true,
-    })
-    setResults(merged)
-    advanceFrom(merged)
+  // Skip ahead by `n` steps. The current step, if still unanswered, is recorded
+  // as skipped (neutral — see LessonResult); already-answered steps (e.g. when
+  // jumping forward after a review) are left untouched. Steps leapt over stay
+  // unanswered and remain reachable via the back button. Going past the end
+  // finishes the lesson.
+  function skipForward(n: number) {
+    let merged = results
+    if (!answered) {
+      merged = withAt(results, index, {
+        hangul: step.item.hangul,
+        mode: step.item.mode,
+        correct: false,
+        skipped: true,
+      })
+      setResults(merged)
+    }
+    const next = index + n
+    if (next >= steps.length) {
+      onComplete(merged.filter((r): r is LessonResult => r != null))
+    } else {
+      setIndex(next)
+    }
   }
 
   function onBack() {
@@ -175,6 +187,20 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
         </span>
       </div>
 
+      {/* スキップ操作: 1/5/10 問先へ進む。戻る(←)と対で前後に移動できる。 */}
+      <nav className="skip-bar" aria-label="スキップ">
+        <span className="skip-bar-label">スキップ</span>
+        <button className="skip-btn" onClick={() => skipForward(1)} aria-label="1問先へスキップ">
+          ≫1
+        </button>
+        <button className="skip-btn" onClick={() => skipForward(5)} aria-label="5問先へスキップ">
+          ≫5
+        </button>
+        <button className="skip-btn" onClick={() => skipForward(10)} aria-label="10問先へスキップ">
+          ≫10
+        </button>
+      </nav>
+
       {step.item.mode === 'intro' ? (
         <IntroCard
           hangul={step.item.hangul}
@@ -193,7 +219,6 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
           onReplay={sayCurrent}
           onPick={onPick}
           onContinue={onContinue}
-          onSkip={onSkip}
         />
       )}
 
@@ -273,7 +298,6 @@ function Quiz({
   onReplay,
   onPick,
   onContinue,
-  onSkip,
 }: {
   question: Question
   deckKind: DeckKind
@@ -284,7 +308,6 @@ function Quiz({
   onReplay: () => void
   onPick: (k: Hangul) => void
   onContinue: () => void
-  onSkip: () => void
 }) {
   const { qtype } = question
   // In listen mode hangul decks still pick the glyph; word/sentence decks
@@ -400,12 +423,6 @@ function Quiz({
         <p className="skip-note" role="status">
           スキップしました(採点に含まれません)
         </p>
-      )}
-
-      {phase === 'answer' && (
-        <button className="btn-ghost skip" onClick={onSkip}>
-          スキップ
-        </button>
       )}
 
       {phase === 'feedback' && (
