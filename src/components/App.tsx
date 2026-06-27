@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { DECKS, deckCategories, type Deck, type Hangul } from '../data/hangul'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
+import { useTopikExam } from '../hooks/useTopikExam'
 import { today } from '../lib/date'
 import { hasJaVoice, hasKoVoice, loadVoices } from '../lib/speak'
 import { swApplyUpdate, swOnUpdate } from '../lib/sw'
@@ -24,24 +25,6 @@ import { TopikExam } from './TopikExam'
 import { TopikReport } from './TopikReport'
 import { TopikReview } from './TopikReview'
 import { TopikHistory } from './TopikHistory'
-import type { ScoredItem, TopikLevel } from '../data/topik/types'
-import { TOPIK_POOL } from '../data/topik'
-import {
-  appendResult,
-  clearProgress,
-  loadProgress as loadTopikProgress,
-  sampleExam,
-  scoreExam,
-  type ExamResult,
-} from '../lib/topik'
-
-// Mini mock-exam size per level, sampled fresh from the bank each run.
-// (TOPIK II reading passages run longer, so it takes slightly fewer.)
-const TOPIK_EXAM_COUNTS: Record<TopikLevel, { listening: number; reading: number }> = {
-  TOPIK1: { listening: 12, reading: 16 },
-  TOPIK2: { listening: 12, reading: 14 },
-}
-
 type Screen =
   | 'home'
   | 'lesson'
@@ -65,13 +48,11 @@ export function App() {
   // Review lessons (間違いだけ/苦手だけ) must not advance the SRS lesson clock.
   const [isReview, setIsReview] = useState(false)
 
-  // TOPIK mock-exam state. Kept separate from the SRS lesson loop — it has its
-  // own pool, persistence, and scoring.
-  const [topikLevel, setTopikLevel] = useState<TopikLevel>('TOPIK1')
-  const [topikItems, setTopikItems] = useState<ScoredItem[]>([])
-  const [topikAnswers, setTopikAnswers] = useState<(number | null)[]>([])
-  const [topikIdx, setTopikIdx] = useState(0)
-  const [topikResult, setTopikResult] = useState<ExamResult | null>(null)
+  // TOPIK mock-exam — own pool, persistence, and scoring (see useTopikExam).
+  const topik = useTopikExam({
+    toExam: () => setScreen('topik-exam'),
+    toReport: () => setScreen('topik-report'),
+  })
 
   // Listen mode needs a Korean TTS voice. Voices load asynchronously and some
   // devices fire voiceschanged late, so keep listening instead of probing once.
@@ -169,45 +150,6 @@ export function App() {
     setScreen('complete')
   }
 
-  // ---- TOPIK mock exam ------------------------------------------------------
-
-  function startTopik(level: TopikLevel) {
-    const exam = sampleExam(level, TOPIK_POOL, TOPIK_EXAM_COUNTS[level])
-    if (exam.length === 0) return
-    setTopikLevel(level)
-    setTopikItems(exam)
-    setTopikAnswers(new Array(exam.length).fill(null))
-    setTopikIdx(0)
-    setScreen('topik-exam')
-  }
-
-  function resumeTopik() {
-    const saved = loadTopikProgress()
-    if (!saved) return
-    setTopikLevel(saved.level)
-    setTopikItems(saved.items)
-    setTopikAnswers(saved.answers)
-    setTopikIdx(saved.idx)
-    setScreen('topik-exam')
-  }
-
-  function completeTopik(examItems: ScoredItem[], answers: (number | null)[]) {
-    const result = scoreExam(examItems, answers, topikLevel)
-    clearProgress()
-    appendResult({
-      level: topikLevel,
-      takenAt: today(),
-      partScores: result.partScores,
-      grade: result.grade,
-      weakestPart: result.weakestPart,
-    })
-    // Keep the graded items + answers so the review screen can show them.
-    setTopikItems(examItems)
-    setTopikAnswers(answers)
-    setTopikResult(result)
-    setScreen('topik-report')
-  }
-
   const wrong = results
     .filter((r) => r.mode === 'quiz' && !r.correct && !r.skipped)
     .map((r) => r.hangul)
@@ -273,8 +215,8 @@ export function App() {
       {screen === 'topik-home' && (
         <TopikHome
           voiceReady={voiceReady}
-          onStart={startTopik}
-          onResume={resumeTopik}
+          onStart={topik.start}
+          onResume={topik.resume}
           onHistory={() => setScreen('topik-history')}
           onExit={() => setScreen('home')}
         />
@@ -284,28 +226,28 @@ export function App() {
       )}
       {screen === 'topik-exam' && (
         <TopikExam
-          level={topikLevel}
-          items={topikItems}
-          initialAnswers={topikAnswers}
-          initialIdx={topikIdx}
+          level={topik.level}
+          items={topik.items}
+          initialAnswers={topik.answers}
+          initialIdx={topik.idx}
           voiceReady={voiceReady}
-          onComplete={completeTopik}
+          onComplete={topik.complete}
           onExit={() => setScreen('topik-home')}
         />
       )}
-      {screen === 'topik-report' && topikResult && (
+      {screen === 'topik-report' && topik.result && (
         <TopikReport
-          level={topikLevel}
-          result={topikResult}
+          level={topik.level}
+          result={topik.result}
           onReview={() => setScreen('topik-review')}
-          onRetake={() => startTopik(topikLevel)}
+          onRetake={() => topik.start(topik.level)}
           onHome={() => setScreen('home')}
         />
       )}
       {screen === 'topik-review' && (
         <TopikReview
-          items={topikItems}
-          answers={topikAnswers}
+          items={topik.items}
+          answers={topik.answers}
           onClose={() => setScreen('topik-report')}
         />
       )}

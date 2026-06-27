@@ -1,18 +1,13 @@
 import { useMemo, useState } from 'react'
-import type { Deck, DeckKind, Hangul } from '../data/hangul'
+import type { Deck, Hangul } from '../data/hangul'
 import type { LessonItem, LessonMode } from '../lib/srs'
-import {
-  buildQuestion,
-  clozePrompt,
-  isCorrect,
-  optionText,
-  pickQType,
-  type Question,
-} from '../lib/quiz'
+import { buildQuestion, isCorrect, pickQType, type Question } from '../lib/quiz'
 import { hasKoVoice, primeSpeech, speakItem } from '../lib/speak'
-import { hangulToKata } from '../lib/kata'
 import { playCorrect, playWrong } from '../lib/sound'
-import { ChoiceGrid, type Choice } from './ChoiceGrid'
+import { ProgressHeader } from './ProgressHeader'
+import { ConfirmDialog } from './ConfirmDialog'
+import { IntroCard } from './IntroCard'
+import { Quiz } from './Quiz'
 
 export interface LessonResult {
   hangul: Hangul
@@ -35,19 +30,6 @@ interface Props {
 interface Step {
   item: LessonItem
   question?: Question
-}
-
-function glyphClassFor(kind: DeckKind): string {
-  if (kind === 'sentence' || kind === 'cloze') return 'glyph sentence'
-  if (kind === 'words') return 'glyph word'
-  return 'glyph big'
-}
-
-const INTRO_LABEL: Record<DeckKind, string> = {
-  hangul: '新しい文字',
-  words: '新しい単語',
-  sentence: '例文',
-  cloze: '例文',
 }
 
 export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Props) {
@@ -78,7 +60,6 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
   // Revisiting an already-answered/skipped step shows it read-only (feedback).
   const phase: 'answer' | 'feedback' = answered ? 'feedback' : 'answer'
   const picked = picks[index]
-  const progressPct = Math.round((index / steps.length) * 100)
 
   const withAt = <T,>(arr: T[], i: number, v: T): T[] => {
     const copy = arr.slice()
@@ -168,25 +149,7 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
 
   return (
     <main className="screen lesson" tabIndex={-1}>
-      <div className="lesson-top">
-        <button className="link" onClick={onExitClick} aria-label="閉じる">
-          ✕
-        </button>
-        <button
-          className="link"
-          onClick={onBack}
-          disabled={index === 0}
-          aria-label="前の問題へ戻る"
-        >
-          ←
-        </button>
-        <div className="progress-bar slim">
-          <div className="progress-fill" style={{ width: `${progressPct}%` }} />
-        </div>
-        <span className="counter">
-          {index + 1}/{steps.length}
-        </span>
-      </div>
+      <ProgressHeader index={index} total={steps.length} onExit={onExitClick} onBack={onBack} />
 
       {/* スキップ操作: 1/5/10 問先へ進む。戻る(←)と対で前後に移動できる。 */}
       <nav className="skip-bar" aria-label="スキップ">
@@ -223,193 +186,17 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
         />
       )}
 
-      {confirmExit && <ExitConfirm onStay={() => setConfirmExit(false)} onLeave={onExit} />}
+      {confirmExit && (
+        <ConfirmDialog
+          title="レッスンをやめますか?"
+          body="やめると今回のレッスンの進捗は消えます。"
+          primaryLabel="レッスンに戻る"
+          secondaryLabel="やめる"
+          onPrimary={() => setConfirmExit(false)}
+          onSecondary={onExit}
+          onEscape={() => setConfirmExit(false)}
+        />
+      )}
     </main>
-  )
-}
-
-function IntroCard({
-  hangul,
-  deck,
-  onSpeak,
-  onNext,
-}: {
-  hangul: Hangul
-  deck: Deck
-  onSpeak: () => void
-  onNext: () => void
-}) {
-  return (
-    <section className="card intro">
-      {deck.kind === 'sentence' && hangul.note && <div className="pattern">{hangul.note}</div>}
-      <p className="prompt-label">{INTRO_LABEL[deck.kind]}</p>
-      <div className={glyphClassFor(deck.kind)} lang="ko">
-        {hangul.hangul}
-      </div>
-      {deck.kataReading && <div className="kata-reading">{hangulToKata(hangul.hangul)}</div>}
-      <div className="romaji">{hangul.romaji}</div>
-      {hangul.meaning && deck.kind !== 'hangul' && <div className="meaning">{hangul.meaning}</div>}
-      <button
-        className="btn-ghost"
-        onClick={() => {
-          primeSpeech()
-          onSpeak()
-        }}
-      >
-        🔊 発音を聞く
-      </button>
-      <button className="btn-primary" onClick={onNext}>
-        次へ
-      </button>
-    </section>
-  )
-}
-
-function ExitConfirm({ onStay, onLeave }: { onStay: () => void; onLeave: () => void }) {
-  return (
-    <div
-      className="modal-backdrop"
-      role="dialog"
-      aria-modal="true"
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') onStay()
-      }}
-    >
-      <div className="modal">
-        <p className="modal-title">レッスンをやめますか?</p>
-        <p className="modal-body">やめると今回のレッスンの進捗は消えます。</p>
-        <button className="btn-primary" onClick={onStay} autoFocus>
-          レッスンに戻る
-        </button>
-        <button className="btn-ghost" onClick={onLeave}>
-          やめる
-        </button>
-      </div>
-    </div>
-  )
-}
-
-function Quiz({
-  question,
-  deckKind,
-  kataReading,
-  phase,
-  picked,
-  skipped,
-  onReplay,
-  onPick,
-  onContinue,
-}: {
-  question: Question
-  deckKind: DeckKind
-  kataReading: boolean
-  phase: 'answer' | 'feedback'
-  picked: Hangul | null
-  skipped: boolean
-  onReplay: () => void
-  onPick: (k: Hangul) => void
-  onContinue: () => void
-}) {
-  const { qtype } = question
-  // In listen mode hangul decks still pick the glyph; word/sentence decks
-  // pick the Japanese meaning (you only have the sound to go on).
-  const label =
-    qtype === 'cloze'
-      ? '空欄に入る言葉を選んでください'
-      : qtype === 'listen'
-        ? deckKind === 'hangul'
-          ? '音を聞いて文字を選んでください'
-          : '音を聞いて意味を選んでください'
-        : qtype === 'meaning'
-          ? deckKind === 'sentence'
-            ? 'この文の意味は?'
-            : 'この単語の意味は?'
-          : 'この文字の読みは?'
-
-  // Korean-glyph options (cloze words, or listen-mode hangul) get a lang tag so
-  // screen readers don't read them with the Japanese synthesizer.
-  const koOptionLang =
-    qtype === 'cloze' || (qtype === 'listen' && deckKind === 'hangul') ? 'ko' : undefined
-  // Options are keyed by position so equal display texts can't collide. Pass the
-  // answer key even in the answer phase: it stays unselectable, but tags the
-  // correct option (data-correct) for our e2e hooks, matching prior markup.
-  const choices: Choice[] = question.options.map((opt, i) => ({
-    key: String(i),
-    text: optionText(opt, qtype, deckKind),
-    lang: koOptionLang,
-  }))
-  const answerKey = String(question.options.findIndex((o) => o.hangul === question.answer.hangul))
-  const pickedKey =
-    picked != null ? String(question.options.findIndex((o) => o.hangul === picked.hangul)) : null
-
-  return (
-    <section className="card quiz">
-      {qtype === 'cloze' ? (
-        <>
-          <p className="prompt-label">{label}</p>
-          {/* Answer-phase shows the blank; feedback reveals the full sentence. */}
-          <div className="glyph sentence cloze-prompt" lang="ko">
-            {phase === 'feedback' ? question.answer.hangul : clozePrompt(question.answer)}
-          </div>
-          {question.answer.meaning && <div className="meaning cloze-hint">{question.answer.meaning}</div>}
-        </>
-      ) : qtype === 'listen' ? (
-        <>
-          <p className="prompt-label">{label}</p>
-          <button className="btn-ghost big-audio" onClick={onReplay} aria-label="もう一度聞く">
-            🔊
-          </button>
-          {phase === 'feedback' && (
-            // Reveal what was heard so the sound gets tied to its glyph.
-            <div className={glyphClassFor(deckKind)} lang="ko">
-              {question.answer.hangul}
-            </div>
-          )}
-        </>
-      ) : (
-        <>
-          <p className="prompt-label">{label}</p>
-          <div className={glyphClassFor(deckKind)} lang="ko">
-            {question.answer.hangul}
-          </div>
-          {kataReading && (
-            <div className="kata-reading">{hangulToKata(question.answer.hangul)}</div>
-          )}
-        </>
-      )}
-
-      <ChoiceGrid
-        options={choices}
-        mode={phase}
-        selectedKey={phase === 'feedback' ? pickedKey : null}
-        correctKey={answerKey}
-        pressable={false}
-        onPick={(key) => onPick(question.options[Number(key)])}
-      />
-
-      <p className="sr-only" role="status">
-        {phase === 'feedback' &&
-          (picked?.hangul === question.answer.hangul ? (
-            '正解'
-          ) : (
-            <>
-              不正解。正解は{' '}
-              <span lang={koOptionLang}>{optionText(question.answer, qtype, deckKind)}</span>
-            </>
-          ))}
-      </p>
-
-      {phase === 'feedback' && skipped && (
-        <p className="skip-note" role="status">
-          スキップしました(採点に含まれません)
-        </p>
-      )}
-
-      {phase === 'feedback' && (
-        <button className="btn-primary" onClick={onContinue}>
-          続ける
-        </button>
-      )}
-    </section>
   )
 }

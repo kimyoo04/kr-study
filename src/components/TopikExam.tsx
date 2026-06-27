@@ -7,6 +7,8 @@ import type { TopikLevel, ScoredItem } from '../data/topik/types'
 import { TOPIK_LEVEL_LABEL, TOPIK_PART_KO, TOPIK_PART_LABEL } from '../data/topik/types'
 import { saveProgress } from '../lib/topik'
 import { TopikQuestionView } from './TopikQuestionView'
+import { ProgressHeader } from './ProgressHeader'
+import { ConfirmDialog } from './ConfirmDialog'
 
 interface Props {
   level: TopikLevel
@@ -34,7 +36,6 @@ export function TopikExam({
 
   const item = items[idx]
   const isLast = idx === items.length - 1
-  const progressPct = Math.round((idx / items.length) * 100)
   const unanswered = answers.filter((a) => a === null).length
 
   function persist(next: (number | null)[], nextIdx: number) {
@@ -63,17 +64,7 @@ export function TopikExam({
 
   return (
     <main className="screen lesson" tabIndex={-1}>
-      <div className="lesson-top">
-        <button className="link" onClick={() => setConfirmExit(true)} aria-label="閉じる">
-          ✕
-        </button>
-        <div className="progress-bar slim">
-          <div className="progress-fill" style={{ width: `${progressPct}%` }} />
-        </div>
-        <span className="counter">
-          {idx + 1}/{items.length}
-        </span>
-      </div>
+      <ProgressHeader index={idx} total={items.length} onExit={() => setConfirmExit(true)} />
 
       <p className="topik-part-tag">
         {TOPIK_PART_LABEL[item.part]} ({TOPIK_PART_KO[item.part]}) · {TOPIK_LEVEL_LABEL[level]}
@@ -97,33 +88,25 @@ export function TopikExam({
       </div>
 
       {confirmExit && (
-        <div className="modal-backdrop" role="dialog" aria-modal="true">
-          <div className="modal">
-            <p className="modal-title">やめますか?</p>
-            <p className="modal-body">進捗は保存されます。あとで続きから解けます。</p>
-            <button className="btn-primary" onClick={() => setConfirmExit(false)} autoFocus>
-              続ける
-            </button>
-            <button className="btn-ghost" onClick={onExit}>
-              やめる
-            </button>
-          </div>
-        </div>
+        <ConfirmDialog
+          title="やめますか?"
+          body="進捗は保存されます。あとで続きから解けます。"
+          primaryLabel="続ける"
+          secondaryLabel="やめる"
+          onPrimary={() => setConfirmExit(false)}
+          onSecondary={onExit}
+        />
       )}
 
       {confirmSubmit && (
-        <div className="modal-backdrop" role="dialog" aria-modal="true">
-          <div className="modal">
-            <p className="modal-title">提出しますか?</p>
-            <p className="modal-body">未回答が {unanswered} 問あります。未回答は不正解になります。</p>
-            <button className="btn-primary" onClick={() => setConfirmSubmit(false)} autoFocus>
-              もう少し解く
-            </button>
-            <button className="btn-ghost" onClick={() => onComplete(items, answers)}>
-              提出
-            </button>
-          </div>
-        </div>
+        <ConfirmDialog
+          title="提出しますか?"
+          body={`未回答が ${unanswered} 問あります。未回答は不正解になります。`}
+          primaryLabel="もう少し解く"
+          secondaryLabel="提出"
+          onPrimary={() => setConfirmSubmit(false)}
+          onSecondary={() => onComplete(items, answers)}
+        />
       )}
     </main>
   )

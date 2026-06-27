@@ -658,12 +658,6 @@ body {
   font-size: 15px;
   margin-left: 6px;
 }
-/* スキップ操作: 主要動線より目立たないゴーストボタン */
-.btn-ghost.skip {
-  margin-top: 4px;
-  color: var(--muted);
-  font-size: 14px;
-}
 /* スキップ操作バー: 1/5/10 問先へジャンプ。戻る(←)と対で前後移動。 */
 .skip-bar {
   display: flex;
