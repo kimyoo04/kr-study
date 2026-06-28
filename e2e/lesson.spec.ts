@@ -171,16 +171,12 @@ test('home shows "review weak" after missing items, scoped to seen-not-learned',
   await page.getByRole('button', { name: 'はじめる' }).click()
   for (let i = 0; i < 6; i++) await page.getByRole('button', { name: '次へ' }).click()
   await page.getByRole('button', { name: 'もう一回' }).click()
-  // Session 2 leads with the 6 due reviews. Miss the first, get the rest right.
+  // Miss the first, get the rest right.
   await page.locator('.opt:not([data-correct])').first().click()
   await page.getByRole('button', { name: '続ける' }).click()
   for (let i = 0; i < 5; i++) {
     await page.locator('button[data-correct="true"]').first().click()
     await page.getByRole('button', { name: '続ける' }).click()
-  }
-  // After the reviews comes the fenced new-intro batch — advance through to finish.
-  while (await page.getByRole('button', { name: '次へ' }).isVisible().catch(() => false)) {
-    await page.getByRole('button', { name: '次へ' }).click()
   }
   await page.getByRole('button', { name: 'ホームへ' }).click()
   // The missed item is now weak -> Home offers a weak-review button.
@@ -210,16 +206,12 @@ test('complete screen shows review button after a wrong answer', async ({ page }
   for (let i = 0; i < 6; i++) await page.getByRole('button', { name: '次へ' }).click()
   // Start lesson 2 from the Complete screen — the 6 are now due as quizzes.
   await page.getByRole('button', { name: 'もう一回' }).click()
-  // Session 2 leads with the 6 due reviews. Answer the first WRONG, rest correct.
+  // Answer the first one WRONG, the rest correct.
   await page.locator('.opt:not([data-correct])').first().click()
   await page.getByRole('button', { name: '続ける' }).click()
   for (let i = 0; i < 5; i++) {
     await page.locator('button[data-correct="true"]').first().click()
     await page.getByRole('button', { name: '続ける' }).click()
-  }
-  // Then advance through the fenced new-intro batch to reach the Complete screen.
-  while (await page.getByRole('button', { name: '次へ' }).isVisible().catch(() => false)) {
-    await page.getByRole('button', { name: '次へ' }).click()
   }
   // Complete: chips + review button for the 1 miss.
   await expect(page.getByText('レッスン完了!')).toBeVisible()

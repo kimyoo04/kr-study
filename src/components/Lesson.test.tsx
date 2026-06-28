@@ -20,14 +20,12 @@ afterEach(() => {
   cleanup()
 })
 
-function setup(count = 3) {
+function setup() {
   const onComplete = vi.fn<(r: LessonResult[]) => void>()
   const onExit = vi.fn()
-  const lessonItems: LessonItem[] =
-    count === 3 ? items : deck.items.slice(0, count).map((hangul) => ({ hangul, mode: 'quiz' }))
   render(
     <Lesson
-      items={lessonItems}
+      items={items}
       pool={deck.items}
       deck={deck}
       listenMode={false}
@@ -43,40 +41,16 @@ describe('Lesson skip / back navigation', () => {
     const { onComplete } = setup()
     expect(screen.getByText('1/3')).toBeInTheDocument()
 
-    // Skip all three questions one at a time.
-    fireEvent.click(screen.getByLabelText('1問先へスキップ'))
+    // Skip all three questions.
+    fireEvent.click(screen.getByText('スキップ'))
     expect(screen.getByText('2/3')).toBeInTheDocument()
-    fireEvent.click(screen.getByLabelText('1問先へスキップ'))
-    fireEvent.click(screen.getByLabelText('1問先へスキップ'))
+    fireEvent.click(screen.getByText('スキップ'))
+    fireEvent.click(screen.getByText('スキップ'))
 
     expect(onComplete).toHaveBeenCalledTimes(1)
     const results = onComplete.mock.calls[0][0]
     expect(results).toHaveLength(3)
     expect(results.every((r) => r.skipped === true && r.correct === false)).toBe(true)
-  })
-
-  it('skip 5 jumps five steps ahead, recording only the current one skipped', () => {
-    setup(20)
-    expect(screen.getByText('1/20')).toBeInTheDocument()
-
-    fireEvent.click(screen.getByLabelText('5問先へスキップ'))
-    // Landed on step 6; the four leapt-over steps stay reachable, not graded.
-    expect(screen.getByText('6/20')).toBeInTheDocument()
-  })
-
-  it('skipping past the end finishes the lesson', () => {
-    const { onComplete } = setup(20)
-    // From step 1, jumping 10 then 10 again lands past the 20th step.
-    fireEvent.click(screen.getByLabelText('10問先へスキップ'))
-    expect(screen.getByText('11/20')).toBeInTheDocument()
-    fireEvent.click(screen.getByLabelText('10問先へスキップ'))
-
-    expect(onComplete).toHaveBeenCalledTimes(1)
-    // Only the two steps we sat on (1 and 11) were recorded skipped; the rest
-    // were leapt over and left untouched.
-    const results = onComplete.mock.calls[0][0]
-    expect(results).toHaveLength(2)
-    expect(results.every((r) => r.skipped === true)).toBe(true)
   })
 
   it('lets the learner go back to a previous item read-only', () => {
@@ -91,23 +65,9 @@ describe('Lesson skip / back navigation', () => {
     fireEvent.click(screen.getByLabelText('前の問題へ戻る'))
     expect(screen.getByText('1/3')).toBeInTheDocument()
 
-    // Read-only: options are disabled.
+    // Read-only: options are disabled and skipping is no longer offered.
     expect(screen.getByText(meaning).closest('button')).toBeDisabled()
-  })
-
-  it('skipping forward from a reviewed step navigates without regrading it', () => {
-    const { onComplete } = setup(20)
-    // Answer Q1, continue, then go back to review it (read-only feedback).
-    const meaning = items[0].hangul.meaning!
-    fireEvent.click(screen.getByText(meaning))
-    fireEvent.click(screen.getByText('続ける'))
-    fireEvent.click(screen.getByLabelText('前の問題へ戻る'))
-    expect(screen.getByText('1/20')).toBeInTheDocument()
-
-    // Skip forward 5 from the answered step: pure navigation, no skip mark added.
-    fireEvent.click(screen.getByLabelText('5問先へスキップ'))
-    expect(screen.getByText('6/20')).toBeInTheDocument()
-    expect(onComplete).not.toHaveBeenCalled()
+    expect(screen.queryByText('スキップ')).toBeNull()
   })
 
   it('disables the back button on the first item', () => {

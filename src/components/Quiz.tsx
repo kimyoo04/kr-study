@@ -17,6 +17,7 @@ interface Props {
   onReplay: () => void
   onPick: (k: Hangul) => void
   onContinue: () => void
+  onSkip: () => void
 }
 
 export function Quiz({
@@ -29,6 +30,7 @@ export function Quiz({
   onReplay,
   onPick,
   onContinue,
+  onSkip,
 }: Props) {
   const { qtype } = question
   // In listen mode hangul decks still pick the glyph; word/sentence decks
@@ -123,6 +125,12 @@ export function Quiz({
         <p className="skip-note" role="status">
           スキップしました(採点に含まれません)
         </p>
+      )}
+
+      {phase === 'answer' && (
+        <button className="btn-ghost skip" onClick={onSkip}>
+          スキップ
+        </button>
       )}
 
       {phase === 'feedback' && (
