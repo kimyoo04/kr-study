@@ -9,3 +9,6 @@ test-results
 dev-dist
 *.tsbuildinfo
 .gstack/
+
+# Claude Code のローカル実行ロック(コミット対象外)
+.claude/scheduled_tasks.lock
