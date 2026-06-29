@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { Deck, DeckKind, Hangul } from '../data/hangul'
 import { hangulToKata } from '../lib/kata'
 import { primeSpeech, speakSequence, stopSpeech, type SpeechPart } from '../lib/speak'
+import { KeyHint } from './KeyHint'
 
 interface Props {
   items: Hangul[]
@@ -157,6 +158,40 @@ export function ListenPlayer({ items, deck, jaReady, onExit }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Keyboard control for hands-free shadowing:
+  //   Space/Enter  play ⇄ pause
+  //   ← / →        previous / next card
+  //   ↑ / ↓        jump 10 back / forward
+  //   Esc          leave. No deps array: re-bind each render for fresh state.
+  function onKey(e: KeyboardEvent) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return
+    const onButton = (e.target as HTMLElement | null)?.tagName === 'BUTTON'
+    if (e.key === ' ' || e.key === 'Enter') {
+      if (onButton) return // let a focused control activate itself
+      e.preventDefault()
+      playing ? pause() : play()
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      goTo(index - 1)
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault()
+      goTo(index + 1)
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      goTo(index - 10)
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      goTo(index + 10)
+    } else if (e.key === 'Escape') {
+      e.preventDefault()
+      onExit()
+    }
+  }
+  useEffect(() => {
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
   const progressPct = Math.round(((index + 1) / items.length) * 100)
   const jaText = deck.kind === 'hangul' ? hangulToKata(step.hangul) : (step.meaning ?? '')
 
@@ -164,7 +199,7 @@ export function ListenPlayer({ items, deck, jaReady, onExit }: Props) {
     <main className="screen listen-play">
       <div className="lesson-top">
         <button className="link" onClick={onExit} aria-label="閉じる">
-          ✕
+          ✕<KeyHint k="Esc" />
         </button>
         <div className="progress-bar slim">
           <div className="progress-fill" style={{ width: `${progressPct}%` }} />
@@ -192,16 +227,17 @@ export function ListenPlayer({ items, deck, jaReady, onExit }: Props) {
 
       <div className="listen-controls">
         <button className="link nav-arrow" onClick={() => goTo(index - 1)} aria-label="前へ">
-          ‹
+          ‹<KeyHint k="←" />
         </button>
         <button
           className="btn-primary listen-play-btn"
           onClick={() => (playing ? pause() : play())}
         >
           {playing ? '⏸ 一時停止' : '▶ 再生'}
+          <KeyHint k="Space" />
         </button>
         <button className="link nav-arrow" onClick={() => goTo(index + 1)} aria-label="次へ">
-          ›
+          ›<KeyHint k="→" />
         </button>
       </div>
 
@@ -213,10 +249,10 @@ export function ListenPlayer({ items, deck, jaReady, onExit }: Props) {
             </button>
           )}
           <button className="listen-jump" onClick={() => goTo(index - 10)} aria-label="10個前へ戻る">
-            «10
+            «10<KeyHint k="↑" />
           </button>
           <button className="listen-jump" onClick={() => goTo(index + 10)} aria-label="10個先へ進む">
-            10»
+            10»<KeyHint k="↓" />
           </button>
           {items.length > 50 && (
             <button className="listen-jump" onClick={() => goTo(index + 50)} aria-label="50個先へ進む">

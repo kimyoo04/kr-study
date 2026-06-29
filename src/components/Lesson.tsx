@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Deck, Hangul } from '../data/hangul'
 import type { LessonItem, LessonMode } from '../lib/srs'
 import { buildQuestion, isCorrect, pickQType, type Question } from '../lib/quiz'
@@ -138,9 +138,66 @@ export function Lesson({ items, pool, deck, listenMode, onComplete, onExit }: Pr
     else onExit()
   }
 
+  // Keyboard control. Mirrors the on-screen actions so a hardware keyboard can
+  // drive the whole lesson:
+  //   1–4         pick that answer (quiz, answer phase)
+  //   R           replay audio (listen-type quiz)
+  //   ← / →       previous item / advance (next intro · continue feedback)
+  //   Enter/Space advance (next intro · continue feedback)
+  //   Esc         leave (the confirm dialog handles Esc itself while open)
+  // No deps array on purpose: re-bind each render so the handler reads fresh
+  // state instead of a stale closure. The confirm dialog owns keys while open.
+  function onKey(e: KeyboardEvent) {
+    if (e.metaKey || e.ctrlKey || e.altKey || confirmExit) return
+    const onButton = (e.target as HTMLElement | null)?.tagName === 'BUTTON'
+    const isQuiz = step.item.mode !== 'intro'
+
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      onExitClick()
+      return
+    }
+    if (isQuiz && phase === 'answer') {
+      const n = Number(e.key)
+      if (n >= 1 && n <= step.question!.options.length) {
+        e.preventDefault()
+        onPick(step.question!.options[n - 1])
+        return
+      }
+    }
+    if ((e.key === 'r' || e.key === 'R') && isQuiz && step.question!.qtype === 'listen') {
+      e.preventDefault()
+      sayCurrent()
+      return
+    }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      onBack()
+      return
+    }
+    if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') {
+      // Let a focused button activate itself (avoids a double advance).
+      if ((e.key === 'Enter' || e.key === ' ') && onButton) return
+      e.preventDefault()
+      if (!isQuiz) onIntroNext()
+      else if (phase === 'feedback') onContinue()
+    }
+  }
+  useEffect(() => {
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
   return (
     <main className="screen lesson" tabIndex={-1}>
-      <ProgressHeader index={index} total={steps.length} onExit={onExitClick} onBack={onBack} />
+      <ProgressHeader
+        index={index}
+        total={steps.length}
+        onExit={onExitClick}
+        onBack={onBack}
+        exitKey="Esc"
+        backKey="←"
+      />
 
       {step.item.mode === 'intro' ? (
         <IntroCard

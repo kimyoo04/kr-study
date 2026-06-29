@@ -3,6 +3,7 @@
 import type { Deck, DeckKind, Hangul } from '../data/hangul'
 import { hangulToKata } from '../lib/kata'
 import { primeSpeech } from '../lib/speak'
+import { KeyHint } from './KeyHint'
 import { glyphClassFor } from './glyph'
 
 const INTRO_LABEL: Record<DeckKind, string> = {
@@ -40,7 +41,7 @@ export function IntroCard({ hangul, deck, onSpeak, onNext }: Props) {
         🔊 発音を聞く
       </button>
       <button className="btn-primary" onClick={onNext}>
-        次へ
+        次へ<KeyHint k="Enter" />
       </button>
     </section>
   )

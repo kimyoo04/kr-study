@@ -223,6 +223,7 @@ body {
 /* ---- Buttons ---- */
 .btn-primary,
 .btn-ghost {
+  position: relative;
   border: none;
   border-radius: var(--radius);
   font-size: 17px;
@@ -247,6 +248,7 @@ body {
   box-shadow: none;
 }
 .link {
+  position: relative;
   background: none;
   border: none;
   color: var(--muted);
@@ -370,6 +372,7 @@ body {
 
 /* ---- Listen player (passive auto-play) ---- */
 .nav-arrow {
+  position: relative;
   font-size: 24px;
   line-height: 1;
   padding: 0 4px;
@@ -408,6 +411,7 @@ body {
   margin: 0 0 16px;
 }
 .listen-jump {
+  position: relative;
   border: 1px solid var(--surface-2);
   background: transparent;
   color: var(--text);
@@ -465,6 +469,49 @@ body {
 .listen-chip:disabled {
   opacity: 0.4;
   cursor: default;
+}
+/* ボタン上の小さなキーボード・ショートカット表示。物理キーボードのある
+   環境(デスクトップ)だけに出し、タッチ端末では非表示にする。 */
+.key-hint {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .key-hint {
+    display: inline-block;
+    padding: 0 4px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 10px;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.5;
+  }
+  /* Take the badge out of the button's content flow so the label keeps its own
+     centering; the button is the positioning context (position: relative). */
+  button .key-hint {
+    position: absolute;
+    margin: 0;
+  }
+  /* Wide buttons (続ける / 次へ / 再生 / 発音): pin to the right, vertically centered. */
+  .btn-primary .key-hint,
+  .btn-ghost .key-hint {
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+  }
+  /* Choice buttons: top-left corner (the feedback ✓/✗ mark owns top-right). */
+  .opt .key-hint {
+    top: 6px;
+    left: 10px;
+  }
+  /* Compact icon / pill buttons (✕ ← ‹ › «10): small top-right corner badge. */
+  .link .key-hint,
+  .nav-arrow .key-hint,
+  .listen-jump .key-hint {
+    top: 0;
+    right: 0;
+  }
 }
 .sr-only {
   position: absolute;

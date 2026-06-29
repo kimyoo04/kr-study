@@ -5,6 +5,7 @@ import type { DeckKind, Hangul } from '../data/hangul'
 import { clozePrompt, optionText, type Question } from '../lib/quiz'
 import { hangulToKata } from '../lib/kata'
 import { ChoiceGrid, type Choice } from './ChoiceGrid'
+import { KeyHint } from './KeyHint'
 import { glyphClassFor } from './glyph'
 
 interface Props {
@@ -79,7 +80,7 @@ export function Quiz({
         <>
           <p className="prompt-label">{label}</p>
           <button className="btn-ghost big-audio" onClick={onReplay} aria-label="もう一度聞く">
-            🔊
+            🔊<KeyHint k="R" />
           </button>
           {phase === 'feedback' && (
             // Reveal what was heard so the sound gets tied to its glyph.
@@ -106,6 +107,7 @@ export function Quiz({
         selectedKey={phase === 'feedback' ? pickedKey : null}
         correctKey={answerKey}
         pressable={false}
+        keyHints
         onPick={(key) => onPick(question.options[Number(key)])}
       />
 
@@ -135,7 +137,7 @@ export function Quiz({
 
       {phase === 'feedback' && (
         <button className="btn-primary" onClick={onContinue}>
-          続ける
+          続ける<KeyHint k="Enter" />
         </button>
       )}
     </section>

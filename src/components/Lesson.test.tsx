@@ -75,3 +75,38 @@ describe('Lesson skip / back navigation', () => {
     expect(screen.getByLabelText('前の問題へ戻る')).toBeDisabled()
   })
 })
+
+describe('Lesson keyboard control', () => {
+  it('number keys 1–4 pick the matching answer', () => {
+    setup()
+    const opts = Array.from(document.querySelectorAll('.options .opt'))
+    const correctIdx = opts.findIndex((b) => b.hasAttribute('data-correct'))
+    // Press the digit for the correct option -> grades and reveals feedback.
+    fireEvent.keyDown(window, { key: String(correctIdx + 1) })
+    expect(screen.getByText('続ける')).toBeInTheDocument()
+    expect(screen.getByText('1/3')).toBeInTheDocument()
+  })
+
+  it('← steps back, → / Enter advance from feedback', () => {
+    setup()
+    // Answer Q1 (click the correct meaning) -> feedback, then → advances to Q2.
+    fireEvent.click(screen.getByText(items[0].hangul.meaning!))
+    fireEvent.keyDown(window, { key: 'ArrowRight' })
+    expect(screen.getByText('2/3')).toBeInTheDocument()
+    // ← returns to Q1 (read-only feedback for the answered item).
+    fireEvent.keyDown(window, { key: 'ArrowLeft' })
+    expect(screen.getByText('1/3')).toBeInTheDocument()
+    // Enter advances again from feedback.
+    fireEvent.keyDown(window, { key: 'Enter' })
+    expect(screen.getByText('2/3')).toBeInTheDocument()
+  })
+
+  it('Esc opens the exit confirmation after progress', () => {
+    setup()
+    // No progress yet on Q1 -> Esc would exit straight away; make progress first.
+    fireEvent.click(screen.getByText(items[0].hangul.meaning!))
+    fireEvent.keyDown(window, { key: 'Enter' }) // -> Q2
+    fireEvent.keyDown(window, { key: 'Escape' })
+    expect(screen.getByText('やめると今回のレッスンの進捗は消えます。')).toBeInTheDocument()
+  })
+})

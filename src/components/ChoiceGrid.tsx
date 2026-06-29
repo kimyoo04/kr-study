@@ -2,6 +2,7 @@
 // until the report). Presentational and string-keyed so callers stay decoupled
 // from their own item types. Mirrors the markup the SRS Lesson already uses
 // (.options / .opt / .opt-text / .opt-mark) so styling is shared.
+import { KeyHint } from './KeyHint'
 
 export interface Choice {
   key: string // stable identity (stringified index)
@@ -23,6 +24,11 @@ interface Props {
    * commits the answer immediately and "pressed" state would mislead. Default on.
    */
   pressable?: boolean
+  /**
+   * Show a 1-based number badge on each option (desktop-only) for callers that
+   * bind digit keys to the choices, e.g. the SRS lesson. Off by default.
+   */
+  keyHints?: boolean
 }
 
 export function ChoiceGrid({
@@ -32,11 +38,12 @@ export function ChoiceGrid({
   correctKey,
   onPick,
   pressable = true,
+  keyHints = false,
 }: Props) {
   const feedback = mode === 'feedback'
   return (
     <div className="options">
-      {options.map((opt) => {
+      {options.map((opt, i) => {
         const isSelected = selectedKey === opt.key
         const isAnswer = correctKey === opt.key
         const cls = feedback
@@ -58,6 +65,7 @@ export function ChoiceGrid({
             disabled={feedback}
             onClick={() => onPick(opt.key)}
           >
+            {keyHints && !feedback && <KeyHint k={String(i + 1)} />}
             <span className="opt-text" lang={opt.lang}>
               {opt.text}
             </span>
