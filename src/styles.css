@@ -304,12 +304,17 @@ body {
   align-items: center;
   gap: 12px;
 }
-/* レッスンの ✕ は片手でも押しやすいよう大きめ・広めのタップ領域に */
+/* レッスンの ✕ は片手でも押しやすいよう大きめ・広めのタップ領域に。
+   グリフをタップ領域の中央に揃え、当たり判定が見た目とズレないようにする。 */
 .lesson-top .link {
   font-size: 26px;
   min-width: 48px;
   min-height: 48px;
-  margin-left: -10px;
+  margin-left: -4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 .lesson-top .link:disabled {
   opacity: 0.25;
@@ -330,6 +335,18 @@ body {
   justify-content: center;
   gap: 18px;
   text-align: center;
+}
+/* 出題カード/流し聞きカードは上端基準で並べ、解答→フィードバックや
+   問題送りで中央寄せが再計算されて上下に跳ねるのを防ぐ。
+   主操作ボタン(スキップ/続ける)は下端へ固定して基準を上下で持つ。 */
+.card.quiz,
+.card.listen-card {
+  justify-content: flex-start;
+}
+.card.quiz > .skip,
+.card.quiz > .btn-primary {
+  margin-top: auto;
+  margin-bottom: 0;
 }
 .prompt-label {
   color: var(--muted);
@@ -563,7 +580,7 @@ body {
   color: var(--text);
   border: 2px solid transparent;
   border-radius: var(--radius);
-  font-size: 20px;
+  font-size: 17px;
   line-height: 1.3;
   font-weight: 700;
   padding: 16px 14px;
@@ -582,9 +599,9 @@ body {
 }
 .opt-mark {
   position: absolute;
-  top: 6px;
-  right: 10px;
-  font-size: 16px;
+  top: 4px;
+  right: 6px;
+  font-size: 12px;
   font-weight: 900;
 }
 .opt.correct {
