@@ -1,3 +1,14 @@
+/* ブランドロゴ用ディスプレイ書体。ロゴのグリフ (かんこくご Pocket) だけを
+   text-subset した self-host woff2 (~2KB)。.logo のみに適用し、本文・ボタン・
+   数字は system-ui のまま (CJK フルカバレッジ・ロードコスト 0)。 */
+@font-face {
+  font-family: 'Zen Maru Gothic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/zen-maru-gothic-logo.woff2') format('woff2');
+}
+
 :root {
   --bg: #0f1020;
   --surface: #1b1c3a;
@@ -55,22 +66,31 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* 全画面で上端のコンテンツ位置を揃える共通の上パディング (--screen-top + safe-area) */
-  padding: calc(var(--screen-top) + env(safe-area-inset-top)) 20px
-    calc(24px + env(safe-area-inset-bottom));
+  /* 全画面で上端のコンテンツ位置を揃える共通の上パディング (--screen-top + safe-area)。
+     左右は横向き時のノッチ (safe-area left/right) を尊重しつつ 20px を下限に。
+     縦向き (inset=0) は 20px のまま、横向きでコンテンツが切れないようにする。 */
+  padding: calc(var(--screen-top) + env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right))
+    calc(24px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
   gap: 20px;
 }
 
 /* ---- Home ---- */
 /* 上端揃え (他画面と同じ) — コンテンツは上から並べる。 */
+/* ネイティブアプリ風の上端バー: 検索・スピーカーを絶対配置ではなく
+   実際の flex 行 (検索=左 / スピーカー=右) に。タイトルブロックとの重なりを解消し、
+   他画面の上端バーと同じヘッダーパターンに揃える。 */
+.home-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+}
 .home-head {
   text-align: center;
 }
 .sfx-toggle,
 .search-btn {
-  position: absolute;
-  /* 他画面の上端バーと同じ高さに合わせる (.screen の上パディングと一致) */
-  top: calc(env(safe-area-inset-top) + var(--screen-top));
   background: var(--surface);
   border: none;
   border-radius: 50%;
@@ -78,15 +98,10 @@ body {
   height: 44px;
   font-size: 20px;
   cursor: pointer;
-  z-index: 10;
-}
-.sfx-toggle {
-  right: 16px;
-}
-.search-btn {
-  left: 16px;
 }
 .logo {
+  font-family: 'Zen Maru Gothic', system-ui, sans-serif;
+  font-weight: 700;
   font-size: 28px;
   margin: 0 0 4px;
 }
