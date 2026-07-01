@@ -260,6 +260,52 @@ body {
   min-height: 44px;
 }
 
+/* Bottom action group: hero CTA + compact secondary tiles, tighter than the
+   20px screen gap so four blocks stop eating half the phone. */
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+.home-tiles {
+  display: grid;
+  /* auto-fit so a lone tile (no weak-review) fills the row instead of leaving a gap */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid var(--surface-2);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  padding: 10px 12px;
+  min-height: 56px;
+  cursor: pointer;
+}
+.tile:active {
+  transform: translateY(1px);
+}
+.tile:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.tile-title {
+  font-size: 15px;
+}
+.tile-sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
 /* Listen-mode switch: a full-width pill that sits above the start button. */
 .mode-toggle {
   display: flex;

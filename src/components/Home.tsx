@@ -134,35 +134,42 @@ export function Home({
         </div>
       </section>
 
-      <button
-        className={listen ? 'mode-toggle on' : 'mode-toggle'}
-        onClick={onToggleListen}
-        disabled={!listenAvailable}
-        aria-pressed={listen}
-      >
-        <span className="mode-toggle-text">
-          🎧 聞いて解く
-          {!listenAvailable && <small> (この端末は音声非対応)</small>}
-        </span>
-        <span className="mode-toggle-state">{listen ? 'オン' : 'オフ'}</span>
-      </button>
-
-      <button className="btn-primary" onClick={onStart}>
-        {learned > 0 ? '今日のレッスン' : 'はじめる'}
-      </button>
-      <button className="btn-ghost" onClick={onListen} disabled={!listenAvailable}>
-        🎧 流し聞き ({total})
-      </button>
-      {weakCount > 0 && (
-        <button className="btn-ghost" onClick={onReviewWeak}>
-          苦手だけ復習 ({weakCount})
+      <div className="home-actions">
+        <button
+          className={listen ? 'mode-toggle on' : 'mode-toggle'}
+          onClick={onToggleListen}
+          disabled={!listenAvailable}
+          aria-pressed={listen}
+        >
+          <span className="mode-toggle-text">
+            🎧 聞いて解く
+            {!listenAvailable && <small> (この端末は音声非対応)</small>}
+          </span>
+          <span className="mode-toggle-state">{listen ? 'オン' : 'オフ'}</span>
         </button>
-      )}
 
-      <button className="topik-entry" onClick={onTopik}>
-        📝 TOPIK 模擬試験
-        <small>聞き取り・読解のミニ模試で実力チェック</small>
-      </button>
+        <button className="btn-primary" onClick={onStart}>
+          {learned > 0 ? '今日のレッスン' : 'はじめる'}
+        </button>
+
+        <div className="home-tiles">
+          <button className="tile" onClick={onListen} disabled={!listenAvailable}>
+            <span className="tile-title">🎧 流し聞き</span>
+            <span className="tile-sub">{total}語</span>
+          </button>
+          {weakCount > 0 && (
+            <button className="tile" onClick={onReviewWeak}>
+              <span className="tile-title">🔁 苦手復習</span>
+              <span className="tile-sub">{weakCount}語</span>
+            </button>
+          )}
+        </div>
+
+        <button className="tile tile-topik" onClick={onTopik}>
+          <span className="tile-title">📝 TOPIK 模擬試験</span>
+          <span className="tile-sub">聞き取り・読解のミニ模試で実力チェック</span>
+        </button>
+      </div>
     </main>
   )
 }
